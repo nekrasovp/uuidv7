@@ -1,0 +1,6 @@
+import uuidv7_impl.uuid7_gen as uuid7_gen
+
+
+def generate_uuid7() -> str:
+    uuid = uuid7_gen.generate_uuid7()
+    return uuid

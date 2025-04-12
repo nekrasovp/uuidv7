@@ -1,0 +1,4 @@
+include README.md
+include LICENSE
+recursive-include uuidv7/include *
+recursive-include uuidv7/src *
