@@ -1,6 +1,6 @@
 # uuidv7
 
-[![CI](https://github.com/yourusername/uuidv7/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/uuidv7/actions/workflows/ci.yml)
+[![CI](https://github.com/nekrasovp/uuidv7/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/uuidv7/actions/workflows/ci.yml)
 [![PyPI version](https://badge.fury.io/py/fastuuid7.svg)](https://badge.fury.io/py/fastuuid7)
 
 A high-performance UUID v7 generation library implemented in C with Python bindings.
