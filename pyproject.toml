@@ -28,9 +28,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/uuidv7"
-Repository = "https://github.com/yourusername/uuidv7"
-Issues = "https://github.com/yourusername/uuidv7/issues"
+Homepage = "https://github.com/nekrasovp/uuidv7"
+Repository = "https://github.com/nekrasovp/uuidv7"
+Issues = "https://github.com/nekrasovp/uuidv7/issues"
 
 [tool.setuptools]
 packages = {find = {}}

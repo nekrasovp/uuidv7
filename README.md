@@ -1,6 +1,6 @@
 # uuidv7
 
-[![CI](https://github.com/nekrasovp/uuidv7/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/uuidv7/actions/workflows/ci.yml)
+[![CI](https://github.com/nekrasovp/uuidv7/actions/workflows/ci.yml/badge.svg)](https://github.com/nekrasovp/uuidv7/actions/workflows/ci.yml)
 [![PyPI version](https://badge.fury.io/py/fastuuid7.svg)](https://badge.fury.io/py/fastuuid7)
 
 A high-performance UUID v7 generation library implemented in C with Python bindings.
@@ -31,7 +31,7 @@ pip install fastuuid7
 ### From source
 
 ```bash
-git clone https://github.com/yourusername/uuidv7.git
+git clone https://github.com/nekrasovp/uuidv7.git
 cd uuidv7
 uv pip install -e .
 ```
@@ -297,7 +297,7 @@ This project uses GitHub Actions for continuous integration and deployment:
 ### Publishing a New Release
 
 1. Update the version in `pyproject.toml` and `uuidv7/__init__.py`
-2. Create a new [GitHub Release](https://github.com/yourusername/uuidv7/releases/new)
+2. Create a new [GitHub Release](https://github.com/nekrasovp/uuidv7/releases/new)
 3. The workflow will automatically build and publish to PyPI
 
 ## License
