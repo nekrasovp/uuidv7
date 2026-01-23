@@ -1,0 +1,58 @@
+name: Benchmark
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "uuidv7/**"
+      - "benchmarks/**"
+      - ".github/workflows/benchmark.yml"
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    name: Run Benchmarks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: |
+          uv pip install -e .
+
+      - name: Run benchmarks
+        run: |
+          python benchmarks/benchmark.py
+
+      - name: Comment benchmark results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = `## Benchmark Results
+            
+            Benchmarks completed successfully. See [BENCHMARK_RESULTS.md](https://github.com/${{ github.repository }}/blob/${{ github.sha }}/BENCHMARK_RESULTS.md) for detailed results.
+            
+            Run benchmarks locally:
+            \`\`\`bash
+            python benchmarks/benchmark.py
+            \`\`\`
+            `;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
+

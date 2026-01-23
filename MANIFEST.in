@@ -1,4 +1,5 @@
 include README.md
 include LICENSE
-recursive-include uuidv7/include *
-recursive-include uuidv7/src *
+recursive-include uuidv7/uuidv7_impl/include *
+recursive-include uuidv7/uuidv7_impl/src *
+recursive-include uuidv7/uuidv7_impl *.c
