@@ -1,7 +1,7 @@
 # uuidv7
 
 [![CI](https://github.com/yourusername/uuidv7/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/uuidv7/actions/workflows/ci.yml)
-[![PyPI version](https://badge.fury.io/py/uuidv7.svg)](https://badge.fury.io/py/uuidv7)
+[![PyPI version](https://badge.fury.io/py/fastuuid7.svg)](https://badge.fury.io/py/fastuuid7)
 
 A high-performance UUID v7 generation library implemented in C with Python bindings.
 
@@ -18,13 +18,13 @@ A high-performance UUID v7 generation library implemented in C with Python bindi
 ### Using uv (recommended)
 
 ```bash
-uv pip install uuidv7
+uv pip install fastuuid7
 ```
 
 ### Using pip
 
 ```bash
-pip install uuidv7
+pip install fastuuid7
 ```
 
 ### From source
