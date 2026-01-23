@@ -8,8 +8,7 @@ version = "0.1.0"
 description = "UUID v7 generation package using a C library"
 readme = "README.md"
 requires-python = ">=3.8"
-license = "MIT"
-license-files = ["LICENSE"]
+license = {text = "MIT"}
 authors = [
     {name = "Pavel Nekrasov", email = "nekrasovp@gmail.com"}
 ]
