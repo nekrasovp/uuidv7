@@ -7,13 +7,14 @@ import time
 from typing import Callable
 
 # Our implementation
-from uuidv7.uuidv7 import generate_uuid7 as our_generate_uuid7
+from uuidv7 import uuid7 as our_uuid7
 
 # Try to import Python's built-in UUID v7 (Python 3.13+)
 try:
     import uuid
 
     if hasattr(uuid, "uuid7"):
+
         def python_builtin_uuid7() -> str:
             """Python's built-in UUID v7 (Python 3.13+)."""
             return str(uuid.uuid7())
@@ -51,13 +52,13 @@ def pure_python_uuid7() -> str:
     return f"{timestamp_high:08x}-{timestamp_low:04x}-{rand_a:04x}-{rand_b:04x}-{rand_c:04x}{rand_d:04x}{rand_e:04x}"
 
 
-# Try to import uuid7 library if available
+# Try to import uuid7 library if available (from uuid_extensions package)
 try:
-    import uuid7 as uuid7_lib
+    from uuid_extensions import uuid7 as uuid7_func
 
     def uuid7_library() -> str:
-        """uuid7 library from PyPI."""
-        return str(uuid7_lib.uuid7())
+        """uuid7 library from PyPI (uuid_extensions package)."""
+        return str(uuid7_func())
 
     HAS_UUID7_LIB = True
 except ImportError:
@@ -102,8 +103,8 @@ def run_benchmarks():
     results = []
 
     # Our C implementation
-    print("Benchmarking: Our C Implementation...")
-    results.append(benchmark(our_generate_uuid7, "Our C Implementation", iterations))
+    print("Benchmarking: Our C Implementation (fastuuid7)...")
+    results.append(benchmark(our_uuid7, "Our C Implementation (fastuuid7)", iterations))
     print(f"  ✓ Completed: {results[-1]['uuids_per_second']:,.0f} UUIDs/sec")
 
     # Python built-in (if available)

@@ -12,6 +12,7 @@ A high-performance UUID v7 generation library implemented in C with Python bindi
 - Python 3.8+ support
 - Thread-safe implementation
 - **High Performance**: See [Performance Benchmarks](#performance-benchmarks) section below
+- **Usage Examples**: See [Examples](#examples) section and [`examples/`](examples/) directory
 
 ## Installation
 
@@ -37,13 +38,41 @@ uv pip install -e .
 
 ## Usage
 
-```python
-from uuidv7.uuidv7 import generate_uuid7
+### Basic Usage
 
-# Generate a UUID v7
-uuid = generate_uuid7()
+```python
+from uuidv7 import uuid7
+
+# Generate a UUID v7 (matches Python's uuid.uuid7() API)
+uuid = uuid7()
 print(uuid)  # e.g., "018f1234-5678-7abc-def0-123456789abc"
 ```
+
+**Note**: The API matches Python's built-in `uuid.uuid7()` function (available in Python 3.14+). See [Python documentation](https://docs.python.org/3/library/uuid.html#uuid.uuid7) for details.
+
+### Examples
+
+For more detailed usage examples, see the [`examples/`](examples/) directory:
+
+- **[Basic Usage](examples/basic_usage.py)** - Simple UUID generation, validation, and performance demo
+- **[Batch Generation](examples/batch_generation.py)** - High-throughput UUID generation and uniqueness verification
+- **[Database Usage](examples/database_usage.py)** - Using UUID v7 as primary keys with time-ordered records
+
+**Quick Start:**
+```bash
+# Install the package first (required)
+uv pip install -e .
+
+# Run examples using python -m (recommended)
+python -m examples.basic_usage
+python -m examples.batch_generation
+python -m examples.database_usage
+
+# Or using uv run
+uv run python -m examples.basic_usage
+```
+
+See the [examples README](examples/README.md) for more details.
 
 ## Development
 
@@ -111,23 +140,26 @@ uv run python benchmarks/benchmark.py
 - **OS**: Linux 6.8.0-90-generic
 - **CPU**: 13th Gen Intel(R) Core(TM) i7-1360P
 - **Architecture**: x86_64
-- **Python Version**: 3.13.11
+- **Python Version**: 3.14.2
 - **Iterations**: 100,000 UUID generations per implementation
 
 ### Performance Summary
 
 | Implementation | UUIDs/sec | Time/UUID (μs) | Relative Speed |
 |----------------|-----------|----------------|----------------|
-| **Our C Implementation** | **2,556,103** | **0.39** | **1.00x** (baseline) |
-| Pure Python Implementation | 229,796 | 4.35 | **11.12x slower** |
+| **Our C Implementation (fastuuid7)** | **501,071** | **2.00** | **1.00x** (baseline) |
+| Pure Python Implementation | 48,827 | 20.48 | **10.26x slower** |
+| Python Built-in (`uuid.uuid7`) | 47,122 | 21.22 | **10.63x slower** |
+| uuid7 Library (PyPI) | 30,263 | 33.04 | **16.56x slower** |
 
 ### Detailed Results
 
-#### Our C Implementation
+#### Our C Implementation (fastuuid7)
 
-- **Throughput**: 2,556,103 UUIDs/second
-- **Latency**: 0.39 microseconds per UUID
+- **Throughput**: 501,071 UUIDs/second
+- **Latency**: 2.00 microseconds per UUID
 - **Language**: C with Python bindings
+- **Package**: `fastuuid7` on PyPI
 
 **Performance Characteristics:**
 - ✅ Compiled C code for maximum performance
@@ -137,8 +169,8 @@ uv run python benchmarks/benchmark.py
 
 #### Pure Python Implementation
 
-- **Throughput**: 229,796 UUIDs/second
-- **Latency**: 4.35 microseconds per UUID
+- **Throughput**: 48,827 UUIDs/second
+- **Latency**: 20.48 microseconds per UUID
 - **Language**: Pure Python
 
 **Performance Characteristics:**
@@ -147,9 +179,39 @@ uv run python benchmarks/benchmark.py
 - Higher overhead due to Python interpreter
 - Suitable for low-volume use cases
 
+#### Python Built-in (`uuid.uuid7`)
+
+- **Throughput**: 47,122 UUIDs/second
+- **Latency**: 21.22 microseconds per UUID
+- **Language**: C (Python standard library)
+- **Package**: Part of Python 3.14+ standard library
+- **Status**: ✅ Tested and benchmarked
+
+**Performance Characteristics:**
+- C-based implementation in Python standard library
+- Similar performance to pure Python implementations
+- Available in Python 3.14+
+- Well-integrated with Python ecosystem
+
+#### uuid7 Library (PyPI)
+
+- **Throughput**: 30,263 UUIDs/second
+- **Latency**: 33.04 microseconds per UUID
+- **Language**: Pure Python
+- **Package**: [uuid7 on PyPI](https://pypi.org/project/uuid7/) (installed as `uuid_extensions`)
+- **Status**: ✅ Tested and benchmarked
+
+**Performance Characteristics:**
+- Pure Python implementation
+- Lower performance compared to other implementations
+- Well-maintained package on PyPI
+
 ### Speedup Analysis
 
-Our C implementation is **11.12x faster** than the pure Python reference implementation.
+Our C implementation is:
+- **10.26x faster** than the pure Python reference implementation
+- **10.63x faster** than Python's built-in `uuid.uuid7()` (Python 3.14+)
+- **16.56x faster** than the uuid7 library from PyPI
 
 This performance advantage comes from:
 1. **Compiled code**: C code compiled to native machine code vs interpreted Python
@@ -159,17 +221,7 @@ This performance advantage comes from:
 
 ### Comparison with Other Implementations
 
-#### Python Built-in (`uuid.uuid7`)
-
-- **Status**: ⚠️ Not available
-- **Reason**: Requires Python 3.13+ with UUID v7 support
-- **Note**: While Python 3.13.11 is installed, the `uuid.uuid7()` function may not be available in all builds
-
-#### uuid7 Library (PyPI)
-
-- **Status**: ⚠️ Not tested
-- **Reason**: Library not installed (`pip install uuid7` required)
-- **Note**: Would be interesting to compare if installed
+All major implementations have been benchmarked and results are shown in the Performance Summary table above.
 
 ### Performance Recommendations
 
@@ -218,10 +270,14 @@ The benchmark follows these steps:
 
 ### Other Implementations
 
-Additional implementations that may be tested:
-- **Python Built-in** (`uuid.uuid7`): Python 3.13+ standard library
-- **uuid7 Library**: [PyPI package](https://pypi.org/project/uuid7/)
-- **python-uuid7**: [GitHub](https://github.com/0x4b/python-uuid7)
+Additional UUID v7 implementations that exist but were not benchmarked in this test:
+
+- **uuid7 Library**: 
+  - [PyPI package](https://pypi.org/project/uuid7/)
+  - Pure Python implementation
+  - See [Comparison with Other Implementations](#comparison-with-other-implementations) section above for status
+
+**Note**: To add these implementations to benchmarks, install them and run `python benchmarks/benchmark.py`. The benchmark script will automatically detect and test available implementations.
 
 ## CI/CD
 
@@ -240,7 +296,7 @@ This project uses GitHub Actions for continuous integration and deployment:
 
 ### Publishing a New Release
 
-1. Update the version in `pyproject.toml` and `uuidv7/uuidv7/__init__.py`
+1. Update the version in `pyproject.toml` and `uuidv7/__init__.py`
 2. Create a new [GitHub Release](https://github.com/yourusername/uuidv7/releases/new)
 3. The workflow will automatically build and publish to PyPI
 

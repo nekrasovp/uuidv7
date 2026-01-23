@@ -29,10 +29,13 @@ jobs:
 
       - name: Install dependencies
         run: |
+          uv venv
+          source .venv/bin/activate
           uv pip install -e .
 
       - name: Run benchmarks
         run: |
+          source .venv/bin/activate
           python benchmarks/benchmark.py
 
       - name: Comment benchmark results

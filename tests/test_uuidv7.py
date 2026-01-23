@@ -2,12 +2,12 @@
 
 import re
 
-from uuidv7 import generate_uuid7
+from uuidv7 import uuid7
 
 
 def test_uuid_format():
     """Test that generated UUIDs match the UUID v7 format."""
-    uuid = generate_uuid7()
+    uuid = uuid7()
 
     # UUID v7 format: 8-4-4-4-12 hexadecimal digits
     uuid_pattern = re.compile(
@@ -20,7 +20,7 @@ def test_uuid_format():
 
 def test_uuid_version_field():
     """Test that the version field (13th character) is '7'."""
-    uuid = generate_uuid7()
+    uuid = uuid7()
     parts = uuid.split("-")
     assert len(parts) == 5, "UUID should have 5 parts"
     assert parts[2][0] == "7", f"Version field should be '7', got '{parts[2][0]}'"
@@ -28,7 +28,7 @@ def test_uuid_version_field():
 
 def test_uuid_variant_field():
     """Test that the variant field (17th character) is 8, 9, a, or b."""
-    uuid = generate_uuid7()
+    uuid = uuid7()
     parts = uuid.split("-")
     assert len(parts) == 5, "UUID should have 5 parts"
     variant_char = parts[3][0].lower()
@@ -39,13 +39,13 @@ def test_uuid_variant_field():
 
 def test_uuid_uniqueness():
     """Test that multiple generated UUIDs are unique."""
-    uuids = [generate_uuid7() for _ in range(100)]
+    uuids = [uuid7() for _ in range(100)]
     assert len(uuids) == len(set(uuids)), "Generated UUIDs should be unique"
 
 
 def test_uuid_timestamp_monotonicity():
     """Test that UUIDs generated sequentially have increasing timestamps."""
-    uuids = [generate_uuid7() for _ in range(10)]
+    uuids = [uuid7() for _ in range(10)]
 
     # Extract timestamp parts (first two segments)
     timestamps = []
@@ -63,14 +63,14 @@ def test_uuid_timestamp_monotonicity():
 
 
 def test_uuid_type():
-    """Test that generate_uuid7 returns a string."""
-    uuid = generate_uuid7()
+    """Test that uuid7 returns a string."""
+    uuid = uuid7()
     assert isinstance(uuid, str), f"UUID should be a string, got {type(uuid)}"
 
 
 def test_multiple_calls():
     """Test that the function can be called multiple times without errors."""
     for _ in range(100):
-        uuid = generate_uuid7()
+        uuid = uuid7()
         assert uuid is not None
         assert len(uuid) == 36

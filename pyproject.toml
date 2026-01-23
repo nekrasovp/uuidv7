@@ -11,7 +11,7 @@ requires-python = ">=3.8"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
-    {name = "Pavel Nekrasov", email = "your.email@example.com"}
+    {name = "Pavel Nekrasov", email = "nekrasovp@gmail.com"}
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
