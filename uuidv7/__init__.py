@@ -8,4 +8,3 @@ uuid7 = generate_uuid7
 
 __version__ = "0.1.0"
 __all__ = ["uuid7", "__version__"]
-
