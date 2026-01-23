@@ -14,6 +14,7 @@ jobs:
   publish:
     name: Publish to PyPI
     runs-on: ubuntu-latest
+    environment: pypi  # Optional: use GitHub environment for additional security
     permissions:
       contents: read
       id-token: write  # Required for trusted publishing
