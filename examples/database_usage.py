@@ -1,5 +1,7 @@
 """Example of using fastuuid7 for database primary keys."""
 
+import uuid
+
 from uuidv7 import uuid7
 
 
@@ -11,19 +13,9 @@ class User:
         self.id = uuid7()
         self.name = name
         self.email = email
-        self.created_at = self._extract_timestamp()
+        self.created_at = self.id.time
 
-    def _extract_timestamp(self) -> int:
-        """Extract timestamp from UUID v7 (approximate).
-
-        Note: This is a simplified extraction. For accurate timestamp
-        extraction, use proper UUID v7 parsing.
-        """
-        # UUID v7 format: timestamp_ms (48 bits) in first two segments
-        parts = self.id.split("-")
-        timestamp_hex = parts[0] + parts[1]
-        # This is approximate - actual extraction requires proper bit manipulation
-        return int(timestamp_hex, 16)
+    id: uuid.UUID
 
     def __repr__(self) -> str:
         """String representation of User."""
@@ -50,7 +42,7 @@ def main():
     print("\n2. Users sorted by creation time (UUID v7 is time-ordered):")
     sorted_users = sorted(users, key=lambda u: u.id)
     for user in sorted_users:
-        print(f"   {user.id} - {user.name}")
+        print(f"   {user.id} - {user.name} ({user.created_at})")
 
     # Simulate database insert
     print("\n3. Simulate database insert operations:")

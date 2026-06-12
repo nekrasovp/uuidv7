@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fastuuid7"
-version = "0.1.0"
+version = "0.2.0"
 description = "UUID v7 generation package using a C library"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -15,13 +15,24 @@ authors = [
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: C",
-    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
 ]
 keywords = ["uuid", "uuidv7", "uuid-v7", "identifier"]
 dependencies = []
 
 [project.optional-dependencies]
 dev = [
+    "build>=1.2.0",
+    "cibuildwheel>=2.23.0",
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
     "ruff>=0.1.0",
@@ -57,6 +68,8 @@ select = [
 ignore = [
     "E501",  # line too long, handled by formatter
     "B008",  # do not perform function calls in argument defaults
+    "UP022", # capture_output would hide stdout/stderr intent in subprocess calls
+    "UP045", # keep Optional syntax for Python 3.8 parser compatibility
 ]
 
 [tool.ruff.lint.isort]
@@ -73,7 +86,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short --capture=no"
 
 [tool.coverage.run]
 source = ["uuidv7"]
@@ -88,4 +101,3 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
-
