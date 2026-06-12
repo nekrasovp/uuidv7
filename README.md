@@ -174,6 +174,43 @@ iterations, UUIDs/second, and ns/op for:
 - published `fastuuid7==0.1.0` in an isolated temporary environment
 - optional competitors when installed: `uuid-utils`, `fastuuidv7`, and `uuid7`
 
+### Latest Release Benchmark Snapshot
+
+Final release-check benchmark for `0.2.0` on GitHub Actions Ubuntu, x86_64,
+CPython 3.14.5:
+
+| Implementation | Version | UUIDs/sec | ns/op | Iterations |
+| --- | ---: | ---: | ---: | ---: |
+| `uuidv7.uuid7_bytes()` | 0.2.0 | 8,651,617 | 115.6 | 1,000,000 |
+| `uuidv7.uuid7_str()` | 0.2.0 | 6,701,999 | 149.2 | 1,000,000 |
+| `fastuuid7==0.1.0 uuid7()` | 0.1.0 | 2,673,281 | 374.1 | 1,000,000 |
+| `uuidv7.uuid7()` | 0.2.0 | 1,922,267 | 520.2 | 1,000,000 |
+| `str(uuidv7.uuid7())` | 0.2.0 | 774,285 | 1,291.5 | 1,000,000 |
+| `uuid.uuid7()` | 3.14.5 | 396,208 | 2,523.9 | 1,000,000 |
+
+Optional competitor comparison from the release benchmark pass on Linux x86_64,
+CPython 3.12.3:
+
+| Implementation | Version | UUIDs/sec | ns/op | Iterations |
+| --- | ---: | ---: | ---: | ---: |
+| `fastuuidv7.uuid7()` | 0.1.5 | 23,095,658 | 43.3 | 1,000,000 |
+| `uuidv7.uuid7_bytes()` | 0.2.0 | 18,203,404 | 54.9 | 1,000,000 |
+| `uuidv7.uuid7_str()` | 0.2.0 | 13,880,113 | 72.0 | 1,000,000 |
+| `uuid_utils.uuid7()` | 0.16.0 | 12,186,695 | 82.1 | 1,000,000 |
+| `uuidv7.uuid7()` | 0.2.0 | 4,366,928 | 229.0 | 1,000,000 |
+| `fastuuid7==0.1.0 uuid7()` | 0.1.0 | 4,298,579 | 232.6 | 1,000,000 |
+| `str(uuidv7.uuid7())` | 0.2.0 | 1,479,025 | 676.1 | 1,000,000 |
+| `uuid_extensions.uuid7()` | 0.1.0 | 762,942 | 1,310.7 | 1,000,000 |
+
+Clock-source benchmark from the final release-check CI run:
+
+| OS | Clock source | ns/call | Iterations |
+| --- | --- | ---: | ---: |
+| Linux x86_64 | `clock_gettime(CLOCK_REALTIME_COARSE)` | 6.783 | 10,000,000 |
+| Linux x86_64 | `clock_gettime(CLOCK_REALTIME)` | 28.664 | 10,000,000 |
+| Windows x86_64 | `GetSystemTimeAsFileTime` | 2.218 | 10,000,000 |
+| Windows x86_64 | `GetSystemTimePreciseAsFileTime` | 31.240 | 10,000,000 |
+
 ## CI/CD
 
 This project uses GitHub Actions for continuous integration and deployment:
