@@ -1,4 +1,4 @@
-# uuidv7
+# fastuuid7
 
 [![CI](https://github.com/nekrasovp/uuidv7/actions/workflows/ci.yml/badge.svg)](https://github.com/nekrasovp/uuidv7/actions/workflows/ci.yml)
 [![PyPI version](https://badge.fury.io/py/fastuuid7.svg)](https://badge.fury.io/py/fastuuid7)
@@ -46,10 +46,10 @@ uv pip install -e .
 from uuidv7 import uuid7
 
 # Generate a UUID v7 (matches Python's uuid.uuid7() API)
-uuid = uuid7()
-print(uuid)       # e.g., UUID('018f1234-5678-7abc-def0-123456789abc')
-print(str(uuid))  # e.g., "018f1234-5678-7abc-def0-123456789abc"
-print(uuid.time)  # Unix timestamp in milliseconds
+u = uuid7()
+print(u)        # e.g., 018f1234-5678-7abc-def0-123456789abc
+print(repr(u))  # e.g., UUID('018f1234-5678-7abc-def0-123456789abc')
+print(u.time)   # Unix timestamp in milliseconds
 ```
 
 **Note**: Since 0.2.0, `uuid7()` returns a `uuid.UUID` object, matching
@@ -156,14 +156,15 @@ uv run python benchmarks/benchmark.py
 
 ## Performance Benchmarks
 
-Run benchmarks before release and before making speed claims:
+Run benchmarks before making speed claims:
 
 ```bash
-python benchmarks/benchmark.py --output benchmarks/results-0.2.0-local.md
-python benchmarks/clock_sources.py --output benchmarks/clock-results-0.2.0-local.md
+python benchmarks/benchmark.py --output benchmark-results.md
+python benchmarks/clock_sources.py --output clock-source-results.md
 ```
 
-The benchmark reports environment details, UUIDs/second, and ns/op for:
+The benchmark report includes OS, CPU, Python version, package versions,
+iterations, UUIDs/second, and ns/op for:
 
 - `uuidv7.uuid7()` returning `uuid.UUID`
 - `uuidv7.uuid7_str()`
@@ -172,9 +173,6 @@ The benchmark reports environment details, UUIDs/second, and ns/op for:
 - Python stdlib `uuid.uuid7()` when available
 - published `fastuuid7==0.1.0` in an isolated temporary environment
 - optional competitors when installed: `uuid-utils`, `fastuuidv7`, and `uuid7`
-
-The 0.2.0 release should not be tagged or published until benchmark results are
-reviewed.
 
 ## CI/CD
 
@@ -194,7 +192,7 @@ This project uses GitHub Actions for continuous integration and deployment:
   - Automatically publishes to PyPI when a new release is created
   - Builds platform wheels with cibuildwheel plus an sdist before publishing
   - Uses trusted publishing (no API tokens required)
-  - Can be manually triggered via workflow_dispatch
+  - Can be manually triggered via workflow_dispatch, but GitHub Releases are the recommended release path
 
 ### Publishing a New Release
 
