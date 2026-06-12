@@ -14,7 +14,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-15-intel, windows-latest]
+        include:
+          - os: ubuntu-latest
+            cibw-archs-macos: auto
+          - os: macos-15-intel
+            cibw-archs-macos: x86_64
+          - os: macos-15
+            cibw-archs-macos: arm64
+          - os: windows-latest
+            cibw-archs-macos: auto
 
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +32,7 @@ jobs:
         env:
           CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
           CIBW_SKIP: "*-musllinux_*"
-          CIBW_ARCHS_MACOS: "x86_64 arm64"
+          CIBW_ARCHS_MACOS: ${{ matrix.cibw-archs-macos }}
           CIBW_TEST_COMMAND: >-
             python -c "import uuid, uuidv7; u = uuidv7.uuid7(); assert isinstance(u, uuid.UUID); assert u.version == 7; assert str(u).count('-') == 4"
 
