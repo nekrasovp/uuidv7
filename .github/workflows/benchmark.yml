@@ -15,6 +15,11 @@ on:
       - ".github/workflows/benchmark.yml"
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   benchmark:
     name: Run Benchmarks
@@ -53,19 +58,14 @@ jobs:
 
       - name: Comment benchmark results
         if: github.event_name == 'pull_request'
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
-            const output = `## Benchmark Results
-            
-            Benchmarks completed successfully. See [BENCHMARK_RESULTS.md](https://github.com/${{ github.repository }}/blob/${{ github.sha }}/BENCHMARK_RESULTS.md) for detailed results.
-            
-            Run benchmarks locally:
-            \`\`\`bash
-            python benchmarks/benchmark.py
-            \`\`\`
-            `;
-            github.rest.issues.createComment({
+            const fs = require("fs");
+            const results = fs.readFileSync("benchmark-results.md", "utf8");
+            const output = `## Benchmark Results\n\n${results}`;
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
