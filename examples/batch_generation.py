@@ -1,16 +1,20 @@
 """Example of batch UUID v7 generation for high-throughput scenarios."""
 
+from __future__ import annotations
+
+import uuid
+
 from uuidv7 import uuid7
 
 
-def generate_batch(count: int) -> list[str]:
+def generate_batch(count: int) -> list[uuid.UUID]:
     """Generate a batch of UUID v7 values.
 
     Args:
         count: Number of UUIDs to generate
 
     Returns:
-        List of UUID strings
+        List of UUID objects
     """
     return [uuid7() for _ in range(count)]
 
@@ -39,9 +43,7 @@ def main():
     print("\n3. Demonstrate timestamp ordering (first 10):")
     batch = generate_batch(10)
     for i, uuid_val in enumerate(batch, 1):
-        # Extract timestamp part (first segment)
-        timestamp_part = uuid_val.split("-")[0]
-        print(f"   {i:2d}. {uuid_val} (timestamp: {timestamp_part})")
+        print(f"   {i:2d}. {uuid_val} (timestamp_ms: {uuid_val.time})")
 
 
 if __name__ == "__main__":

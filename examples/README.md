@@ -9,6 +9,7 @@ This directory contains practical examples demonstrating how to use the `fastuui
 Basic usage examples including:
 - Single UUID generation
 - Multiple UUID generation
+- `uuid.UUID` object attributes such as `version`, `variant`, and `time`
 - UUID format validation
 - Performance demonstration
 
@@ -34,6 +35,7 @@ python examples/batch_generation.py
 Database integration examples:
 - Using UUID v7 as primary keys
 - Time-ordered UUIDs for database records
+- Timestamp extraction with `uuid.UUID.time`
 - SQL insert examples
 
 **Run:**
@@ -73,4 +75,3 @@ python examples/database_usage.py
 
 - Python 3.8+
 - `fastuuid7` package installed (see main README for installation)
-

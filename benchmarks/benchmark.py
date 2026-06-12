@@ -1,167 +1,332 @@
-"""Benchmark script to compare UUID v7 implementations."""
+"""Benchmark UUID v7 implementations."""
 
-import random
-import struct
+from __future__ import annotations
+
+import argparse
+import importlib.metadata
+import json
+import os
+import platform
+import shutil
+import subprocess
 import sys
+import tempfile
+import textwrap
 import time
-from typing import Callable
+import uuid
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Callable, Optional
 
-# Our implementation
-from uuidv7 import uuid7 as our_uuid7
+from uuidv7 import uuid7 as fastuuid7_uuid7
+from uuidv7 import uuid7_bytes as fastuuid7_uuid7_bytes
+from uuidv7 import uuid7_str as fastuuid7_uuid7_str
 
-# Try to import Python's built-in UUID v7 (Python 3.13+)
-try:
-    import uuid
+DEFAULT_ITERATIONS = 1_000_000
+WARMUP_ITERATIONS = 1_000
+
+
+@dataclass
+class BenchmarkResult:
+    name: str
+    version: str
+    iterations: int
+    total_seconds: float
+    uuids_per_second: float
+    ns_per_op: float
+
+
+@dataclass
+class BenchmarkCase:
+    name: str
+    version: str
+    func: Callable[[], object]
+
+
+def package_version(name: str) -> str:
+    try:
+        return importlib.metadata.version(name)
+    except importlib.metadata.PackageNotFoundError:
+        return "not installed"
+
+
+def validate_uuid7(value: object) -> None:
+    if isinstance(value, uuid.UUID):
+        parsed = value
+    elif isinstance(value, bytes):
+        parsed = uuid.UUID(bytes=value)
+    else:
+        parsed = uuid.UUID(str(value))
+    if parsed.version != 7:
+        raise AssertionError(f"{value!r} is not UUIDv7")
+    if parsed.variant != uuid.RFC_4122:
+        raise AssertionError(f"{value!r} is not RFC-compatible")
+
+
+def benchmark_case(case: BenchmarkCase, iterations: int) -> BenchmarkResult:
+    for _ in range(WARMUP_ITERATIONS):
+        validate_uuid7(case.func())
+
+    start = time.perf_counter_ns()
+    for _ in range(iterations):
+        case.func()
+    end = time.perf_counter_ns()
+
+    validate_uuid7(case.func())
+
+    total_ns = end - start
+    total_seconds = total_ns / 1_000_000_000
+    return BenchmarkResult(
+        name=case.name,
+        version=case.version,
+        iterations=iterations,
+        total_seconds=total_seconds,
+        uuids_per_second=iterations / total_seconds,
+        ns_per_op=total_ns / iterations,
+    )
+
+
+def optional_case(
+    package_name: str,
+    import_name: str,
+    function_name: str,
+    display_name: str,
+) -> Optional[BenchmarkCase]:
+    try:
+        module = __import__(import_name, fromlist=[function_name])
+        func = getattr(module, function_name)
+    except (AttributeError, ImportError):
+        return None
+
+    return BenchmarkCase(
+        name=display_name,
+        version=package_version(package_name),
+        func=func,
+    )
+
+
+def current_process_cases() -> list[BenchmarkCase]:
+    cases = [
+        BenchmarkCase(
+            name="fastuuid7 0.2.0 candidate: uuid7() -> uuid.UUID",
+            version=package_version("fastuuid7"),
+            func=fastuuid7_uuid7,
+        ),
+        BenchmarkCase(
+            name="fastuuid7 0.2.0 candidate: uuid7_str() -> str",
+            version=package_version("fastuuid7"),
+            func=fastuuid7_uuid7_str,
+        ),
+        BenchmarkCase(
+            name="fastuuid7 0.2.0 candidate: uuid7_bytes() -> bytes",
+            version=package_version("fastuuid7"),
+            func=fastuuid7_uuid7_bytes,
+        ),
+        BenchmarkCase(
+            name="fastuuid7 0.2.0 candidate: str(uuid7())",
+            version=package_version("fastuuid7"),
+            func=lambda: str(fastuuid7_uuid7()),
+        ),
+    ]
 
     if hasattr(uuid, "uuid7"):
-
-        def python_builtin_uuid7() -> str:
-            """Python's built-in UUID v7 (Python 3.13+)."""
-            return str(uuid.uuid7())
-
-        HAS_BUILTIN = True
-    else:
-        HAS_BUILTIN = False
-        python_builtin_uuid7 = None
-except (AttributeError, ImportError):
-    HAS_BUILTIN = False
-    python_builtin_uuid7 = None
-
-
-# Pure Python implementation for comparison
-def pure_python_uuid7() -> str:
-    """Pure Python UUID v7 implementation."""
-    # Get current time in milliseconds
-    now_ms = int(time.time() * 1000)
-
-    # Generate random bytes (need 10 bytes for 5 uint16 values)
-    rand_bytes = bytes([random.randint(0, 255) for _ in range(10)])
-
-    # Pack timestamp (48 bits) and random (80 bits)
-    # Format: timestamp_ms (48 bits) | version (4 bits) | rand_a (12 bits)
-    #         variant (2 bits) | rand_b (14 bits) | rand_c (16 bits) | rand_d (16 bits)
-    timestamp_high = (now_ms >> 28) & 0xFFFFFFFF
-    timestamp_low = (now_ms >> 12) & 0xFFFF
-
-    rand_a = struct.unpack(">H", rand_bytes[0:2])[0] & 0x0FFF | 0x7000
-    rand_b = struct.unpack(">H", rand_bytes[2:4])[0] & 0x3FFF | 0x8000
-    rand_c = struct.unpack(">H", rand_bytes[4:6])[0]
-    rand_d = struct.unpack(">H", rand_bytes[6:8])[0]
-    rand_e = struct.unpack(">H", rand_bytes[8:10])[0]
-
-    return f"{timestamp_high:08x}-{timestamp_low:04x}-{rand_a:04x}-{rand_b:04x}-{rand_c:04x}{rand_d:04x}{rand_e:04x}"
-
-
-# Try to import uuid7 library if available (from uuid_extensions package)
-try:
-    from uuid_extensions import uuid7 as uuid7_func
-
-    def uuid7_library() -> str:
-        """uuid7 library from PyPI (uuid_extensions package)."""
-        return str(uuid7_func())
-
-    HAS_UUID7_LIB = True
-except ImportError:
-    HAS_UUID7_LIB = False
-    uuid7_library = None
-
-
-def benchmark(func: Callable[[], str], name: str, iterations: int = 100000) -> dict:
-    """Benchmark a UUID generation function."""
-    # Warmup
-    for _ in range(1000):
-        func()
-
-    # Actual benchmark
-    start = time.perf_counter()
-    for _ in range(iterations):
-        uuid_val = func()
-        # Verify it's a valid UUID format
-        assert len(uuid_val) == 36
-        assert uuid_val.count("-") == 4
-    end = time.perf_counter()
-
-    total_time = end - start
-    time_per_uuid = total_time / iterations
-    uuids_per_second = iterations / total_time
-
-    return {
-        "name": name,
-        "total_time": total_time,
-        "time_per_uuid_us": time_per_uuid * 1_000_000,  # microseconds
-        "uuids_per_second": uuids_per_second,
-        "iterations": iterations,
-    }
-
-
-def run_benchmarks():
-    """Run all benchmarks and print results."""
-    iterations = 100000
-    print(f"Running benchmarks with {iterations:,} iterations per implementation...")
-    print("=" * 80)
-
-    results = []
-
-    # Our C implementation
-    print("Benchmarking: Our C Implementation (fastuuid7)...")
-    results.append(benchmark(our_uuid7, "Our C Implementation (fastuuid7)", iterations))
-    print(f"  ✓ Completed: {results[-1]['uuids_per_second']:,.0f} UUIDs/sec")
-
-    # Python built-in (if available)
-    if HAS_BUILTIN:
-        print("Benchmarking: Python Built-in (uuid.uuid7)...")
-        results.append(benchmark(python_builtin_uuid7, "Python Built-in (uuid.uuid7)", iterations))
-        print(f"  ✓ Completed: {results[-1]['uuids_per_second']:,.0f} UUIDs/sec")
-    else:
-        print("  ⚠ Python built-in UUID v7 not available (requires Python 3.13+)")
-
-    # Pure Python implementation
-    print("Benchmarking: Pure Python Implementation...")
-    results.append(benchmark(pure_python_uuid7, "Pure Python Implementation", iterations))
-    print(f"  ✓ Completed: {results[-1]['uuids_per_second']:,.0f} UUIDs/sec")
-
-    # uuid7 library (if available)
-    if HAS_UUID7_LIB:
-        print("Benchmarking: uuid7 Library (PyPI)...")
-        results.append(benchmark(uuid7_library, "uuid7 Library (PyPI)", iterations))
-        print(f"  ✓ Completed: {results[-1]['uuids_per_second']:,.0f} UUIDs/sec")
-    else:
-        print("  ⚠ uuid7 library not installed (pip install uuid7)")
-
-    print("\n" + "=" * 80)
-    print("RESULTS SUMMARY")
-    print("=" * 80)
-    print(f"{'Implementation':<35} {'UUIDs/sec':>15} {'Time/UUID (μs)':>18}")
-    print("-" * 80)
-
-    # Sort by performance
-    results.sort(key=lambda x: x["uuids_per_second"], reverse=True)
-
-    for result in results:
-        print(
-            f"{result['name']:<35} {result['uuids_per_second']:>15,.0f} {result['time_per_uuid_us']:>18.2f}"
+        cases.append(
+            BenchmarkCase(
+                name="Python stdlib uuid.uuid7()",
+                version=platform.python_version(),
+                func=uuid.uuid7,
+            )
         )
 
-    # Calculate speedup
-    if len(results) > 1:
-        fastest = results[0]
-        print("\n" + "=" * 80)
-        print("SPEEDUP COMPARISON")
-        print("=" * 80)
-        for result in results[1:]:
-            speedup = fastest["uuids_per_second"] / result["uuids_per_second"]
-            print(f"{fastest['name']} is {speedup:.2f}x faster than {result['name']}")
+    for case in (
+        optional_case("uuid-utils", "uuid_utils", "uuid7", "uuid-utils uuid7()"),
+        optional_case("fastuuidv7", "fastuuidv7", "uuid7", "fastuuidv7 uuid7()"),
+        optional_case("uuid7", "uuid_extensions", "uuid7", "uuid7 package uuid_extensions.uuid7()"),
+    ):
+        if case is not None:
+            cases.append(case)
 
-    return results
+    return cases
+
+
+def benchmark_published_fastuuid7(iterations: int) -> Optional[BenchmarkResult]:
+    python = sys.executable
+    with tempfile.TemporaryDirectory(prefix="fastuuid7-0.1.0-bench-") as tmp:
+        venv_dir = Path(tmp) / "venv"
+        subprocess.run([python, "-m", "venv", str(venv_dir)], check=True, stdout=subprocess.PIPE)
+        venv_python = venv_dir / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+        install = subprocess.run(
+            [
+                str(venv_python),
+                "-m",
+                "pip",
+                "install",
+                "--quiet",
+                "fastuuid7==0.1.0",
+            ],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=tmp,
+        )
+        if install.returncode != 0:
+            print("Skipping published fastuuid7==0.1.0 benchmark; install failed:", file=sys.stderr)
+            print(install.stderr.strip(), file=sys.stderr)
+            return None
+
+        script = textwrap.dedent(
+            f"""
+            import json
+            import time
+            import uuid
+            import importlib.metadata
+            from uuidv7 import uuid7
+
+            iterations = {iterations}
+            for _ in range(1000):
+                value = uuid7()
+                parsed = uuid.UUID(str(value))
+                assert parsed.version == 7
+
+            start = time.perf_counter_ns()
+            for _ in range(iterations):
+                uuid7()
+            end = time.perf_counter_ns()
+
+            total_ns = end - start
+            print(json.dumps({{
+                "name": "published fastuuid7 0.1.0: uuid7() -> str",
+                "version": importlib.metadata.version("fastuuid7"),
+                "iterations": iterations,
+                "total_seconds": total_ns / 1_000_000_000,
+                "uuids_per_second": iterations / (total_ns / 1_000_000_000),
+                "ns_per_op": total_ns / iterations,
+            }}))
+            """
+        )
+        run = subprocess.run(
+            [str(venv_python), "-c", script],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=tmp,
+        )
+        if run.returncode != 0:
+            print(
+                "Skipping published fastuuid7==0.1.0 benchmark; benchmark failed:", file=sys.stderr
+            )
+            print(run.stderr.strip(), file=sys.stderr)
+            return None
+
+    data = json.loads(run.stdout)
+    return BenchmarkResult(**data)
+
+
+def environment_markdown() -> str:
+    cpu = platform.processor() or "unknown"
+    return "\n".join(
+        [
+            "## Environment",
+            "",
+            f"- OS: {platform.platform()}",
+            f"- Machine: {platform.machine()}",
+            f"- CPU: {cpu}",
+            f"- Python: {platform.python_version()}",
+        ]
+    )
+
+
+def results_markdown(results: list[BenchmarkResult]) -> str:
+    lines = [
+        "## Results",
+        "",
+        "| Implementation | Version | UUIDs/sec | ns/op | Iterations |",
+        "| --- | ---: | ---: | ---: | ---: |",
+    ]
+    for result in sorted(results, key=lambda item: item.uuids_per_second, reverse=True):
+        lines.append(
+            f"| {result.name} | {result.version} | {result.uuids_per_second:,.0f} | {result.ns_per_op:,.1f} | {result.iterations:,} |"
+        )
+    return "\n".join(lines)
+
+
+def skipped_markdown(results: list[BenchmarkResult]) -> str:
+    measured = {result.name for result in results}
+    optional = [
+        "Python stdlib uuid.uuid7()",
+        "uuid-utils uuid7()",
+        "fastuuidv7 uuid7()",
+        "uuid7 package uuid_extensions.uuid7()",
+        "published fastuuid7 0.1.0: uuid7() -> str",
+    ]
+    skipped = [name for name in optional if name not in measured]
+    if not skipped:
+        return ""
+    lines = ["## Skipped", ""]
+    lines.extend(f"- {name}" for name in skipped)
+    return "\n".join(lines)
+
+
+def write_markdown(output: Path, results: list[BenchmarkResult]) -> None:
+    parts = [
+        "# UUIDv7 Benchmark Results",
+        "",
+        environment_markdown(),
+        "",
+        results_markdown(results),
+    ]
+    skipped = skipped_markdown(results)
+    if skipped:
+        parts.extend(["", skipped])
+    output.write_text("\n".join(parts) + "\n", encoding="utf-8")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "-n",
+        "--iterations",
+        type=int,
+        default=DEFAULT_ITERATIONS,
+        help=f"iterations per implementation, default {DEFAULT_ITERATIONS}",
+    )
+    parser.add_argument(
+        "--skip-published",
+        action="store_true",
+        help="skip temporary-venv benchmark for published fastuuid7==0.1.0",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        help="write Markdown results to this path",
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    results = [benchmark_case(case, args.iterations) for case in current_process_cases()]
+
+    if not args.skip_published and shutil.which(sys.executable):
+        published = benchmark_published_fastuuid7(args.iterations)
+        if published is not None:
+            results.append(published)
+
+    print(environment_markdown())
+    print()
+    print(results_markdown(results))
+    skipped = skipped_markdown(results)
+    if skipped:
+        print()
+        print(skipped)
+
+    if args.output:
+        write_markdown(args.output, results)
+        print()
+        print(f"Wrote {args.output}")
+
+    return 0
 
 
 if __name__ == "__main__":
-    try:
-        results = run_benchmarks()
-        sys.exit(0)
-    except Exception as e:
-        print(f"Error running benchmarks: {e}", file=sys.stderr)
-        import traceback
-
-        traceback.print_exc()
-        sys.exit(1)
+    raise SystemExit(main())

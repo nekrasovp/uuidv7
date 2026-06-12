@@ -4,6 +4,7 @@
 [![PyPI version](https://badge.fury.io/py/fastuuid7.svg)](https://badge.fury.io/py/fastuuid7)
 
 A high-performance UUID v7 generation library implemented in C with Python bindings.
+The PyPI package is `fastuuid7`; the import package is `uuidv7`.
 
 ## Features
 
@@ -11,6 +12,7 @@ A high-performance UUID v7 generation library implemented in C with Python bindi
 - RFC 9562 compliant UUID v7 format
 - Python 3.8+ support
 - Thread-safe implementation
+- `uuid.uuid7()`-compatible API returning `uuid.UUID`
 - **High Performance**: See [Performance Benchmarks](#performance-benchmarks) section below
 - **Usage Examples**: See [Examples](#examples) section and [`examples/`](examples/) directory
 
@@ -45,10 +47,30 @@ from uuidv7 import uuid7
 
 # Generate a UUID v7 (matches Python's uuid.uuid7() API)
 uuid = uuid7()
-print(uuid)  # e.g., "018f1234-5678-7abc-def0-123456789abc"
+print(uuid)       # e.g., UUID('018f1234-5678-7abc-def0-123456789abc')
+print(str(uuid))  # e.g., "018f1234-5678-7abc-def0-123456789abc"
+print(uuid.time)  # Unix timestamp in milliseconds
 ```
 
-**Note**: The API matches Python's built-in `uuid.uuid7()` function (available in Python 3.14+). See [Python documentation](https://docs.python.org/3/library/uuid.html#uuid.uuid7) for details.
+**Note**: Since 0.2.0, `uuid7()` returns a `uuid.UUID` object, matching
+Python's built-in `uuid.uuid7()` function available in Python 3.14+. Use
+`str(uuid7())` when a string is needed. See
+[Python documentation](https://docs.python.org/3/library/uuid.html#uuid.uuid7)
+for details.
+
+### Fast Paths
+
+For performance-critical code that does not need a `uuid.UUID` object:
+
+```python
+from uuidv7 import uuid7_bytes, uuid7_str
+
+uuid_text = uuid7_str()
+uuid_raw = uuid7_bytes()
+```
+
+`uuid7()` remains the compatibility API. `uuid7_str()` and `uuid7_bytes()` are
+explicit fast paths.
 
 ### Examples
 
@@ -134,171 +156,52 @@ uv run python benchmarks/benchmark.py
 
 ## Performance Benchmarks
 
-### Latest Results
-
-**Test Environment:**
-- **OS**: Linux 6.8.0-90-generic
-- **CPU**: 13th Gen Intel(R) Core(TM) i7-1360P
-- **Architecture**: x86_64
-- **Python Version**: 3.14.2
-- **Iterations**: 100,000 UUID generations per implementation
-
-### Performance Summary
-
-| Implementation | UUIDs/sec | Time/UUID (μs) | Relative Speed |
-|----------------|-----------|----------------|----------------|
-| **Our C Implementation (fastuuid7)** | **501,071** | **2.00** | **1.00x** (baseline) |
-| Pure Python Implementation | 48,827 | 20.48 | **10.26x slower** |
-| Python Built-in (`uuid.uuid7`) | 47,122 | 21.22 | **10.63x slower** |
-| uuid7 Library (PyPI) | 30,263 | 33.04 | **16.56x slower** |
-
-### Detailed Results
-
-#### Our C Implementation (fastuuid7)
-
-- **Throughput**: 501,071 UUIDs/second
-- **Latency**: 2.00 microseconds per UUID
-- **Language**: C with Python bindings
-- **Package**: `fastuuid7` on PyPI
-
-**Performance Characteristics:**
-- ✅ Compiled C code for maximum performance
-- ✅ Direct system calls (`clock_gettime`) for timestamp generation
-- ✅ Minimal Python overhead
-- ✅ Thread-safe implementation
-
-#### Pure Python Implementation
-
-- **Throughput**: 48,827 UUIDs/second
-- **Latency**: 20.48 microseconds per UUID
-- **Language**: Pure Python
-
-**Performance Characteristics:**
-- Reference implementation for comparison
-- Uses Python's `time.time()` and `random` module
-- Higher overhead due to Python interpreter
-- Suitable for low-volume use cases
-
-#### Python Built-in (`uuid.uuid7`)
-
-- **Throughput**: 47,122 UUIDs/second
-- **Latency**: 21.22 microseconds per UUID
-- **Language**: C (Python standard library)
-- **Package**: Part of Python 3.14+ standard library
-- **Status**: ✅ Tested and benchmarked
-
-**Performance Characteristics:**
-- C-based implementation in Python standard library
-- Similar performance to pure Python implementations
-- Available in Python 3.14+
-- Well-integrated with Python ecosystem
-
-#### uuid7 Library (PyPI)
-
-- **Throughput**: 30,263 UUIDs/second
-- **Latency**: 33.04 microseconds per UUID
-- **Language**: Pure Python
-- **Package**: [uuid7 on PyPI](https://pypi.org/project/uuid7/) (installed as `uuid_extensions`)
-- **Status**: ✅ Tested and benchmarked
-
-**Performance Characteristics:**
-- Pure Python implementation
-- Lower performance compared to other implementations
-- Well-maintained package on PyPI
-
-### Speedup Analysis
-
-Our C implementation is:
-- **10.26x faster** than the pure Python reference implementation
-- **10.63x faster** than Python's built-in `uuid.uuid7()` (Python 3.14+)
-- **16.56x faster** than the uuid7 library from PyPI
-
-This performance advantage comes from:
-1. **Compiled code**: C code compiled to native machine code vs interpreted Python
-2. **Direct system calls**: Using `clock_gettime()` directly without Python overhead
-3. **Efficient memory management**: Pre-allocated buffers, minimal allocations
-4. **Optimized string formatting**: Using `snprintf()` efficiently
-
-### Comparison with Other Implementations
-
-All major implementations have been benchmarked and results are shown in the Performance Summary table above.
-
-### Performance Recommendations
-
-**When to Use Our C Implementation:**
-- ✅ High-throughput applications (>100K UUIDs/second)
-- ✅ Performance-critical code paths
-- ✅ Systems requiring maximum UUID generation speed
-- ✅ Applications generating millions of UUIDs
-
-**When to Use Pure Python:**
-- ✅ Low-volume use cases (<10K UUIDs/second)
-- ✅ Prototyping and development
-- ✅ Applications where ease of deployment is more important than performance
-- ✅ Environments where C extensions cannot be installed
-
-### Running Benchmarks
-
-To run benchmarks on your system:
+Run benchmarks before release and before making speed claims:
 
 ```bash
-# Install the package in development mode
-uv pip install -e .
-
-# Run benchmarks
-python benchmarks/benchmark.py
-
-# Or using uv
-uv run python benchmarks/benchmark.py
+python benchmarks/benchmark.py --output benchmarks/results-0.2.0-local.md
+python benchmarks/clock_sources.py --output benchmarks/clock-results-0.2.0-local.md
 ```
 
-### Benchmark Methodology
+The benchmark reports environment details, UUIDs/second, and ns/op for:
 
-The benchmark follows these steps:
+- `uuidv7.uuid7()` returning `uuid.UUID`
+- `uuidv7.uuid7_str()`
+- `uuidv7.uuid7_bytes()`
+- `str(uuidv7.uuid7())`
+- Python stdlib `uuid.uuid7()` when available
+- published `fastuuid7==0.1.0` in an isolated temporary environment
+- optional competitors when installed: `uuid-utils`, `fastuuidv7`, and `uuid7`
 
-1. **Warmup Phase**: Each implementation runs 1,000 iterations to warm up CPU caches
-2. **Measurement Phase**: 100,000 UUID generations are timed using `time.perf_counter()`
-3. **Validation**: Each generated UUID is validated for:
-   - Correct length (36 characters)
-   - Correct format (4 hyphens)
-   - Valid UUID v7 structure (version field = 7, variant field = 8/9/a/b)
-
-**Metrics Calculated:**
-- **UUIDs/second**: Throughput metric showing how many UUIDs can be generated per second
-- **Time/UUID (μs)**: Latency metric showing microseconds per UUID generation
-- **Speedup**: Relative performance compared to the fastest implementation
-
-### Other Implementations
-
-Additional UUID v7 implementations that exist but were not benchmarked in this test:
-
-- **uuid7 Library**: 
-  - [PyPI package](https://pypi.org/project/uuid7/)
-  - Pure Python implementation
-  - See [Comparison with Other Implementations](#comparison-with-other-implementations) section above for status
-
-**Note**: To add these implementations to benchmarks, install them and run `python benchmarks/benchmark.py`. The benchmark script will automatically detect and test available implementations.
+The 0.2.0 release should not be tagged or published until benchmark results are
+reviewed.
 
 ## CI/CD
 
 This project uses GitHub Actions for continuous integration and deployment:
 
 - **CI Pipeline** (`.github/workflows/ci.yml`):
-  - Runs tests on Python 3.8, 3.9, 3.10, 3.11, 3.12, and 3.13
+  - Runs tests on Python 3.8 through 3.14
   - Runs linting with ruff
   - Builds the package to verify it compiles correctly
   - Triggers on push and pull requests
 
+- **Wheel Pipeline** (`.github/workflows/wheels.yml`):
+  - Builds wheels with cibuildwheel for Linux, macOS, and Windows
+  - Verifies installed wheels can import `uuidv7` and generate UUIDv7 values
+
 - **Publish Pipeline** (`.github/workflows/publish.yml`):
   - Automatically publishes to PyPI when a new release is created
+  - Builds platform wheels with cibuildwheel plus an sdist before publishing
   - Uses trusted publishing (no API tokens required)
   - Can be manually triggered via workflow_dispatch
 
 ### Publishing a New Release
 
-1. Update the version in `pyproject.toml` and `uuidv7/__init__.py`
-2. Create a new [GitHub Release](https://github.com/nekrasovp/uuidv7/releases/new)
-3. The workflow will automatically build and publish to PyPI
+1. Run tests, builds, and benchmarks.
+2. Review benchmark results and decide whether optimization is needed.
+3. Create a new [GitHub Release](https://github.com/nekrasovp/uuidv7/releases/new).
+4. The workflow will automatically build and publish to PyPI.
 
 ## License
 
