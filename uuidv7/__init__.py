@@ -5,6 +5,10 @@ from __future__ import annotations
 import uuid as _uuid
 
 from uuidv7.uuidv7_impl.uuid7_gen import (
+    UUID7Obj,
+    _configure_uuid7,
+)
+from uuidv7.uuidv7_impl.uuid7_gen import (
     generate_uuid7 as _generate_uuid7_str,
 )
 from uuidv7.uuidv7_impl.uuid7_gen import (
@@ -12,6 +16,12 @@ from uuidv7.uuidv7_impl.uuid7_gen import (
 )
 from uuidv7.uuidv7_impl.uuid7_gen import (
     generate_uuid7_int as _generate_uuid7_int,
+)
+from uuidv7.uuidv7_impl.uuid7_gen import (
+    uuid7 as _generate_uuid7_uuid,
+)
+from uuidv7.uuidv7_impl.uuid7_gen import (
+    uuid7_obj as _generate_uuid7_obj,
 )
 
 
@@ -40,25 +50,16 @@ def _uuid7_from_int(value: int) -> _uuid.UUID:
     return uuid_obj
 
 
-def uuid7() -> _uuid.UUID:
-    """Generate a UUID version 7 value.
-
-    The return value is compatible with Python's ``uuid.uuid7()`` API. On
-    Python versions older than 3.14, a private ``uuid.UUID`` subclass is used
-    so that ``u.time`` returns the UUIDv7 Unix timestamp in milliseconds.
-    """
+def _uuid7_python() -> _uuid.UUID:
     return _uuid7_from_int(_generate_uuid7_int())
 
 
-def uuid7_str() -> str:
-    """Generate a UUID version 7 value as a canonical string."""
-    return _generate_uuid7_str()
-
-
-def uuid7_bytes() -> bytes:
-    """Generate a UUID version 7 value as 16 big-endian bytes."""
-    return _generate_uuid7_bytes()
+_configure_uuid7(_UUID7, _SAFE_UUID_UNKNOWN)
+uuid7 = _generate_uuid7_uuid
+uuid7_obj = _generate_uuid7_obj
+uuid7_str = _generate_uuid7_str
+uuid7_bytes = _generate_uuid7_bytes
 
 
 __version__ = "0.2.0"
-__all__ = ["uuid7", "uuid7_bytes", "uuid7_str", "__version__"]
+__all__ = ["UUID7Obj", "uuid7", "uuid7_bytes", "uuid7_obj", "uuid7_str", "__version__"]

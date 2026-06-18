@@ -1,5 +1,7 @@
 """Benchmark UUID v7 implementations."""
 
+# ruff: noqa: E402
+
 from __future__ import annotations
 
 import argparse
@@ -18,8 +20,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Optional
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from uuidv7 import uuid7 as fastuuid7_uuid7
 from uuidv7 import uuid7_bytes as fastuuid7_uuid7_bytes
+from uuidv7 import uuid7_obj as fastuuid7_uuid7_obj
 from uuidv7 import uuid7_str as fastuuid7_uuid7_str
 
 DEFAULT_ITERATIONS = 1_000_000
@@ -116,6 +123,11 @@ def current_process_cases() -> list[BenchmarkCase]:
             name="fastuuid7 0.2.0 candidate: uuid7_str() -> str",
             version=package_version("fastuuid7"),
             func=fastuuid7_uuid7_str,
+        ),
+        BenchmarkCase(
+            name="fastuuid7 0.2.0 candidate: uuid7_obj() -> native object",
+            version=package_version("fastuuid7"),
+            func=fastuuid7_uuid7_obj,
         ),
         BenchmarkCase(
             name="fastuuid7 0.2.0 candidate: uuid7_bytes() -> bytes",

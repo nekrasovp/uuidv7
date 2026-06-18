@@ -99,7 +99,30 @@ void reset_uuid7_state(void) {
     initialized = 0;
 }
 
-void generate_uuid7_bytes_for_timestamp(unsigned char uuid[16], uint64_t unix_ts_ms) {
+static void write_uuid7_words(unsigned char uuid[16], uint64_t high, uint64_t low) {
+    uuid[0] = (unsigned char)(high >> 56);
+    uuid[1] = (unsigned char)(high >> 48);
+    uuid[2] = (unsigned char)(high >> 40);
+    uuid[3] = (unsigned char)(high >> 32);
+    uuid[4] = (unsigned char)(high >> 24);
+    uuid[5] = (unsigned char)(high >> 16);
+    uuid[6] = (unsigned char)(high >> 8);
+    uuid[7] = (unsigned char)high;
+    uuid[8] = (unsigned char)(low >> 56);
+    uuid[9] = (unsigned char)(low >> 48);
+    uuid[10] = (unsigned char)(low >> 40);
+    uuid[11] = (unsigned char)(low >> 32);
+    uuid[12] = (unsigned char)(low >> 24);
+    uuid[13] = (unsigned char)(low >> 16);
+    uuid[14] = (unsigned char)(low >> 8);
+    uuid[15] = (unsigned char)low;
+}
+
+static void generate_uuid7_words_for_timestamp(
+    uint64_t *high,
+    uint64_t *low,
+    uint64_t unix_ts_ms
+) {
     uint64_t timestamp_ms = unix_ts_ms;
     uint64_t rand_b;
     uint32_t random_tail;
@@ -128,24 +151,26 @@ void generate_uuid7_bytes_for_timestamp(unsigned char uuid[16], uint64_t unix_ts
     rand_a = (uint16_t)((counter >> 30) & UINT64_C(0x0fff));
     rand_b = ((counter & UUID7_COUNTER_LOW_MASK) << 32) | (uint64_t)random_tail;
 
-    uuid[0] = (unsigned char)(timestamp_ms >> 40);
-    uuid[1] = (unsigned char)(timestamp_ms >> 32);
-    uuid[2] = (unsigned char)(timestamp_ms >> 24);
-    uuid[3] = (unsigned char)(timestamp_ms >> 16);
-    uuid[4] = (unsigned char)(timestamp_ms >> 8);
-    uuid[5] = (unsigned char)timestamp_ms;
-    uuid[6] = (unsigned char)(0x70 | (rand_a >> 8));
-    uuid[7] = (unsigned char)rand_a;
-    uuid[8] = (unsigned char)(0x80 | ((rand_b >> 56) & 0x3f));
-    uuid[9] = (unsigned char)(rand_b >> 48);
-    uuid[10] = (unsigned char)(rand_b >> 40);
-    uuid[11] = (unsigned char)(rand_b >> 32);
-    uuid[12] = (unsigned char)(rand_b >> 24);
-    uuid[13] = (unsigned char)(rand_b >> 16);
-    uuid[14] = (unsigned char)(rand_b >> 8);
-    uuid[15] = (unsigned char)rand_b;
+    *high = (timestamp_ms << 16) | (UINT64_C(0x7000) | (uint64_t)rand_a);
+    *low = UINT64_C(0x8000000000000000) | rand_b;
+}
+
+void generate_uuid7_bytes_for_timestamp(unsigned char uuid[16], uint64_t unix_ts_ms) {
+    uint64_t high;
+    uint64_t low;
+
+    generate_uuid7_words_for_timestamp(&high, &low, unix_ts_ms);
+    write_uuid7_words(uuid, high, low);
 }
 
 void generate_uuid7_bytes(unsigned char uuid[16]) {
-    generate_uuid7_bytes_for_timestamp(uuid, current_time_ms());
+    uint64_t high;
+    uint64_t low;
+
+    generate_uuid7_words_for_timestamp(&high, &low, current_time_ms());
+    write_uuid7_words(uuid, high, low);
+}
+
+void generate_uuid7_words(uint64_t *high, uint64_t *low) {
+    generate_uuid7_words_for_timestamp(high, low, current_time_ms());
 }

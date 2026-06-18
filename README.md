@@ -63,14 +63,17 @@ for details.
 For performance-critical code that does not need a `uuid.UUID` object:
 
 ```python
-from uuidv7 import uuid7_bytes, uuid7_str
+from uuidv7 import uuid7_bytes, uuid7_obj, uuid7_str
 
+uuid_native = uuid7_obj()
 uuid_text = uuid7_str()
 uuid_raw = uuid7_bytes()
 ```
 
-`uuid7()` remains the compatibility API. `uuid7_str()` and `uuid7_bytes()` are
-explicit fast paths.
+`uuid7()` remains the compatibility API. `uuid7_obj()` returns a compact native
+UUIDv7 object for maximum throughput while still supporting `str()`, `int()`,
+`bytes()`, ordering, hashing, `.time`, `.hex`, `.fields`, `.version`, and
+`.variant`. `uuid7_str()` and `uuid7_bytes()` are explicit raw-output fast paths.
 
 ### Examples
 
@@ -160,6 +163,7 @@ Run benchmarks before making speed claims:
 
 ```bash
 python benchmarks/benchmark.py --output benchmark-results.md
+python benchmarks/benchmark_competitors.py --install-optional --rounds 5 --output competitor-results.md
 python benchmarks/clock_sources.py --output clock-source-results.md
 ```
 
@@ -167,12 +171,14 @@ The benchmark report includes OS, CPU, Python version, package versions,
 iterations, UUIDs/second, and ns/op for:
 
 - `uuidv7.uuid7()` returning `uuid.UUID`
+- `uuidv7.uuid7_obj()` returning a compact native UUIDv7 object
 - `uuidv7.uuid7_str()`
 - `uuidv7.uuid7_bytes()`
 - `str(uuidv7.uuid7())`
 - Python stdlib `uuid.uuid7()` when available
 - published `fastuuid7==0.1.0` in an isolated temporary environment
-- optional competitors when installed: `uuid-utils`, `fastuuidv7`, and `uuid7`
+- optional competitors when installed: `uuid-utils`, `fastuuidv7`, `uuid7`,
+  `uuid7-rs`, `c_uuid_v7`, `uuid-v7`, and `uuid6`
 
 ### Latest Release Benchmark Snapshot
 
@@ -188,19 +194,21 @@ CPython 3.14.5:
 | `str(uuidv7.uuid7())` | 0.2.0 | 774,285 | 1,291.5 | 1,000,000 |
 | `uuid.uuid7()` | 3.14.5 | 396,208 | 2,523.9 | 1,000,000 |
 
-Optional competitor comparison from the release benchmark pass on Linux x86_64,
-CPython 3.12.3:
+Latest local competitor comparison after the native-object optimization on
+Linux x86_64, CPython 3.12.3, using 1,000,000 iterations and 5 rounds per case:
 
-| Implementation | Version | UUIDs/sec | ns/op | Iterations |
-| --- | ---: | ---: | ---: | ---: |
-| `fastuuidv7.uuid7()` | 0.1.5 | 23,095,658 | 43.3 | 1,000,000 |
-| `uuidv7.uuid7_bytes()` | 0.2.0 | 18,203,404 | 54.9 | 1,000,000 |
-| `uuidv7.uuid7_str()` | 0.2.0 | 13,880,113 | 72.0 | 1,000,000 |
-| `uuid_utils.uuid7()` | 0.16.0 | 12,186,695 | 82.1 | 1,000,000 |
-| `uuidv7.uuid7()` | 0.2.0 | 4,366,928 | 229.0 | 1,000,000 |
-| `fastuuid7==0.1.0 uuid7()` | 0.1.0 | 4,298,579 | 232.6 | 1,000,000 |
-| `str(uuidv7.uuid7())` | 0.2.0 | 1,479,025 | 676.1 | 1,000,000 |
-| `uuid_extensions.uuid7()` | 0.1.0 | 762,942 | 1,310.7 | 1,000,000 |
+| Shape | Implementation | Version | ops/sec | best ns/op | median ns/op |
+| --- | --- | ---: | ---: | ---: | ---: |
+| custom object | `c_uuid_v7.uuid7()` | 0.0.11 | 29,313,107 | 34.1 | 34.9 |
+| custom object | `uuid7_rs.uuid7()` | 0.0.9 | 28,611,589 | 35.0 | 35.1 |
+| custom object | `uuidv7.uuid7_obj()` | 0.2.0 | 28,056,053 | 35.6 | 36.2 |
+| bytes | `uuidv7.uuid7_bytes()` | 0.2.0 | 25,474,951 | 39.3 | 39.5 |
+| string | `fastuuidv7.uuid7()` | 0.1.5 | 24,702,409 | 40.5 | 40.5 |
+| string | `uuidv7.uuid7_str()` | 0.2.0 | 20,895,972 | 47.9 | 48.8 |
+| UUID-compatible | `uuidv7.uuid7()` | 0.2.0 | 13,328,017 | 75.0 | 75.6 |
+| UUID-compatible | `uuid_utils.uuid7()` | 0.16.1 | 12,215,938 | 81.9 | 82.8 |
+| UUID-compatible | `uuid7_rs.compat.uuid7()` | 0.0.9 | 3,258,733 | 306.9 | 310.2 |
+| UUID-compatible | `c_uuid_v7.compat.uuid7()` | 0.0.11 | 2,852,392 | 350.6 | 354.5 |
 
 Clock-source benchmark from the final release-check CI run:
 

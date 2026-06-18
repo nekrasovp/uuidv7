@@ -4,10 +4,11 @@ import re
 import time
 import uuid
 
-from uuidv7 import uuid7, uuid7_bytes, uuid7_str
+from uuidv7 import UUID7Obj, uuid7, uuid7_bytes, uuid7_obj, uuid7_str
 from uuidv7.uuidv7_impl.uuid7_gen import (
     _generate_uuid7_bytes_for_tests,
     _reset_state_for_tests,
+    generate_uuid7_int,
 )
 
 UUID7_PATTERN = re.compile(
@@ -103,6 +104,52 @@ def test_uuid7_bytes_fast_path():
     parsed = uuid.UUID(bytes=value)
     assert parsed.version == 7
     assert parsed.variant == uuid.RFC_4122
+
+
+def test_uuid7_int_fast_path():
+    """Test that the C integer fast path returns a UUIDv7 integer."""
+    value = generate_uuid7_int()
+    assert isinstance(value, int)
+    parsed = uuid.UUID(int=value)
+    assert parsed.version == 7
+    assert parsed.variant == uuid.RFC_4122
+
+
+def test_uuid7_obj_fast_path():
+    """Test that uuid7_obj returns a compact UUIDv7-like native object."""
+    value = uuid7_obj()
+    parsed = uuid.UUID(str(value))
+
+    assert isinstance(value, UUID7Obj)
+    assert not isinstance(value, uuid.UUID)
+    assert UUID7_PATTERN.match(str(value))
+    assert repr(value) == f"UUID('{value}')"
+    assert bytes(value) == value.bytes
+    assert int(value) == value.int
+    assert value.bytes == parsed.bytes
+    assert value.bytes_le == parsed.bytes_le
+    assert value.hex == parsed.hex
+    assert value.fields == parsed.fields
+    assert value.time == parsed.int >> 80
+    assert value.timestamp == value.time
+    assert value.version == 7
+    assert value.variant == uuid.RFC_4122
+    assert value.urn == parsed.urn
+
+
+def test_uuid7_obj_is_immutable_and_orderable():
+    """Test native UUIDv7 objects are immutable, hashable, and sortable."""
+    values = [uuid7_obj() for _ in range(100)]
+
+    assert len(values) == len(set(values))
+    assert values == sorted(values)
+
+    try:
+        values[0].int = 0
+    except TypeError:
+        pass
+    else:
+        raise AssertionError("UUID objects should be immutable")
 
 
 def test_uuid_time_matches_uuidv7_timestamp_bits():
