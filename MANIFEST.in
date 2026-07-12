@@ -1,5 +1,13 @@
 include README.md
 include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include SECURITY.md
+recursive-include docs *.md
+recursive-include examples *.md *.py
+recursive-include benchmarks *.py
+recursive-include tools *.py
+recursive-include tests *.py
 recursive-include uuidv7/uuidv7_impl/include *
 recursive-include uuidv7/uuidv7_impl/src *
 recursive-include uuidv7/uuidv7_impl *.c

@@ -9,7 +9,7 @@ This directory contains GitHub Actions workflows for CI/CD automation.
 Runs on every push and pull request to main/master/develop branches.
 
 **What it does:**
-- Tests the package on Python 3.8, 3.9, 3.10, 3.11, 3.12, and 3.13
+- Tests the package on Python 3.9 through 3.14
 - Runs linting with ruff
 - Builds the package to ensure it compiles correctly
 - Uploads build artifacts
@@ -24,8 +24,8 @@ Runs when a new GitHub release is published.
 - No API tokens required (uses OIDC)
 
 **How to trigger:**
-1. Update version in `pyproject.toml` and `uuidv7/uuidv7/__init__.py`
-2. Create a new GitHub Release with a tag (e.g., `v0.1.0`)
+1. Update version in `pyproject.toml`, `uuidv7/__init__.py`, and `uuidv7/uuidv7/__init__.py`
+2. Create a new GitHub Release with a tag matching the source version (e.g., `v0.3.0`)
 3. The workflow automatically publishes to PyPI
 
 ### `benchmark.yml` - Performance Benchmarks
@@ -45,7 +45,7 @@ To enable automatic PyPI publishing:
 1. Go to [PyPI Account Settings](https://pypi.org/manage/account/)
 2. Navigate to "API tokens" → "Add API token"
 3. Select "Trusted publishing" → "Add"
-4. Add your GitHub repository: `yourusername/uuidv7`
+4. Add your GitHub repository: `nekrasovp/uuidv7`
 5. The workflow will automatically authenticate using OIDC
 
 No secrets or tokens need to be configured in GitHub!
@@ -64,4 +64,3 @@ act push
 # Test publish workflow (dry run)
 act workflow_dispatch
 ```
-

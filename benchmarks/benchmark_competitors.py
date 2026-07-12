@@ -21,7 +21,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from uuidv7 import uuid7, uuid7_bytes, uuid7_obj, uuid7_str
+from fastuuid7 import uuid7, uuid7_bytes, uuid7_obj, uuid7_str
 from uuidv7.uuidv7_impl.uuid7_gen import (
     generate_uuid7 as ext_generate_uuid7_str,
 )
@@ -230,7 +230,7 @@ def benchmark_case(case: BenchmarkCase, iterations: int, rounds: int) -> Benchma
 def build_cases() -> tuple[list[BenchmarkCase], list[SkippedCase]]:
     cases = [
         BenchmarkCase(
-            name="uuidv7.uuid7_bytes()",
+            name="fastuuid7.uuid7_bytes()",
             package="fastuuid7",
             version=package_version("fastuuid7"),
             shape="bytes",
@@ -238,7 +238,7 @@ def build_cases() -> tuple[list[BenchmarkCase], list[SkippedCase]]:
             source="local candidate",
         ),
         BenchmarkCase(
-            name="uuidv7.uuid7_obj()",
+            name="fastuuid7.uuid7_obj()",
             package="fastuuid7",
             version=package_version("fastuuid7"),
             shape="custom native object",
@@ -246,7 +246,7 @@ def build_cases() -> tuple[list[BenchmarkCase], list[SkippedCase]]:
             source="local candidate",
         ),
         BenchmarkCase(
-            name="uuidv7.uuid7_str()",
+            name="fastuuid7.uuid7_str()",
             package="fastuuid7",
             version=package_version("fastuuid7"),
             shape="string/default",
@@ -254,7 +254,7 @@ def build_cases() -> tuple[list[BenchmarkCase], list[SkippedCase]]:
             source="local candidate",
         ),
         BenchmarkCase(
-            name="uuidv7.uuid7()",
+            name="fastuuid7.uuid7()",
             package="fastuuid7",
             version=package_version("fastuuid7"),
             shape="uuid.UUID compat",
@@ -262,7 +262,7 @@ def build_cases() -> tuple[list[BenchmarkCase], list[SkippedCase]]:
             source="local candidate",
         ),
         BenchmarkCase(
-            name="str(uuidv7.uuid7())",
+            name="str(fastuuid7.uuid7())",
             package="fastuuid7",
             version=package_version("fastuuid7"),
             shape="convenience string",
@@ -270,7 +270,7 @@ def build_cases() -> tuple[list[BenchmarkCase], list[SkippedCase]]:
             source="local candidate",
         ),
         BenchmarkCase(
-            name="str(uuidv7.uuid7_obj())",
+            name="str(fastuuid7.uuid7_obj())",
             package="fastuuid7",
             version=package_version("fastuuid7"),
             shape="materialized string",
@@ -579,6 +579,13 @@ def main() -> int:
         [
             "# UUIDv7 Competitor Benchmark",
             environment_markdown(),
+            (
+                "## Interpretation\n\n"
+                "Cases can use different entropy, monotonicity, and fork-safety guarantees. "
+                "The local fastuuid7 candidate uses the operating-system CSPRNG, a monotonic "
+                "counter, and automatic fork reseeding. Consult each linked upstream source "
+                "before treating timing results as guarantee-equivalent."
+            ),
             results_markdown(results),
             grouped_markdown(results),
             skipped_markdown(skipped),

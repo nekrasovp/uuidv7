@@ -11,9 +11,27 @@ on:
         type: string
 
 jobs:
+  validate:
+    name: Validate release version
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Verify source versions match the requested release
+        env:
+          EXPECTED_VERSION: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
+        run: python tools/check_release_version.py "$EXPECTED_VERSION"
+
   sdist:
     name: Build sdist
     runs-on: ubuntu-latest
+    needs: validate
 
     steps:
       - uses: actions/checkout@v4
@@ -42,18 +60,35 @@ jobs:
   wheels:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    needs: validate
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
+            cibw-archs-linux: x86_64
             cibw-archs-macos: auto
+            cibw-archs-windows: auto
+          - os: ubuntu-24.04-arm
+            cibw-archs-linux: aarch64
+            cibw-archs-macos: auto
+            cibw-archs-windows: auto
           - os: macos-15-intel
+            cibw-archs-linux: auto
             cibw-archs-macos: x86_64
+            cibw-archs-windows: auto
           - os: macos-15
+            cibw-archs-linux: auto
             cibw-archs-macos: arm64
+            cibw-archs-windows: auto
           - os: windows-latest
+            cibw-archs-linux: auto
             cibw-archs-macos: auto
+            cibw-archs-windows: AMD64 x86
+          - os: windows-11-arm
+            cibw-archs-linux: auto
+            cibw-archs-macos: auto
+            cibw-archs-windows: ARM64
 
     steps:
       - uses: actions/checkout@v4
@@ -61,11 +96,12 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v3.4.1
         env:
-          CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
-          CIBW_SKIP: "*-musllinux_*"
+          CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
+          CIBW_ARCHS_LINUX: ${{ matrix.cibw-archs-linux }}
           CIBW_ARCHS_MACOS: ${{ matrix.cibw-archs-macos }}
+          CIBW_ARCHS_WINDOWS: ${{ matrix.cibw-archs-windows }}
           CIBW_TEST_COMMAND: >-
-            python -c "import uuid, uuidv7; u = uuidv7.uuid7(); assert isinstance(u, uuid.UUID); assert u.version == 7; assert str(u).count('-') == 4"
+            python -c "import uuid, fastuuid7, uuidv7; values = fastuuid7.uuid7_many(10); assert fastuuid7.uuid7 is uuidv7.uuid7; assert all(isinstance(u, uuid.UUID) and u.version == 7 for u in values)"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -89,6 +125,16 @@ jobs:
         with:
           path: dist
           merge-multiple: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Validate distribution metadata
+        run: |
+          python -m pip install --disable-pip-version-check "twine>=6.0.0"
+          python -m twine check dist/*
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

@@ -14,6 +14,7 @@ uuidv7_extension = Extension(
     ],
     include_dirs=[os.path.join("uuidv7", "uuidv7_impl", "include")],
     extra_compile_args=extra_compile_args,
+    libraries=["bcrypt"] if os.name == "nt" else [],
 )
 
 setup(

@@ -1,56 +1,51 @@
-"""Example of using fastuuid7 for database primary keys."""
+"""SQLAlchemy 2 example using UUIDv7 primary keys.
+
+Run with:
+    uv run --with sqlalchemy python -m examples.database_usage
+"""
+
+from __future__ import annotations
 
 import uuid
 
-from uuidv7 import uuid7
+from sqlalchemy import String, Uuid, create_engine, select
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
+
+from fastuuid7 import uuid7
 
 
-class User:
-    """Example User model with UUID v7 primary key."""
+class Base(DeclarativeBase):
+    """Base for the example's ORM models."""
 
-    def __init__(self, name: str, email: str):
-        """Initialize a new user with a UUID v7 ID."""
-        self.id = uuid7()
-        self.name = name
-        self.email = email
-        self.created_at = self.id.time
 
-    id: uuid.UUID
+class Event(Base):
+    """Event stored with an application-generated UUIDv7 primary key."""
+
+    __tablename__ = "event"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid7)
+    payload: Mapped[str] = mapped_column(String(200))
 
     def __repr__(self) -> str:
-        """String representation of User."""
-        return f"User(id={self.id}, name={self.name}, email={self.email})"
+        return f"Event(id={self.id}, payload={self.payload!r})"
 
 
-def main():
-    """Demonstrate database usage patterns."""
-    print("Database Usage Example")
-    print("=" * 50)
+def main() -> None:
+    """Insert and retrieve UUIDv7-keyed rows from an in-memory database."""
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
 
-    # Create users with UUID v7 IDs
-    print("\n1. Create users with UUID v7 primary keys:")
-    users = [
-        User("Alice", "alice@example.com"),
-        User("Bob", "bob@example.com"),
-        User("Charlie", "charlie@example.com"),
-    ]
+    with Session(engine) as session:
+        session.add_all(Event(payload=f"event-{index}") for index in range(3))
+        session.commit()
 
-    for user in users:
-        print(f"   {user}")
+        events = session.scalars(select(Event).order_by(Event.id)).all()
 
-    # Demonstrate sorting by creation time (UUID v7 is time-ordered)
-    print("\n2. Users sorted by creation time (UUID v7 is time-ordered):")
-    sorted_users = sorted(users, key=lambda u: u.id)
-    for user in sorted_users:
-        print(f"   {user.id} - {user.name} ({user.created_at})")
+    for event in events:
+        print(event)
 
-    # Simulate database insert
-    print("\n3. Simulate database insert operations:")
-    print("   SQL-like insert statements:")
-    for user in users:
-        print(
-            f"   INSERT INTO users (id, name, email) VALUES ('{user.id}', '{user.name}', '{user.email}');"
-        )
+    assert all(isinstance(event.id, uuid.UUID) for event in events)
+    assert [event.id for event in events] == sorted(event.id for event in events)
 
 
 if __name__ == "__main__":

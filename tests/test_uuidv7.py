@@ -1,10 +1,26 @@
 """Tests for UUID v7 generation functionality."""
 
+import os
 import re
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 
-from uuidv7 import UUID7Obj, uuid7, uuid7_bytes, uuid7_obj, uuid7_str
+import pytest
+
+import fastuuid7
+import uuidv7
+from uuidv7 import (
+    UUID7Obj,
+    uuid7,
+    uuid7_bytes,
+    uuid7_bytes_many,
+    uuid7_many,
+    uuid7_obj,
+    uuid7_obj_many,
+    uuid7_str,
+    uuid7_str_many,
+)
 from uuidv7.uuidv7_impl.uuid7_gen import (
     _generate_uuid7_bytes_for_tests,
     _reset_state_for_tests,
@@ -15,6 +31,20 @@ UUID7_PATTERN = re.compile(
     r"^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
     re.IGNORECASE,
 )
+
+
+def test_canonical_and_legacy_imports_share_public_api():
+    """The distribution-name import aliases the established import path."""
+    assert fastuuid7.uuid7 is uuidv7.uuid7
+    assert fastuuid7.uuid7_obj is uuidv7.uuid7_obj
+    assert fastuuid7.uuid7_str is uuidv7.uuid7_str
+    assert fastuuid7.uuid7_bytes is uuidv7.uuid7_bytes
+    assert fastuuid7.uuid7_many is uuidv7.uuid7_many
+    assert fastuuid7.uuid7_obj_many is uuidv7.uuid7_obj_many
+    assert fastuuid7.uuid7_str_many is uuidv7.uuid7_str_many
+    assert fastuuid7.uuid7_bytes_many is uuidv7.uuid7_bytes_many
+    assert fastuuid7.UUID7Obj is uuidv7.UUID7Obj
+    assert fastuuid7.__version__ == uuidv7.__version__
 
 
 def _timestamp_ms(value: uuid.UUID) -> int:
@@ -152,6 +182,70 @@ def test_uuid7_obj_is_immutable_and_orderable():
         raise AssertionError("UUID objects should be immutable")
 
 
+def test_uuid7_many_generates_ordered_uuid_objects():
+    """Batch UUID output preserves type, uniqueness, and generation order."""
+    values = uuid7_many(1000)
+
+    assert all(isinstance(value, uuid.UUID) for value in values)
+    assert len(set(values)) == len(values)
+    assert values == sorted(values)
+
+
+def test_uuid7_obj_many_generates_ordered_native_objects():
+    """Native-object batches avoid repeated Python-to-C function calls."""
+    values = uuid7_obj_many(1000)
+
+    assert all(isinstance(value, UUID7Obj) for value in values)
+    assert len(set(values)) == len(values)
+    assert values == sorted(values)
+
+
+def test_uuid7_str_many_generates_canonical_ordered_strings():
+    """String batches contain canonical, lexicographically ordered UUIDv7 values."""
+    values = uuid7_str_many(1000)
+
+    assert all(UUID7_PATTERN.match(value) for value in values)
+    assert len(set(values)) == len(values)
+    assert values == sorted(values)
+
+
+def test_uuid7_bytes_many_returns_contiguous_ordered_buffer():
+    """The bytes batch packs 16-byte UUID values into one allocation."""
+    count = 1000
+    raw = uuid7_bytes_many(count)
+    values = [uuid.UUID(bytes=raw[index : index + 16]) for index in range(0, len(raw), 16)]
+
+    assert len(raw) == count * 16
+    assert len(values) == count
+    assert len(set(values)) == len(values)
+    assert values == sorted(values)
+
+
+def test_concurrent_batches_remain_unique():
+    """Concurrent callers share generator state without collisions."""
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = [executor.submit(uuid7_many, 1000) for _ in range(8)]
+        values = [value for future in futures for value in future.result()]
+
+    assert len(values) == 8000
+    assert len(set(values)) == len(values)
+
+
+@pytest.mark.parametrize(
+    "batch_function", [uuid7_many, uuid7_obj_many, uuid7_str_many, uuid7_bytes_many]
+)
+def test_batch_functions_validate_count(batch_function):
+    """All batch APIs share predictable empty and invalid-count behavior."""
+    empty = batch_function(0)
+    assert empty == b"" if batch_function is uuid7_bytes_many else empty == []
+
+    with pytest.raises(ValueError, match="non-negative"):
+        batch_function(-1)
+
+    with pytest.raises(TypeError):
+        batch_function(1.5)
+
+
 def test_uuid_time_matches_uuidv7_timestamp_bits():
     """Test Python 3.14-compatible UUIDv7 time semantics."""
     before = int(time.time() * 1000)
@@ -180,6 +274,36 @@ def test_clock_rollback_does_not_decrease_uuid_values():
 
     assert second.int > first.int
     assert _timestamp_ms(second) == timestamp_ms
+
+
+@pytest.mark.skipif(not hasattr(os, "fork"), reason="requires POSIX fork()")
+def test_forked_process_reseeds_generator_state():
+    """Forked workers must not continue with duplicated entropy and counters."""
+    _reset_state_for_tests()
+    timestamp_ms = 1_900_000_000_000
+    _generate_uuid7_bytes_for_tests(timestamp_ms)
+    read_fd, write_fd = os.pipe()
+    child_pid = os.fork()
+
+    if child_pid == 0:
+        try:
+            os.close(read_fd)
+            child_value = _generate_uuid7_bytes_for_tests(timestamp_ms)
+            os.write(write_fd, child_value)
+        finally:
+            os.close(write_fd)
+            os._exit(0)
+
+    os.close(write_fd)
+    try:
+        parent_value = _generate_uuid7_bytes_for_tests(timestamp_ms)
+        child_value = os.read(read_fd, 16)
+    finally:
+        os.close(read_fd)
+        os.waitpid(child_pid, 0)
+
+    assert len(child_value) == 16
+    assert child_value != parent_value
 
 
 def test_multiple_calls():

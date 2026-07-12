@@ -21,7 +21,19 @@ from uuidv7.uuidv7_impl.uuid7_gen import (
     uuid7 as _generate_uuid7_uuid,
 )
 from uuidv7.uuidv7_impl.uuid7_gen import (
+    uuid7_bytes_many as _generate_uuid7_bytes_many,
+)
+from uuidv7.uuidv7_impl.uuid7_gen import (
+    uuid7_many as _generate_uuid7_many,
+)
+from uuidv7.uuidv7_impl.uuid7_gen import (
     uuid7_obj as _generate_uuid7_obj,
+)
+from uuidv7.uuidv7_impl.uuid7_gen import (
+    uuid7_obj_many as _generate_uuid7_obj_many,
+)
+from uuidv7.uuidv7_impl.uuid7_gen import (
+    uuid7_str_many as _generate_uuid7_str_many,
 )
 
 
@@ -59,7 +71,22 @@ uuid7 = _generate_uuid7_uuid
 uuid7_obj = _generate_uuid7_obj
 uuid7_str = _generate_uuid7_str
 uuid7_bytes = _generate_uuid7_bytes
+uuid7_many = _generate_uuid7_many
+uuid7_obj_many = _generate_uuid7_obj_many
+uuid7_str_many = _generate_uuid7_str_many
+uuid7_bytes_many = _generate_uuid7_bytes_many
 
 
-__version__ = "0.2.0"
-__all__ = ["UUID7Obj", "uuid7", "uuid7_bytes", "uuid7_obj", "uuid7_str", "__version__"]
+__version__ = "0.3.0"
+__all__ = [
+    "UUID7Obj",
+    "uuid7",
+    "uuid7_bytes",
+    "uuid7_bytes_many",
+    "uuid7_many",
+    "uuid7_obj",
+    "uuid7_obj_many",
+    "uuid7_str",
+    "uuid7_str_many",
+    "__version__",
+]

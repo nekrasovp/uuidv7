@@ -31,8 +31,7 @@ Add any other context about the problem here.
 ## Code Example
 ```python
 # Minimal code example that reproduces the issue
-from uuidv7 import uuid7
+from fastuuid7 import uuid7
 
 # Your code here
 ```
-
