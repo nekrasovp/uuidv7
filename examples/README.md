@@ -32,15 +32,14 @@ python examples/batch_generation.py
 
 ### 3. `database_usage.py`
 
-Database integration examples:
-- Using UUID v7 as primary keys
-- Time-ordered UUIDs for database records
-- Timestamp extraction with `uuid.UUID.time`
-- SQL insert examples
+Real SQLAlchemy 2 integration:
+- Using UUID v7 as an ORM primary-key default
+- Persisting `uuid.UUID` values through SQLAlchemy's `Uuid` type
+- Querying records in UUID/time order
 
 **Run:**
 ```bash
-python examples/database_usage.py
+uv run --with sqlalchemy python -m examples.database_usage
 ```
 
 ## Running Examples
@@ -54,7 +53,7 @@ uv pip install -e .
 # Run examples using uv (recommended - ensures correct environment)
 uv run python examples/basic_usage.py
 uv run python examples/batch_generation.py
-uv run python examples/database_usage.py
+uv run --with sqlalchemy python -m examples.database_usage
 ```
 
 Or directly with Python (after installing the package):
@@ -73,5 +72,5 @@ python examples/database_usage.py
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.9+
 - `fastuuid7` package installed (see main README for installation)

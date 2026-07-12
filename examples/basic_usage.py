@@ -2,7 +2,7 @@
 
 import uuid as uuid_module
 
-from uuidv7 import uuid7
+from fastuuid7 import uuid7
 
 
 def main():

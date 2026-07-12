@@ -48,12 +48,15 @@ jobs:
         run: |
           source .venv/bin/activate
           python benchmarks/benchmark.py --output benchmark-results.md
+          python benchmarks/benchmark_batch.py --output batch-results.md
 
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
-          path: benchmark-results.md
+          path: |
+            benchmark-results.md
+            batch-results.md
           retention-days: 14
 
       - name: Comment benchmark results
@@ -64,7 +67,8 @@ jobs:
           script: |
             const fs = require("fs");
             const results = fs.readFileSync("benchmark-results.md", "utf8");
-            const output = `## Benchmark Results\n\n${results}`;
+            const batch = fs.readFileSync("batch-results.md", "utf8");
+            const output = `## Benchmark Results\n\n${results}\n\n${batch}`;
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

@@ -502,6 +502,14 @@ static PyTypeObject NativeUUID7Type = {
     .tp_setattro = native_uuid7_setattro,
 };
 
+static PyObject *raise_entropy_error(void) {
+    PyErr_SetString(
+        PyExc_RuntimeError,
+        "system CSPRNG failed while generating UUID v7"
+    );
+    return NULL;
+}
+
 static PyObject *py_uuid7_obj(PyObject *self, PyObject *args) {
     NativeUUID7Object *result;
 
@@ -513,7 +521,10 @@ static PyObject *py_uuid7_obj(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    generate_uuid7_words(&result->high, &result->low);
+    if (generate_uuid7_words(&result->high, &result->low) < 0) {
+        PyObject_Del(result);
+        return raise_entropy_error();
+    }
     return (PyObject *)result;
 }
 
@@ -556,7 +567,9 @@ static PyObject *py_uuid7(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    generate_uuid7_bytes(uuid);
+    if (generate_uuid7_bytes(uuid) < 0) {
+        return raise_entropy_error();
+    }
     value = uuid_bytes_to_int(uuid);
     if (value == NULL) {
         return NULL;
@@ -622,7 +635,9 @@ static PyObject *py_generate_uuid7(PyObject *self, PyObject *args) {
     (void)self;
     (void)args;
 
-    generate_uuid7_bytes(uuid);
+    if (generate_uuid7_bytes(uuid) < 0) {
+        return raise_entropy_error();
+    }
 
 #if !defined(Py_LIMITED_API)
     {
@@ -669,7 +684,10 @@ static PyObject *py_generate_uuid7_bytes(PyObject *self, PyObject *args) {
     }
 #endif
 
-    generate_uuid7_bytes((unsigned char *)uuid);
+    if (generate_uuid7_bytes((unsigned char *)uuid) < 0) {
+        Py_DECREF(result);
+        return raise_entropy_error();
+    }
     return result;
 }
 
@@ -679,7 +697,9 @@ static PyObject *py_generate_uuid7_int(PyObject *self, PyObject *args) {
     (void)self;
     (void)args;
 
-    generate_uuid7_bytes(uuid);
+    if (generate_uuid7_bytes(uuid) < 0) {
+        return raise_entropy_error();
+    }
 
     return uuid_bytes_to_int(uuid);
 }
@@ -694,7 +714,9 @@ static PyObject *py_generate_uuid7_bytes_for_tests(PyObject *self, PyObject *arg
         return NULL;
     }
 
-    generate_uuid7_bytes_for_timestamp(uuid, (uint64_t)timestamp_ms);
+    if (generate_uuid7_bytes_for_timestamp(uuid, (uint64_t)timestamp_ms) < 0) {
+        return raise_entropy_error();
+    }
 
     return PyBytes_FromStringAndSize((const char *)uuid, 16);
 }
@@ -707,9 +729,153 @@ static PyObject *py_reset_state_for_tests(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
+static int parse_batch_count(PyObject *args, Py_ssize_t *count) {
+    if (!PyArg_ParseTuple(args, "n", count)) {
+        return -1;
+    }
+    if (*count < 0) {
+        PyErr_SetString(PyExc_ValueError, "count must be non-negative");
+        return -1;
+    }
+    return 0;
+}
+
+static PyObject *py_uuid7_many(PyObject *self, PyObject *args) {
+    Py_ssize_t count;
+    PyObject *result;
+
+    if (parse_batch_count(args, &count) < 0) {
+        return NULL;
+    }
+
+    result = PyList_New(count);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    for (Py_ssize_t index = 0; index < count; index++) {
+        PyObject *item = py_uuid7(self, NULL);
+        if (item == NULL) {
+            Py_DECREF(result);
+            return NULL;
+        }
+        PyList_SET_ITEM(result, index, item);
+    }
+
+    return result;
+}
+
+static PyObject *py_uuid7_obj_many(PyObject *self, PyObject *args) {
+    Py_ssize_t count;
+    PyObject *result;
+
+    if (parse_batch_count(args, &count) < 0) {
+        return NULL;
+    }
+
+    result = PyList_New(count);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    for (Py_ssize_t index = 0; index < count; index++) {
+        PyObject *item = py_uuid7_obj(self, NULL);
+        if (item == NULL) {
+            Py_DECREF(result);
+            return NULL;
+        }
+        PyList_SET_ITEM(result, index, item);
+    }
+
+    return result;
+}
+
+static PyObject *py_uuid7_str_many(PyObject *self, PyObject *args) {
+    Py_ssize_t count;
+    PyObject *result;
+
+    if (parse_batch_count(args, &count) < 0) {
+        return NULL;
+    }
+
+    result = PyList_New(count);
+    if (result == NULL) {
+        return NULL;
+    }
+
+    for (Py_ssize_t index = 0; index < count; index++) {
+        PyObject *item = py_generate_uuid7(self, NULL);
+        if (item == NULL) {
+            Py_DECREF(result);
+            return NULL;
+        }
+        PyList_SET_ITEM(result, index, item);
+    }
+
+    return result;
+}
+
+static PyObject *py_uuid7_bytes_many(PyObject *self, PyObject *args) {
+    Py_ssize_t count;
+    PyObject *result;
+    char *buffer;
+
+    (void)self;
+
+    if (parse_batch_count(args, &count) < 0) {
+        return NULL;
+    }
+    if (count > PY_SSIZE_T_MAX / 16) {
+        return PyErr_NoMemory();
+    }
+
+    result = PyBytes_FromStringAndSize(NULL, count * 16);
+    if (result == NULL) {
+        return NULL;
+    }
+
+#if !defined(Py_LIMITED_API)
+    buffer = PyBytes_AS_STRING(result);
+#else
+    buffer = PyBytes_AsString(result);
+    if (buffer == NULL) {
+        Py_DECREF(result);
+        return NULL;
+    }
+#endif
+
+    for (Py_ssize_t index = 0; index < count; index++) {
+        if (generate_uuid7_bytes((unsigned char *)(buffer + index * 16)) < 0) {
+            Py_DECREF(result);
+            return raise_entropy_error();
+        }
+    }
+
+    return result;
+}
+
 static PyMethodDef uuid7_gen_methods[] = {
     {"uuid7", py_uuid7, METH_NOARGS, "Generate a UUID v7 uuid.UUID object"},
     {"uuid7_obj", py_uuid7_obj, METH_NOARGS, "Generate a compact native UUID v7 object"},
+    {"uuid7_many", py_uuid7_many, METH_VARARGS, "Generate UUID v7 objects in one call"},
+    {
+        "uuid7_obj_many",
+        py_uuid7_obj_many,
+        METH_VARARGS,
+        "Generate compact native UUID v7 objects in one call"
+    },
+    {
+        "uuid7_str_many",
+        py_uuid7_str_many,
+        METH_VARARGS,
+        "Generate UUID v7 strings in one call"
+    },
+    {
+        "uuid7_bytes_many",
+        py_uuid7_bytes_many,
+        METH_VARARGS,
+        "Generate contiguous UUID v7 bytes in one call"
+    },
     {
         "_configure_uuid7",
         (PyCFunction)py_configure_uuid7,

@@ -4,19 +4,7 @@ from __future__ import annotations
 
 import uuid
 
-from uuidv7 import uuid7
-
-
-def generate_batch(count: int) -> list[uuid.UUID]:
-    """Generate a batch of UUID v7 values.
-
-    Args:
-        count: Number of UUIDs to generate
-
-    Returns:
-        List of UUID objects
-    """
-    return [uuid7() for _ in range(count)]
+from fastuuid7 import uuid7_bytes_many, uuid7_many
 
 
 def main():
@@ -26,14 +14,14 @@ def main():
 
     # Generate a small batch
     print("\n1. Generate a small batch (10 UUIDs):")
-    batch = generate_batch(10)
+    batch = uuid7_many(10)
     for i, uuid_val in enumerate(batch, 1):
         print(f"   {i:2d}. {uuid_val}")
 
     # Generate a larger batch and verify uniqueness
     print("\n2. Generate a large batch and verify uniqueness:")
     batch_size = 10000
-    batch = generate_batch(batch_size)
+    batch = uuid7_many(batch_size)
     unique_count = len(set(batch))
     print(f"   Generated: {batch_size:,} UUIDs")
     print(f"   Unique: {unique_count:,} UUIDs")
@@ -41,9 +29,14 @@ def main():
 
     # Demonstrate timestamp ordering
     print("\n3. Demonstrate timestamp ordering (first 10):")
-    batch = generate_batch(10)
+    batch = uuid7_many(10)
     for i, uuid_val in enumerate(batch, 1):
         print(f"   {i:2d}. {uuid_val} (timestamp_ms: {uuid_val.time})")
+
+    print("\n4. Generate one contiguous bytes buffer:")
+    raw = uuid7_bytes_many(10)
+    parsed = [uuid.UUID(bytes=raw[index : index + 16]) for index in range(0, len(raw), 16)]
+    print(f"   Packed {len(parsed)} UUIDs into {len(raw)} bytes")
 
 
 if __name__ == "__main__":

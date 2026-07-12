@@ -1,21 +1,23 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "fastuuid7"
-version = "0.2.0"
-description = "UUID v7 generation package using a C library"
+version = "0.3.0"
+description = "High-performance, fork-safe UUIDv7 generation with Python-compatible APIs"
 readme = "README.md"
-requires-python = ">=3.8"
-license = {text = "MIT"}
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
     {name = "Pavel Nekrasov", email = "nekrasovp@gmail.com"}
 ]
 classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
     "Programming Language :: C",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -25,32 +27,46 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
 ]
-keywords = ["uuid", "uuidv7", "uuid-v7", "identifier"]
+keywords = ["uuid", "uuidv7", "uuid-v7", "rfc9562", "identifier", "database"]
 dependencies = []
 
 [project.optional-dependencies]
 dev = [
-    "build>=1.2.0",
-    "cibuildwheel>=2.23.0",
+    "mypy>=1.11.0",
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
     "ruff>=0.1.0",
 ]
+release = [
+    "build>=1.2.0",
+    "cibuildwheel>=3.4.1; python_version >= '3.11'",
+    "twine>=6.0.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/nekrasovp/uuidv7"
+Documentation = "https://github.com/nekrasovp/uuidv7#readme"
 Repository = "https://github.com/nekrasovp/uuidv7"
 Issues = "https://github.com/nekrasovp/uuidv7/issues"
+Changelog = "https://github.com/nekrasovp/uuidv7/blob/main/CHANGELOG.md"
+Security = "https://github.com/nekrasovp/uuidv7/blob/main/SECURITY.md"
 
 [tool.setuptools]
-packages = {find = {}}
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["fastuuid7*", "uuidv7*"]
+exclude = ["benchmarks*", "examples*", "tests*"]
 
 [tool.setuptools.package-data]
-"*" = ["*.h", "*.c"]
+fastuuid7 = ["*.pyi", "py.typed"]
+uuidv7 = ["*.pyi", "py.typed"]
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py39"
 line-length = 100
 
 [tool.ruff.lint]
@@ -69,11 +85,11 @@ ignore = [
     "E501",  # line too long, handled by formatter
     "B008",  # do not perform function calls in argument defaults
     "UP022", # capture_output would hide stdout/stderr intent in subprocess calls
-    "UP045", # keep Optional syntax for Python 3.8 parser compatibility
+    "UP045", # keep Optional syntax for Python 3.9 parser compatibility
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["uuidv7"]
+known-first-party = ["fastuuid7", "uuidv7"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -88,8 +104,13 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short --capture=no"
 
+[tool.mypy]
+python_version = "3.9"
+strict = true
+files = ["tests/typing_usage.py"]
+
 [tool.coverage.run]
-source = ["uuidv7"]
+source = ["fastuuid7", "uuidv7"]
 omit = ["tests/*", "*/tests/*"]
 
 [tool.coverage.report]
