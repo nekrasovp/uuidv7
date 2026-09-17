@@ -6,8 +6,13 @@ needs `uuid.UUID`. PostgreSQL 18 can generate the value as part of an insert.
 Use fastuuid7 when you need the same application API on older Python, explicit
 output shapes, batches, or exact historical timestamps.
 
-This guide describes fastuuid7 **0.4.0**, source
-`0386e15dc32fb2658e33518be77bae330db6556f`. It does not assert new 0.5.0 behavior.
+This guide covers the released **0.4.0** scalar/live-batch APIs, source
+`0386e15dc32fb2658e33518be77bae330db6556f`, and the accepted **0.5.0 candidate**
+historical-batch API from [PR #10](https://github.com/nekrasovp/uuidv7/pull/10),
+source `aefda263cfb81f0439e0f0f6df4be0d6d1165ce8`.
+`uuid7_at_many()` requires that candidate or the subsequent 0.5.0 release;
+it is not available in the published 0.4.0 package. Candidate availability and
+measured application performance are separate facts.
 
 ## Decide at the boundary
 
@@ -19,6 +24,7 @@ This guide describes fastuuid7 **0.4.0**, source
 | Python 3.9–3.13 with a UUIDv7 API | `fastuuid7.uuid7()` | Check wheel availability for the interpreter/OS/architecture; source builds require a C toolchain |
 | Consumer expects UUID text, raw bytes, or large batches | Explicit fastuuid7 output API | Measure generation plus conversion, serialization and delivery to that consumer |
 | Backfill must encode an exact event millisecond | `fastuuid7.uuid7_at(unix_ms=...)` | Fresh random IDs are not deterministic; historical records have no within-millisecond call ordering |
+| Backfill a bounded collection of timestamps | 0.5.0 candidate `fastuuid7.uuid7_at_many(unix_ms=...)` | Eager input validation and one UUID per item; O(n) memory; no measured 0.5.0 application speedup yet |
 
 Python added `uuid.uuid7()` in 3.14 and documents a 48-bit timestamp plus a
 42-bit counter for within-millisecond monotonicity.
@@ -69,6 +75,21 @@ Use the standard `uuid.UUID` output first with UUID-aware ORM/driver fields.
 See the [SQLAlchemy, Django and Pydantic recipes](../integrations.md).
 Their suitability still depends on the versions and paths your application
 actually uses. A passing isolated example does not verify your service.
+
+The [executable integration suite](https://github.com/nekrasovp/uuidv7/blob/f0b81a046f0c4246d6ba04651d0eede279c1f337/docs/integration-testing.md)
+from [PR #9](https://github.com/nekrasovp/uuidv7/pull/9), source
+`f0b81a046f0c4246d6ba04651d0eede279c1f337`, passed
+[run 35280759469](https://github.com/nekrasovp/uuidv7/actions/runs/35280759469).
+It executes SQLAlchemy, Django, Pydantic/FastAPI and psycopg paths with real
+PostgreSQL 17 on Python 3.10/3.12/3.14, plus a separate UUID property matrix.
+It checks serialization, commit/read-back, lookups and rejected inputs or
+duplicate keys. These results cover the pinned tested combinations, not every
+driver version or the untested combined 0.5.0 candidate. Frameworks are test
+extras; ordinary tests without the enabled integration suite are not evidence
+of its success. Follow that source's disposable-database setup and commands.
+On Python before 3.14, a driver-loaded stdlib UUID preserves the bits but does
+not inherit fastuuid7's UUIDv7 `.time` override; use `value.int >> 80` when
+extracting its millisecond timestamp after verifying version 7.
 
 If PostgreSQL 18 owns generation, this transaction illustrates the alternative:
 
@@ -156,6 +177,57 @@ reconstruct the same ID. Keep a sequence column if records within one
 millisecond need a stable order. Historical calls leave the live counter alone;
 mixing historical and live results does not preserve call order.
 
+### Historical batches in the 0.5.0 candidate
+
+The accepted signature is
+`uuid7_at_many(*, unix_ms: Iterable[int]) -> list[uuid.UUID]`. For example:
+
+```python
+# Requires the 0.5.0 candidate at aefda263cfb81f0439e0f0f6df4be0d6d1165ce8.
+from fastuuid7 import uuid7_at_many
+
+timestamps = [1_645_557_742_123, 0, 1_645_557_742_123]
+assigned = uuid7_at_many(unix_ms=iter(timestamps))
+assert [value.time for value in assigned] == timestamps
+assert all(value.version == 7 for value in assigned)
+assert uuid7_at_many(unix_ms=[]) == []
+```
+
+The finite iterable is eagerly snapshotted, then every element is validated
+before the function generates any IDs or consumes generator entropy. Accepted
+elements are integers other than booleans in `0..2**48-1`; type/range failures
+raise `TypeError`/`ValueError` with an input index. Input order is retained;
+timestamps are not sorted. Repeated timestamps receive independent random
+values, not a deterministic mapping or monotonically ordered IDs.
+
+Materialization consumes one-shot iterators and propagates iterator errors
+before element validation. Iterator side effects cannot be rolled back.
+Entropy/allocation failures return no partial list but can consume entropy for
+earlier items. The historical generator leaves the live counter alone and
+retains normal fork reset behavior. Input and output take O(n) memory; use
+bounded chunks and never an infinite iterable. This API allocates its output
+and does not write to a user-supplied buffer.
+
+For a related-record backfill, persist the old-key → new-UUID mapping and
+dependent foreign keys in the same transaction. Resume from committed mappings
+instead of regenerating IDs. The candidate's
+[runnable SQLite migration](https://github.com/nekrasovp/uuidv7/blob/aefda263cfb81f0439e0f0f6df4be0d6d1165ce8/examples/historical_migration/README.md)
+demonstrates interruption and resume; it is not a PostgreSQL migration test.
+The [full batch contract](https://github.com/nekrasovp/uuidv7/blob/aefda263cfb81f0439e0f0f6df4be0d6d1165ce8/docs/api.md#historical-batches)
+and [migration notes](https://github.com/nekrasovp/uuidv7/blob/aefda263cfb81f0439e0f0f6df4be0d6d1165ce8/docs/integrations.md#resumable-migration-of-related-historical-records)
+define failure and concurrency boundaries.
+
+Before release publication, build the accepted candidate in a fresh checkout
+to run the batch example:
+
+```sh
+git clone https://github.com/nekrasovp/uuidv7.git fastuuid7-historical-review
+cd fastuuid7-historical-review
+git checkout --detach aefda263cfb81f0439e0f0f6df4be0d6d1165ce8
+uv sync --extra dev --locked
+uv run --extra dev --locked pytest tests/test_historical_batch.py
+```
+
 Live fastuuid7 ordering is local to one generator process, including observed
 clock rollback. It is not a distributed transaction order or a substitute for
 an event timestamp column. UUIDv7 reveals time and is not an authentication
@@ -178,3 +250,12 @@ speedup when everything else is unchanged. This is an arithmetic illustration,
 not a fastuuid7 measurement. Use the
 [feedback template](feedback-and-1.0.md) to record the actual outcome, including
 no benefit or a decision to keep stdlib/server-side generation.
+
+The [database study incorporated in the article](../articles/application-side-uuidv7.md#a-separate-postgresql-study-from-this-release-cycle)
+now supplies one concrete evaluation: at source
+`032adad79e7f319139e093dbac8cd27c8402d5b8` with the 0.4.0 generator, generation
+accounted for roughly 1.1% of SQLAlchemy bulk time, 8.8% of live COPY and 29.2%
+of historical scalar import. Those figures support measuring the whole path
+and investigating historical batching. They do not prove that a new buffer or
+historical-batch API improves the application, or describe concurrent production
+traffic. See the article for environment, source artifacts and excluded costs.

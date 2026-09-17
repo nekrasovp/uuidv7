@@ -2,9 +2,11 @@
 
 **Technical article draft, 2026-09-18.** Intended for review during the fastuuid7
 0.5.0 cycle; not yet published on an external platform. Released API examples
-and published timings below refer to **fastuuid7 0.4.0**, source
-`0386e15dc32fb2658e33518be77bae330db6556f`. No number below is a measurement of
-0.5.0 or a production deployment.
+and published scalar/batch timings refer to **fastuuid7 0.4.0**, source
+`0386e15dc32fb2658e33518be77bae330db6556f`. A separate database study below has
+its own measured source SHA and still uses the 0.4.0 generator. No number below
+measures the final 0.5.0 release or a production deployment. The accepted 0.5.0
+historical-batch API is described separately from those timings.
 
 A service may need an identifier before a database row exists. An API can
 create an event, attach an ID to its durable outbox entry, then pass the same
@@ -52,6 +54,14 @@ In fastuuid7, `uuid7()` returns a standard-library-compatible UUID object;
 does not promise acceptance by an arbitrary validator or driver. Use the
 compatibility object at those boundaries until adapter behavior is tested.
 For a text-only boundary, `uuid7_str()` avoids a later object-to-text step.
+
+There is now executed integration evidence for specific framework versions:
+the [suite at `f0b81a046f0c4246d6ba04651d0eede279c1f337`](https://github.com/nekrasovp/uuidv7/blob/f0b81a046f0c4246d6ba04651d0eede279c1f337/docs/integration-testing.md)
+passed [run 35280759469](https://github.com/nekrasovp/uuidv7/actions/runs/35280759469)
+with real PostgreSQL 17 and SQLAlchemy, Django, Pydantic/FastAPI and psycopg
+paths on Python 3.10/3.12/3.14. Commit/read-back, validation and UUID adaptation
+are tested; this is not a test of every framework release, production service
+or the final combined 0.5.0 candidate.
 
 ```python
 import uuid
@@ -120,7 +130,98 @@ have different loop and allocation boundaries; do not combine their rows into
 one ranking. Neither runner measures SQL insertion, JSON response latency,
 peak resident memory or production throughput.
 
-## Reproduce the evidence, then measure your boundary
+## A separate PostgreSQL study from this release cycle
+
+An application study now puts that distinction to work. On 2026-09-17 UTC,
+[Actions run 35280765719](https://github.com/nekrasovp/uuidv7/actions/runs/35280765719)
+completed at clean measured source
+**`032adad79e7f319139e093dbac8cd27c8402d5b8`**. The
+[raw JSON](https://github.com/nekrasovp/uuidv7/blob/5414ff61240f71a2a11a8e4ddeac625162972bae/benchmarks/workloads/results/postgres18-032adad.json),
+[full result table](https://github.com/nekrasovp/uuidv7/blob/5414ff61240f71a2a11a8e4ddeac625162972bae/benchmarks/workloads/results/postgres18-032adad.md)
+and [methodology](https://github.com/nekrasovp/uuidv7/blob/5414ff61240f71a2a11a8e4ddeac625162972bae/docs/performance-workloads.md)
+are preserved in evidence commit `5414ff61240f71a2a11a8e4ddeac625162972bae`.
+The raw JSON SHA-256 is
+`4bf25e6ec3b708d782d4d053d385bc561b9d47290d061b2d55e6134ad98f34ce`;
+its digest, source identity, row checks and reported medians were independently
+checked when incorporating it here.
+
+This run used Ubuntu 24.04/x86-64, four logical CPUs, CPython 3.14.6,
+PostgreSQL 18.3, SQLAlchemy 2.0.54 and psycopg 3.3.5. PostgreSQL had `fsync` and
+`synchronous_commit` enabled and 128 MB shared buffers. Each of 22 cases had
+one validated warmup and three measured repetitions in seeded random order:
+66 measured samples plus 22 warmups. Every sample committed and reread 100,000
+rows, checking count, uniqueness, payload and UUID layout. Historical values
+were checked against each source millisecond. Total validated rows: 8.8 million.
+
+Each sample used a fresh process and table, one transaction, batches of 1,000,
+a 128-byte text payload and two bigint fields. Client IDs were `uuid.UUID`
+instances or subclasses stored in a native PostgreSQL `uuid` column. Elapsed
+time included generation, row construction, driver adaptation, insertion and
+commit, but excluded connection setup, DDL and verification. SQLAlchemy used
+ORM bulk INSERT without `RETURNING`; COPY used binary `write_row`.
+
+| Path: 100,000 rows | Checkout median, seconds | Published 0.4.0 median, seconds | stdlib UUIDv7 median, seconds | Checkout generation share |
+| --- | ---: | ---: | ---: | ---: |
+| SQLAlchemy bulk, `uuid7_many` | 3.9555 | 3.8157 | 4.1306 | 1.10% |
+| Binary COPY, `uuid7_many` | 0.4865 | 0.4749 | 0.6879 | 8.78% |
+| Historical COPY, scalar `uuid7_at` | 0.6322 | 0.6409 | unavailable: no exact historical API | 29.20% |
+
+**The checkout generator was still 0.4.0.** Its source hashes match the released
+generator; these are not results for the future historical batch API.
+The checkout and installed PyPI package fluctuate in either direction. Three
+repetitions on initially empty tables do not establish a release regression,
+an improvement over 0.4.0, or a production ranking. The full table retains the
+observed min/max and client memory for every case.
+
+For SQLAlchemy bulk, 97.38% of checkout-batch elapsed time was in
+execute/adaptation, with 3.9425 client CPU seconds in 3.9555 elapsed seconds.
+This points to the client ORM/driver path as the main cost in this workload.
+For live COPY, generation took 8.78%, while execute took 81.23%. Its 0.1966
+client CPU seconds versus 0.4865 elapsed seconds do not isolate driver work,
+transport and database waits. Server CPU and memory were not profiled. RSS in
+the report is the client's lifetime high-water mark before verification,
+including imports and connection baseline, not incremental allocation cost.
+
+Even eliminating all live generation could remove only about 1.1% of bulk
+INSERT time or 8.8% of live COPY time here. A caller-owned buffer would still
+perform generation and might change adaptation costs, which were not isolated.
+This evidence does not justify claiming a buffer-API benefit. Historical
+scalar generation occupies a larger 29.20% share, which motivates measuring a
+historical batch implementation; it does not predict the result.
+
+The full study also includes uuid-utils, uuid6, UUIDv4 controls and server-side
+`uuidv7()` as distinct cases. Omitting the ID for a server default sends fewer
+bytes and moves generation to PostgreSQL; it is a different strategy. UUIDv4
+differences combine generation and index effects. Neither comparison isolates
+an index-locality benefit. One client, warm caches, fixed payloads and small
+fresh tables leave growing indexes, concurrent writers and production traffic
+unmeasured. This is maintainer-run experimental evidence, not external adoption.
+
+To reproduce that historical study, use the evidence commit and its
+[disposable PostgreSQL setup](https://github.com/nekrasovp/uuidv7/blob/5414ff61240f71a2a11a8e4ddeac625162972bae/docs/performance-workloads.md#reproduce).
+After checkout and dependency installation below, prepare that dedicated
+PostgreSQL 18 database and set `WORKLOAD_DSN` and `WORKLOAD_POSTGRES_IMAGE`
+before the final runner command:
+
+```sh
+git clone https://github.com/nekrasovp/uuidv7.git fastuuid7-workload-review
+cd fastuuid7-workload-review
+git checkout --detach 5414ff61240f71a2a11a8e4ddeac625162972bae
+uv sync --extra dev --locked
+uv sync --project benchmarks/workloads --locked
+# Prepare the disposable database and environment using the linked setup.
+benchmarks/workloads/.venv/bin/python -I benchmarks/workloads/run.py \
+  --rows 100000 --batch-size 1000 --rounds 3 --output /tmp/workloads-review.json
+```
+
+The evidence commit adds only reports/documentation after the measured SHA;
+a rerun records its own source identity and timing. The runner creates and
+drops sample schemas inside the dedicated database, so use only the disposable
+database described in the linked setup. It fails on unavailable cases instead
+of manufacturing successful skip rows. This article's documentation validation
+checked the command syntax and archived results, not another full database run.
+
+## Reproduce the 0.4.0 microbenchmarks
 
 Use a fresh directory, Git, uv, a supported C build toolchain and network
 access to the pinned packages. Python 3.14 is needed for the stdlib comparison.
@@ -211,6 +312,18 @@ with the source key so an interrupted migration can resume. Preserve a
 separate sequence when the source order matters.
 [Historical API contract](https://github.com/nekrasovp/uuidv7/blob/0386e15dc32fb2658e33518be77bae330db6556f/docs/api.md#historical-records).
 
+For the upcoming 0.5.0 release, the accepted
+[candidate API at `aefda263cfb81f0439e0f0f6df4be0d6d1165ce8`](https://github.com/nekrasovp/uuidv7/blob/aefda263cfb81f0439e0f0f6df4be0d6d1165ce8/docs/api.md#historical-batches)
+adds `uuid7_at_many(*, unix_ms: Iterable[int]) -> list[uuid.UUID]`. It snapshots
+a finite iterable, validates every timestamp before generation, and returns
+one UUID per item in input order with the scalar historical contract. It takes
+O(n) input/output memory, consumes one-shot iterators, and does not offer
+deterministic replay or within-millisecond ordering. The
+[guide's batch example and resumable-migration links](../adoption/choosing-a-generator.md#historical-batches-in-the-050-candidate)
+show how to use bounded chunks and persist assignments. This API was absent
+from both earlier timing studies; its application benefit must be measured on
+the combined release candidate.
+
 ## What external use currently tells us
 
 The [public-source review](../adoption/public-evidence.md) found two application
@@ -236,9 +349,12 @@ improvement and a decision to retain stdlib or database generation recordable.
 
 ## Editorial state for the 0.5.0 cycle
 
-At this draft's current evidence boundary, no verified 0.5.0 application report
-has been incorporated. Before adding such findings, record the measured
-commit, versions, exact commands, sample sizes, output shapes, all failure/skip
-states and persistent report links. Explain what the complete workload
-measures. Keep the published 0.4.0 table labeled as historical evidence; do not
-relabel it or infer a 0.5.0 speedup from unchanged source.
+The verified PostgreSQL study at `032adad79e7f319139e093dbac8cd27c8402d5b8` is
+incorporated above. It still measures the 0.4.0 generator. Results for the
+combined 0.5.0 candidate, including historical batching, remain unmeasured in
+this article. The release coordinator must run the workload's
+`--include-historical-batch` case on that combined exact commit before adding
+any such claim. Preserve source identity, versions, commands, sample sizes,
+output shapes and every failure/skip state with the result. Keep both earlier
+studies labeled with their actual source commits rather than relabeling them
+as 0.5.0 measurements.

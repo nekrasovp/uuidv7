@@ -120,7 +120,7 @@ not make coverage exhaustive.
 
 | Search endpoint / query | Returned total | Review coverage |
 | --- | ---: | --- |
-| `/search/code`: `fastuuid7 -user:nekrasovp` | 573 | First 100 hits inspected for candidates; mostly repeated benchmark charts, not 573 consumers |
+| `/search/code`: `fastuuid7 -user:nekrasovp` | 573 | First page of 100 retrieved; repeated benchmark charts prompted the filtered query below, not a count of consumers |
 | `/search/code`: `fastuuid7 -user:nekrasovp -repo:lava-sh/benchmarks` | 15 | All 15 paths triaged; candidate source and dependency files opened at returned SHAs |
 | `/search/code`: `"nekrasovp/uuidv7" -user:nekrasovp -repo:lava-sh/benchmarks` | 3 | All 3 paths triaged; packaging recipe inspected |
 | `/search/code`: `uuidv7 repo:ISCOUTB/S.L.O.T.H` | 4 | Located legacy call sites; messaging path inspected with its lockfile |
