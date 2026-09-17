@@ -1,4 +1,4 @@
-"""Benchmark candidate scalar APIs against stdlib and published fastuuid7 0.3.0."""
+"""Benchmark candidate scalar APIs against stdlib and pinned published fastuuid7."""
 
 if __package__:
     from .benchmark_competitors import main

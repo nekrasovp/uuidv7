@@ -214,7 +214,7 @@ iterations, UUIDs/second, and ns/op for:
 - `fastuuid7.uuid7_bytes()`
 - `str(fastuuid7.uuid7())`
 - Python stdlib `uuid.uuid7()` when available
-- published `fastuuid7==0.3.0` in an isolated temporary environment
+- published `fastuuid7==0.4.0` in an isolated temporary environment
 - optional competitors when installed: `uuid-utils`, `fastuuidv7`, `uuid7`,
   `uuid7-rs`, `c_uuid_v7`, `uuid-v7`, and `uuid6`
 
