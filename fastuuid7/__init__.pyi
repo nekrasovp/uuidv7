@@ -2,6 +2,7 @@ from uuidv7 import UUID7Obj as UUID7Obj
 from uuidv7 import __version__ as __version__
 from uuidv7 import uuid7 as uuid7
 from uuidv7 import uuid7_at as uuid7_at
+from uuidv7 import uuid7_at_many as uuid7_at_many
 from uuidv7 import uuid7_bytes as uuid7_bytes
 from uuidv7 import uuid7_bytes_many as uuid7_bytes_many
 from uuidv7 import uuid7_many as uuid7_many

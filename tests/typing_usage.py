@@ -8,6 +8,7 @@ from fastuuid7 import (
     UUID7Obj,
     uuid7,
     uuid7_at,
+    uuid7_at_many,
     uuid7_bytes,
     uuid7_bytes_many,
     uuid7_many,
@@ -19,6 +20,7 @@ from fastuuid7 import (
 
 uuid_value: uuid.UUID = uuid7()
 historical_value: uuid.UUID = uuid7_at(unix_ms=1_645_557_742_123)
+historical_values: list[uuid.UUID] = uuid7_at_many(unix_ms=(ms for ms in [0, 42]))
 native_value: UUID7Obj = uuid7_obj()
 text_value: str = uuid7_str()
 raw_value: bytes = uuid7_bytes()
