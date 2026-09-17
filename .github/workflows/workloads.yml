@@ -2,6 +2,8 @@ name: PostgreSQL workloads
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
   pull_request:
     paths:
       - 'benchmarks/workloads/**'
@@ -45,7 +47,7 @@ jobs:
           version: '0.11.28'
       - name: Install checkout and isolated workload dependencies
         run: |
-          uv sync --extra dev --locked
+          uv sync --extra dev --locked --reinstall-package fastuuid7
           uv sync --project benchmarks/workloads --locked
       - name: Contract and repository tests
         run: |
@@ -54,8 +56,9 @@ jobs:
           uv run --extra dev --locked ruff format --check benchmarks/workloads tests/test_workload_contract.py
       - name: Real PostgreSQL 18 matrix
         run: |
-          export WORKLOAD_POSTGRES_IMAGE="$(docker image inspect postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db --format '{{index .RepoDigests 0}}')"
-          benchmarks/workloads/.venv/bin/python -I benchmarks/workloads/run.py --database fastuuid7_workloads_ci --rows 100000 --batch-size 1000 --rounds 3 --output "$RUNNER_TEMP/workloads.json"
+          WORKLOAD_POSTGRES_IMAGE="$(docker image inspect postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db --format '{{index .RepoDigests 0}}')"
+          export WORKLOAD_POSTGRES_IMAGE
+          benchmarks/workloads/.venv/bin/python -I benchmarks/workloads/run.py --database fastuuid7_workloads_ci --rows 100000 --batch-size 1000 --rounds 3 --include-historical-batch --output "$RUNNER_TEMP/workloads.json"
       - uses: actions/upload-artifact@v4
         with:
           name: postgres18-workloads-${{ github.event.pull_request.head.sha || github.sha }}

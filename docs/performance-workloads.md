@@ -13,7 +13,7 @@ sample and drops only that schema in `finally`. It does not create/drop database
 The database role needs CREATE privileges only inside this disposable database.
 
 ```sh
-uv sync --extra dev --locked
+uv sync --python 3.14 --extra dev --locked --reinstall-package fastuuid7
 uv sync --project benchmarks/workloads --locked
 # Example disposable server (remove this task-owned container after the run):
 docker run --name fastuuid7-workloads-pg --rm -d -p 127.0.0.1:55432:5432 \
@@ -23,7 +23,7 @@ docker run --name fastuuid7-workloads-pg --rm -d -p 127.0.0.1:55432:5432 \
 export WORKLOAD_DSN=postgresql://workload:disposable-workload-only@127.0.0.1:55432/fastuuid7_workloads_run
 export WORKLOAD_POSTGRES_IMAGE="$(docker image inspect postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db --format '{{index .RepoDigests 0}}')"
 benchmarks/workloads/.venv/bin/python -I benchmarks/workloads/run.py \
-  --rows 100000 --batch-size 1000 --rounds 3 --output /tmp/workloads.json
+  --rows 100000 --batch-size 1000 --rounds 3 --include-historical-batch --output /tmp/workloads.json
 docker stop fastuuid7-workloads-pg
 ```
 
@@ -58,14 +58,14 @@ a stdlib `uuid7` historical API. stdlib and uuid6 have no exact historical API i
 this matrix. Entropy/counter/fork guarantees differ between libraries; small
 uniqueness samples do not prove cryptographic or fork safety equivalence.
 
-The historical generation adapter is the extension point for the separately
-implemented `uuid7_at_many(*, unix_ms: Iterable[int])`. Future measurements must
-use `--include-historical-batch` to add `checkout_at_batch` separately and run on the merged exact commit;
-this task does not emulate it or claim results for unreleased code.
+The `--include-historical-batch` flag adds the implemented
+`uuid7_at_many(*, unix_ms: Iterable[int])` as `checkout_at_batch` on the combined
+0.5.0 source. The release workflow enables it. The retained 0.4.0 evidence below
+predates that API and must not be relabeled as a measurement of historical batches.
 
 ## Measurement contract
 
-Each of 22 cases gets one full validated warmup and three measured runs, in
+Each of 22 baseline cases (23 with historical batch) gets one full validated warmup and three measured runs, in
 seeded random order. Each sample uses a fresh process, table and UUID index.
 100,000 rows contain a UUID primary key, two bigint fields (source sequence and
 event timestamp), and a fixed 128-byte text payload. Batches are 1,000 rows, one
