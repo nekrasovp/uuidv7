@@ -116,7 +116,8 @@ thread-scaling numbers.
 The [harness](../../tools/experiments/free_threading/README.md) compiles a distinct
 `_ft_uuid7` module. It includes the checked-out production generator source
 without editing it, substituting only an entropy-read fault wrapper. The
-original source and header digests are recorded with each run. It never imports
+original source and every `CORE/include/*.h` digest are recorded with each run,
+including headers added by later integrations. It never imports
 the production extension into the no-GIL correctness-test process.
 
 A native pthread mutex spans PID checks, clock sampling per item, entropy
@@ -163,24 +164,24 @@ performance budget or an isolated estimate of mutex instruction cost.
 
 | Packed-byte API / runtime | 1 thread | 2 threads | 4 threads | 8 threads |
 | --- | ---: | ---: | ---: | ---: |
-| Production baseline / regular GIL / batch 1 | 48.4 | 47.4 | 46.3 | 47.5 |
-| Production baseline / t-build GIL fallback / batch 1 | 46.9 | 47.2 | 47.1 | 47.1 |
-| Mutex prototype / regular GIL / batch 1 | 96.8 | 190.3 | 519.6 | 2882.8 |
-| Mutex prototype / t-build no GIL / batch 1 | 82.3 | 123.3 | 178.9 | 284.9 |
-| Production baseline / regular GIL / batch 64 | 32.8 | 33.0 | 32.9 | 32.2 |
-| Production baseline / t-build GIL fallback / batch 64 | 32.0 | 31.7 | 32.0 | 32.2 |
-| Mutex prototype / regular GIL / batch 64 | 34.1 | 41.5 | 58.9 | 60.7 |
-| Mutex prototype / t-build no GIL / batch 64 | 34.2 | 42.5 | 56.7 | 59.4 |
+| Production baseline / regular GIL / batch 1 | 45.6 | 46.1 | 45.3 | 45.1 |
+| Production baseline / t-build GIL fallback / batch 1 | 47.6 | 47.7 | 48.1 | 48.4 |
+| Mutex prototype / regular GIL / batch 1 | 91.9 | 185.5 | 524.6 | 2904.7 |
+| Mutex prototype / t-build no GIL / batch 1 | 84.3 | 130.3 | 177.0 | 297.9 |
+| Production baseline / regular GIL / batch 64 | 31.4 | 31.6 | 31.7 | 31.9 |
+| Production baseline / t-build GIL fallback / batch 64 | 33.9 | 34.0 | 34.2 | 34.3 |
+| Mutex prototype / regular GIL / batch 64 | 33.5 | 43.0 | 58.3 | 60.0 |
+| Mutex prototype / t-build no GIL / batch 64 | 34.9 | 49.2 | 58.1 | 59.7 |
 
 Units: **ns per UUID**, lower is faster. Raw rounds and source digests:
 [local evidence](../../tools/experiments/free_threading/results/macos-arm64-2026-09-18.json).
 
-The single-thread scalar prototype costs 2.00x the regular baseline and
-1.75x the t-build baseline with its GIL enabled. This includes argument
+The single-thread scalar prototype costs 2.02x the regular baseline and
+1.77x the t-build baseline with its GIL enabled. This includes argument
 parsing, mutex, detach/reattach, and wrapper differences; it is not a pure lock
 overhead measurement. With eight no-GIL threads and batch 64, instrumented
-waiting accounts for 90.4% of summed native wait-plus-hold time;
-p95 mutex wait is 190.2 microseconds. One thread is faster than eight
+waiting accounts for 90.6% of summed native wait-plus-hold time;
+p95 mutex wait is 188.1 microseconds. One thread is faster than eight
 for this shared generator on this host. Batching amortizes Python-call cost,
 but it does not provide parallel sequence generation.
 

@@ -53,15 +53,16 @@ def build(output: Path) -> None:
     )
     for command in commands:
         subprocess.run(command, check=True)
-    sources = [
-        HERE / name for name in ("prototype.c", "build.py", "check.py", "measure.py", "run.py")
-    ] + [
-        CORE / "src/uuid7_gen.c",
-        CORE / "include/uuid7_gen.h",
-        CORE / "uuid7_gen.c",
-        ROOT / "uuidv7/__init__.py",
-        ROOT / "fastuuid7/__init__.py",
-    ]
+    sources = (
+        [HERE / name for name in ("prototype.c", "build.py", "check.py", "measure.py", "run.py")]
+        + [
+            CORE / "src/uuid7_gen.c",
+            CORE / "uuid7_gen.c",
+            ROOT / "uuidv7/__init__.py",
+            ROOT / "fastuuid7/__init__.py",
+        ]
+        + sorted((CORE / "include").glob("*.h"))
+    )
     metadata = {
         "python": sys.version,
         "platform": platform.platform(),

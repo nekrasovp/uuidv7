@@ -16,10 +16,10 @@
           "ordered_unique": 1000
         }
       },
-      "contracts_log": "test_completion_order_is_not_value_order (__main__.PrototypeContracts.test_completion_order_is_not_value_order) ... ok\ntest_concurrent_failures_release_mutex_and_allow_recovery (__main__.PrototypeContracts.test_concurrent_failures_release_mutex_and_allow_recovery) ... ok\ntest_concurrent_scalar_batch_linearization (__main__.PrototypeContracts.test_concurrent_scalar_batch_linearization) ... ok\ntest_eintr_and_short_entropy_reads (__main__.PrototypeContracts.test_eintr_and_short_entropy_reads) ... ok\ntest_entropy_failure_does_not_commit_failed_item (__main__.PrototypeContracts.test_entropy_failure_does_not_commit_failed_item) ... ok\ntest_fork_after_multithreaded_work (__main__.PrototypeContracts.test_fork_after_multithreaded_work) ... ok\ntest_fork_with_native_mutex_held (__main__.PrototypeContracts.test_fork_with_native_mutex_held) ... ok\ntest_gil_mode_is_verified_after_import (__main__.PrototypeContracts.test_gil_mode_is_verified_after_import) ... ok\ntest_historical_calls_share_entropy_without_advancing_live_sequence (__main__.PrototypeContracts.test_historical_calls_share_entropy_without_advancing_live_sequence) ... ok\ntest_mid_batch_entropy_failure_consumes_successful_prefix (__main__.PrototypeContracts.test_mid_batch_entropy_failure_consumes_successful_prefix) ... ok\ntest_module_owned_uuid_type (__main__.PrototypeContracts.test_module_owned_uuid_type) ... ok\ntest_ordering_oracle_rejects_corrupted_histories (__main__.PrototypeContracts.test_ordering_oracle_rejects_corrupted_histories) ... ok\ntest_result_allocation_failure_keeps_consumed_reservation (__main__.PrototypeContracts.test_result_allocation_failure_keeps_consumed_reservation) ... ok\ntest_rollback_and_counter_carry (__main__.PrototypeContracts.test_rollback_and_counter_carry) ... ok\ntest_seed_success_then_tail_failure_does_not_commit (__main__.PrototypeContracts.test_seed_success_then_tail_failure_does_not_commit) ... ok\ntest_subinterpreter_ownership_and_process_sequence (__main__.PrototypeContracts.test_subinterpreter_ownership_and_process_sequence) ... ok\ntest_timestamp_exhaustion_consumes_prefix_but_returns_no_batch (__main__.PrototypeContracts.test_timestamp_exhaustion_consumes_prefix_but_returns_no_batch) ... ok\ntest_validation_and_empty_batch_do_not_advance (__main__.PrototypeContracts.test_validation_and_empty_batch_do_not_advance) ... ok\n\n----------------------------------------------------------------------\nRan 18 tests in 0.389s\n\nOK\n",
+      "contracts_log": "test_completion_order_is_not_value_order (__main__.PrototypeContracts.test_completion_order_is_not_value_order) ... ok\ntest_concurrent_failures_release_mutex_and_allow_recovery (__main__.PrototypeContracts.test_concurrent_failures_release_mutex_and_allow_recovery) ... ok\ntest_concurrent_scalar_batch_linearization (__main__.PrototypeContracts.test_concurrent_scalar_batch_linearization) ... ok\ntest_eintr_and_short_entropy_reads (__main__.PrototypeContracts.test_eintr_and_short_entropy_reads) ... ok\ntest_entropy_failure_does_not_commit_failed_item (__main__.PrototypeContracts.test_entropy_failure_does_not_commit_failed_item) ... ok\ntest_fork_after_multithreaded_work (__main__.PrototypeContracts.test_fork_after_multithreaded_work) ... ok\ntest_fork_with_native_mutex_held (__main__.PrototypeContracts.test_fork_with_native_mutex_held) ... ok\ntest_gil_mode_is_verified_after_import (__main__.PrototypeContracts.test_gil_mode_is_verified_after_import) ... ok\ntest_historical_calls_share_entropy_without_advancing_live_sequence (__main__.PrototypeContracts.test_historical_calls_share_entropy_without_advancing_live_sequence) ... ok\ntest_mid_batch_entropy_failure_consumes_successful_prefix (__main__.PrototypeContracts.test_mid_batch_entropy_failure_consumes_successful_prefix) ... ok\ntest_module_owned_uuid_type (__main__.PrototypeContracts.test_module_owned_uuid_type) ... ok\ntest_ordering_oracle_rejects_corrupted_histories (__main__.PrototypeContracts.test_ordering_oracle_rejects_corrupted_histories) ... ok\ntest_result_allocation_failure_keeps_consumed_reservation (__main__.PrototypeContracts.test_result_allocation_failure_keeps_consumed_reservation) ... ok\ntest_rollback_and_counter_carry (__main__.PrototypeContracts.test_rollback_and_counter_carry) ... ok\ntest_seed_success_then_tail_failure_does_not_commit (__main__.PrototypeContracts.test_seed_success_then_tail_failure_does_not_commit) ... ok\ntest_subinterpreter_ownership_and_process_sequence (__main__.PrototypeContracts.test_subinterpreter_ownership_and_process_sequence) ... ok\ntest_timestamp_exhaustion_consumes_prefix_but_returns_no_batch (__main__.PrototypeContracts.test_timestamp_exhaustion_consumes_prefix_but_returns_no_batch) ... ok\ntest_validation_and_empty_batch_do_not_advance (__main__.PrototypeContracts.test_validation_and_empty_batch_do_not_advance) ... ok\n\n----------------------------------------------------------------------\nRan 18 tests in 0.396s\n\nOK\n",
       "baseline_import_warning": "",
       "baseline": {
-        "recorded_at_utc": "2026-09-17T22:18:20.747191+00:00",
+        "recorded_at_utc": "2026-09-17T22:26:09.277459+00:00",
         "python": "3.14.6 (main, Jul 23 2026, 14:51:00) [Clang 22.1.3 ]",
         "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
         "cpu": "Apple M3 Pro",
@@ -27,15 +27,15 @@
         "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
         "source_sha256": {
           "tools/experiments/free_threading/prototype.c": "700e6f9f5bc7814111b7e86aba19166306200d4be0a190ca236cb52871790a89",
-          "tools/experiments/free_threading/build.py": "a638dc2c26b8fe5a96633abf80d9c55df96c464af9d29b778a504b449f9de3fc",
+          "tools/experiments/free_threading/build.py": "4f2236cc12bd20338ab29ebaa8717de7e396aad5d88ebfe784a9d85f72b51417",
           "tools/experiments/free_threading/check.py": "1c06200ea79c2ce5727fa979dfa33deddea87d0efe17778ccfa6b4f5b24cf158",
           "tools/experiments/free_threading/measure.py": "d2481d510f127acd5d4ead84b04db4f48963c465c7689eca55b2bb131c6ac9f0",
           "tools/experiments/free_threading/run.py": "a561e3292a6bf99d83b9c87058516ef37c2209712f2752f89013ff063d92e967",
           "uuidv7/uuidv7_impl/src/uuid7_gen.c": "e6d2cfe1db7371b03dd10556f4f75e7099097631b3c29cc6f8fa9d890afca722",
-          "uuidv7/uuidv7_impl/include/uuid7_gen.h": "ab583b2d111c70ab6d7e3de055d66d58b185e2427f30fc8b2c6ab71223d62e86",
           "uuidv7/uuidv7_impl/uuid7_gen.c": "6caf2ee972c1d99e8eaae39d37122aeafdf14c9a87249372432e2143468d5be7",
           "uuidv7/__init__.py": "fb0b4114e240fdfd91ae9b9d5fc4c81a13005e6d6ef0bb48db08f73183026a23",
-          "fastuuid7/__init__.py": "72c868febbe86947ffe654743697ee1274ebf6bf24defd4b3c2d55a7c7222a5c"
+          "fastuuid7/__init__.py": "72c868febbe86947ffe654743697ee1274ebf6bf24defd4b3c2d55a7c7222a5c",
+          "uuidv7/uuidv7_impl/include/uuid7_gen.h": "ab583b2d111c70ab6d7e3de055d66d58b185e2427f30fc8b2c6ab71223d62e86"
         },
         "build_gil_disabled": false,
         "gil_before_import": true,
@@ -50,14 +50,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              54.01213836669922,
-              48.444271087646484,
-              48.60877990722656,
-              47.905128479003906,
-              45.98808288574219
+              52.08619689941406,
+              48.325538635253906,
+              45.58499526977539,
+              44.73304748535156,
+              45.25629806518555
             ],
-            "ns_per_uuid_median": 48.444271087646484,
-            "uuids_per_second": 20642275.702544417
+            "ns_per_uuid_median": 45.58499526977539,
+            "uuids_per_second": 21937042.96955447
           },
           {
             "batch": 1,
@@ -65,14 +65,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              47.93532943725586,
-              46.920936584472656,
-              47.37361526489258,
-              46.55488586425781,
-              48.135440826416016
+              45.6233024597168,
+              45.08717727661133,
+              46.24652862548828,
+              46.38862609863281,
+              46.08456039428711
             ],
-            "ns_per_uuid_median": 47.37361526489258,
-            "uuids_per_second": 21108796.413540248
+            "ns_per_uuid_median": 46.08456039428711,
+            "uuids_per_second": 21699241.382455833
           },
           {
             "batch": 1,
@@ -80,14 +80,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              46.237945556640625,
-              46.382266998291016,
-              47.79037094116211,
-              45.89128494262695,
-              46.33966827392578
+              45.3880615234375,
+              45.47484588623047,
+              45.004844665527344,
+              45.27203369140625,
+              44.91376876831055
             ],
-            "ns_per_uuid_median": 46.33966827392578,
-            "uuids_per_second": 21579783.309814412
+            "ns_per_uuid_median": 45.27203369140625,
+            "uuids_per_second": 22088691.813944835
           },
           {
             "batch": 1,
@@ -95,14 +95,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              47.638893127441406,
-              47.5695915222168,
-              45.84312438964844,
-              47.18208312988281,
-              47.467708587646484
+              45.61328887939453,
+              44.57123947143555,
+              45.21322250366211,
+              45.06349563598633,
+              45.03965377807617
             ],
-            "ns_per_uuid_median": 47.467708587646484,
-            "uuids_per_second": 21066953.298441943
+            "ns_per_uuid_median": 45.06349563598633,
+            "uuids_per_second": 22190910.53383419
           },
           {
             "batch": 64,
@@ -110,14 +110,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              32.7911376953125,
-              31.54833984375,
-              32.82976150512695,
-              33.98434066772461,
-              32.10480880737305
+              31.499225616455078,
+              31.441532135009766,
+              31.40322494506836,
+              31.6246337890625,
+              31.410377502441406
             ],
-            "ns_per_uuid_median": 32.7911376953125,
-            "uuids_per_second": 30496044.67194044
+            "ns_per_uuid_median": 31.441532135009766,
+            "uuids_per_second": 31805065.850671828
           },
           {
             "batch": 64,
@@ -125,14 +125,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              31.545001983642578,
-              31.776588439941406,
-              32.97710418701172,
-              35.30120849609375,
-              32.972496032714844
+              31.517189025878906,
+              31.63353729248047,
+              31.64307403564453,
+              31.457740783691406,
+              31.6993408203125
             ],
-            "ns_per_uuid_median": 32.972496032714844,
-            "uuids_per_second": 30328307.53873817
+            "ns_per_uuid_median": 31.63353729248047,
+            "uuids_per_second": 31612019.57132083
           },
           {
             "batch": 64,
@@ -140,14 +140,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              32.376766204833984,
-              33.7824821472168,
-              33.69569778442383,
-              32.91972351074219,
-              32.473724365234375
+              31.61557388305664,
+              31.72016143798828,
+              31.72509002685547,
+              31.831741333007812,
+              31.73192596435547
             ],
-            "ns_per_uuid_median": 32.91972351074219,
-            "uuids_per_second": 30376925.847317196
+            "ns_per_uuid_median": 31.72509002685547,
+            "uuids_per_second": 31520793.137340013
           },
           {
             "batch": 64,
@@ -155,19 +155,19 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              32.1591682434082,
-              34.015018463134766,
-              32.87776565551758,
-              32.108306884765625,
-              32.13707733154297
+              31.863052368164062,
+              31.798362731933594,
+              32.08668899536133,
+              31.996726989746094,
+              31.940780639648438
             ],
-            "ns_per_uuid_median": 32.1591682434082,
-            "uuids_per_second": 31095331.584173486
+            "ns_per_uuid_median": 31.940780639648438,
+            "uuids_per_second": 31307938.62810883
           }
         ]
       },
       "prototype": {
-        "recorded_at_utc": "2026-09-17T22:18:25.556479+00:00",
+        "recorded_at_utc": "2026-09-17T22:26:14.482206+00:00",
         "python": "3.14.6 (main, Jul 23 2026, 14:51:00) [Clang 22.1.3 ]",
         "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
         "cpu": "Apple M3 Pro",
@@ -175,15 +175,15 @@
         "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
         "source_sha256": {
           "tools/experiments/free_threading/prototype.c": "700e6f9f5bc7814111b7e86aba19166306200d4be0a190ca236cb52871790a89",
-          "tools/experiments/free_threading/build.py": "a638dc2c26b8fe5a96633abf80d9c55df96c464af9d29b778a504b449f9de3fc",
+          "tools/experiments/free_threading/build.py": "4f2236cc12bd20338ab29ebaa8717de7e396aad5d88ebfe784a9d85f72b51417",
           "tools/experiments/free_threading/check.py": "1c06200ea79c2ce5727fa979dfa33deddea87d0efe17778ccfa6b4f5b24cf158",
           "tools/experiments/free_threading/measure.py": "d2481d510f127acd5d4ead84b04db4f48963c465c7689eca55b2bb131c6ac9f0",
           "tools/experiments/free_threading/run.py": "a561e3292a6bf99d83b9c87058516ef37c2209712f2752f89013ff063d92e967",
           "uuidv7/uuidv7_impl/src/uuid7_gen.c": "e6d2cfe1db7371b03dd10556f4f75e7099097631b3c29cc6f8fa9d890afca722",
-          "uuidv7/uuidv7_impl/include/uuid7_gen.h": "ab583b2d111c70ab6d7e3de055d66d58b185e2427f30fc8b2c6ab71223d62e86",
           "uuidv7/uuidv7_impl/uuid7_gen.c": "6caf2ee972c1d99e8eaae39d37122aeafdf14c9a87249372432e2143468d5be7",
           "uuidv7/__init__.py": "fb0b4114e240fdfd91ae9b9d5fc4c81a13005e6d6ef0bb48db08f73183026a23",
-          "fastuuid7/__init__.py": "72c868febbe86947ffe654743697ee1274ebf6bf24defd4b3c2d55a7c7222a5c"
+          "fastuuid7/__init__.py": "72c868febbe86947ffe654743697ee1274ebf6bf24defd4b3c2d55a7c7222a5c",
+          "uuidv7/uuidv7_impl/include/uuid7_gen.h": "ab583b2d111c70ab6d7e3de055d66d58b185e2427f30fc8b2c6ab71223d62e86"
         },
         "build_gil_disabled": false,
         "gil_before_import": true,
@@ -198,21 +198,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              97.23424911499023,
-              96.93924331665039,
-              96.38738632202148,
-              94.7729721069336,
-              96.77441787719727
+              91.94119644165039,
+              91.20321273803711,
+              94.14227676391602,
+              90.83731842041016,
+              93.2912826538086
             ],
-            "ns_per_uuid_median": 96.77441787719727,
-            "uuids_per_second": 10333309.380057016,
+            "ns_per_uuid_median": 91.94119644165039,
+            "uuids_per_second": 10876517.151205886,
             "instrumented_contention_separate_run": {
               "samples": 1000,
               "wait_ns_p50": 0.0,
               "wait_ns_p95": 42,
-              "hold_ns_p50": 42.0,
+              "hold_ns_p50": 41.0,
               "hold_ns_p95": 42,
-              "wait_fraction_of_native_time": 0.23519270499394457
+              "wait_fraction_of_native_time": 0.272899430327678
             }
           },
           {
@@ -221,21 +221,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              191.67232513427734,
-              190.33733749389648,
-              189.2449073791504,
-              189.67230987548828,
-              190.64950942993164
+              185.0566864013672,
+              185.47026443481445,
+              182.63832473754883,
+              185.9048194885254,
+              186.5051612854004
             ],
-            "ns_per_uuid_median": 190.33733749389648,
-            "uuids_per_second": 5253829.927257792,
+            "ns_per_uuid_median": 185.47026443481445,
+            "uuids_per_second": 5391699.866538234,
             "instrumented_contention_separate_run": {
               "samples": 2000,
-              "wait_ns_p50": 0.0,
+              "wait_ns_p50": 41.0,
               "wait_ns_p95": 42,
               "hold_ns_p50": 42.0,
               "hold_ns_p95": 42,
-              "wait_fraction_of_native_time": 0.4399703696135278
+              "wait_fraction_of_native_time": 0.5144144813628078
             }
           },
           {
@@ -244,21 +244,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              519.6100883483887,
-              522.7642059326172,
-              521.7123031616211,
-              512.6612968444824,
-              513.7160606384277
+              547.9332618713379,
+              529.4222831726074,
+              522.9481086730957,
+              524.5625190734863,
+              510.1140327453613
             ],
-            "ns_per_uuid_median": 519.6100883483887,
-            "uuids_per_second": 1924519.9860891057,
+            "ns_per_uuid_median": 524.5625190734863,
+            "uuids_per_second": 1906350.4608874072,
             "instrumented_contention_separate_run": {
               "samples": 4000,
               "wait_ns_p50": 41.0,
               "wait_ns_p95": 42,
               "hold_ns_p50": 42.0,
               "hold_ns_p95": 42,
-              "wait_fraction_of_native_time": 0.6435390557795132
+              "wait_fraction_of_native_time": 0.5808629192443605
             }
           },
           {
@@ -267,21 +267,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              2949.9290809631348,
-              2025.9644203186035,
-              1925.8009605407715,
-              2882.7738761901855,
-              2920.407932281494
+              2578.690372467041,
+              2983.7498664855957,
+              2811.6888999938965,
+              2925.1276664733887,
+              2904.702823638916
             ],
-            "ns_per_uuid_median": 2882.7738761901855,
-            "uuids_per_second": 346888.11642818805,
+            "ns_per_uuid_median": 2904.702823638916,
+            "uuids_per_second": 344269.2973139445,
             "instrumented_contention_separate_run": {
               "samples": 8000,
               "wait_ns_p50": 41.0,
               "wait_ns_p95": 83,
               "hold_ns_p50": 42.0,
               "hold_ns_p95": 83,
-              "wait_fraction_of_native_time": 0.6434143524959652
+              "wait_fraction_of_native_time": 0.623737154773728
             }
           },
           {
@@ -290,21 +290,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              34.649688720703125,
-              32.49788284301758,
-              34.50027847290039,
-              33.825077056884766,
-              34.114200592041016
+              33.488590240478516,
+              34.46372604370117,
+              34.58134460449219,
+              32.20240020751953,
+              32.12038803100586
             ],
-            "ns_per_uuid_median": 34.114200592041016,
-            "uuids_per_second": 29313305.97362156,
+            "ns_per_uuid_median": 33.488590240478516,
+            "uuids_per_second": 29860916.59335586,
             "instrumented_contention_separate_run": {
               "samples": 1000,
               "wait_ns_p50": 0.0,
               "wait_ns_p95": 42,
               "hold_ns_p50": 1042.0,
               "hold_ns_p95": 8584,
-              "wait_fraction_of_native_time": 0.007157114977305647
+              "wait_fraction_of_native_time": 0.007945889903334297
             }
           },
           {
@@ -313,21 +313,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              41.508995056152344,
-              40.23472213745117,
-              44.46601867675781,
-              43.882530212402344,
-              40.41640090942383
+              39.05311965942383,
+              42.98814010620117,
+              40.33120346069336,
+              43.971858978271484,
+              43.31890869140625
             ],
-            "ns_per_uuid_median": 41.508995056152344,
-            "uuids_per_second": 24091163.822376925,
+            "ns_per_uuid_median": 42.98814010620117,
+            "uuids_per_second": 23262229.943643153,
             "instrumented_contention_separate_run": {
               "samples": 2000,
               "wait_ns_p50": 0.0,
-              "wait_ns_p95": 24209,
-              "hold_ns_p50": 1416.0,
-              "hold_ns_p95": 9792,
-              "wait_fraction_of_native_time": 0.5528624434645185
+              "wait_ns_p95": 16666,
+              "hold_ns_p50": 1292.0,
+              "hold_ns_p95": 9500,
+              "wait_fraction_of_native_time": 0.5522901189223127
             }
           },
           {
@@ -336,21 +336,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              58.91386795043945,
-              58.475494384765625,
-              59.250831604003906,
-              59.017818450927734,
-              58.63730239868164
+              58.481056213378906,
+              57.19868469238281,
+              58.649383544921875,
+              56.84852600097656,
+              58.339439392089844
             ],
-            "ns_per_uuid_median": 58.91386795043945,
-            "uuids_per_second": 16973932.1960873,
+            "ns_per_uuid_median": 58.339439392089844,
+            "uuids_per_second": 17141062.897076596,
             "instrumented_contention_separate_run": {
               "samples": 4000,
               "wait_ns_p50": 42.0,
-              "wait_ns_p95": 60375,
+              "wait_ns_p95": 60125,
               "hold_ns_p50": 1500.0,
-              "hold_ns_p95": 12416,
-              "wait_fraction_of_native_time": 0.7956501263628701
+              "hold_ns_p95": 12417,
+              "wait_fraction_of_native_time": 0.7930232830149249
             }
           },
           {
@@ -359,21 +359,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              60.42766571044922,
-              60.74635314941406,
-              60.9194450378418,
-              60.329437255859375,
-              61.079341888427734
+              60.003597259521484,
+              60.36058807373047,
+              60.15777587890625,
+              59.74721908569336,
+              59.70684814453125
             ],
-            "ns_per_uuid_median": 60.74635314941406,
-            "uuids_per_second": 16461893.5648756,
+            "ns_per_uuid_median": 60.003597259521484,
+            "uuids_per_second": 16665667.487815794,
             "instrumented_contention_separate_run": {
               "samples": 8000,
               "wait_ns_p50": 42.0,
-              "wait_ns_p95": 185167,
+              "wait_ns_p95": 188834,
               "hold_ns_p50": 1500.0,
-              "hold_ns_p95": 12375,
-              "wait_fraction_of_native_time": 0.9044739872721098
+              "hold_ns_p95": 12416,
+              "wait_fraction_of_native_time": 0.9035058908501926
             }
           }
         ],
@@ -397,10 +397,10 @@
           "ordered_unique": 1000
         }
       },
-      "contracts_log": "test_completion_order_is_not_value_order (__main__.PrototypeContracts.test_completion_order_is_not_value_order) ... ok\ntest_concurrent_failures_release_mutex_and_allow_recovery (__main__.PrototypeContracts.test_concurrent_failures_release_mutex_and_allow_recovery) ... ok\ntest_concurrent_scalar_batch_linearization (__main__.PrototypeContracts.test_concurrent_scalar_batch_linearization) ... ok\ntest_eintr_and_short_entropy_reads (__main__.PrototypeContracts.test_eintr_and_short_entropy_reads) ... ok\ntest_entropy_failure_does_not_commit_failed_item (__main__.PrototypeContracts.test_entropy_failure_does_not_commit_failed_item) ... ok\ntest_fork_after_multithreaded_work (__main__.PrototypeContracts.test_fork_after_multithreaded_work) ... ok\ntest_fork_with_native_mutex_held (__main__.PrototypeContracts.test_fork_with_native_mutex_held) ... ok\ntest_gil_mode_is_verified_after_import (__main__.PrototypeContracts.test_gil_mode_is_verified_after_import) ... ok\ntest_historical_calls_share_entropy_without_advancing_live_sequence (__main__.PrototypeContracts.test_historical_calls_share_entropy_without_advancing_live_sequence) ... ok\ntest_mid_batch_entropy_failure_consumes_successful_prefix (__main__.PrototypeContracts.test_mid_batch_entropy_failure_consumes_successful_prefix) ... ok\ntest_module_owned_uuid_type (__main__.PrototypeContracts.test_module_owned_uuid_type) ... ok\ntest_ordering_oracle_rejects_corrupted_histories (__main__.PrototypeContracts.test_ordering_oracle_rejects_corrupted_histories) ... ok\ntest_result_allocation_failure_keeps_consumed_reservation (__main__.PrototypeContracts.test_result_allocation_failure_keeps_consumed_reservation) ... ok\ntest_rollback_and_counter_carry (__main__.PrototypeContracts.test_rollback_and_counter_carry) ... ok\ntest_seed_success_then_tail_failure_does_not_commit (__main__.PrototypeContracts.test_seed_success_then_tail_failure_does_not_commit) ... ok\ntest_subinterpreter_ownership_and_process_sequence (__main__.PrototypeContracts.test_subinterpreter_ownership_and_process_sequence) ... ok\ntest_timestamp_exhaustion_consumes_prefix_but_returns_no_batch (__main__.PrototypeContracts.test_timestamp_exhaustion_consumes_prefix_but_returns_no_batch) ... ok\ntest_validation_and_empty_batch_do_not_advance (__main__.PrototypeContracts.test_validation_and_empty_batch_do_not_advance) ... ok\n\n----------------------------------------------------------------------\nRan 18 tests in 0.395s\n\nOK\n",
+      "contracts_log": "test_completion_order_is_not_value_order (__main__.PrototypeContracts.test_completion_order_is_not_value_order) ... ok\ntest_concurrent_failures_release_mutex_and_allow_recovery (__main__.PrototypeContracts.test_concurrent_failures_release_mutex_and_allow_recovery) ... ok\ntest_concurrent_scalar_batch_linearization (__main__.PrototypeContracts.test_concurrent_scalar_batch_linearization) ... ok\ntest_eintr_and_short_entropy_reads (__main__.PrototypeContracts.test_eintr_and_short_entropy_reads) ... ok\ntest_entropy_failure_does_not_commit_failed_item (__main__.PrototypeContracts.test_entropy_failure_does_not_commit_failed_item) ... ok\ntest_fork_after_multithreaded_work (__main__.PrototypeContracts.test_fork_after_multithreaded_work) ... ok\ntest_fork_with_native_mutex_held (__main__.PrototypeContracts.test_fork_with_native_mutex_held) ... ok\ntest_gil_mode_is_verified_after_import (__main__.PrototypeContracts.test_gil_mode_is_verified_after_import) ... ok\ntest_historical_calls_share_entropy_without_advancing_live_sequence (__main__.PrototypeContracts.test_historical_calls_share_entropy_without_advancing_live_sequence) ... ok\ntest_mid_batch_entropy_failure_consumes_successful_prefix (__main__.PrototypeContracts.test_mid_batch_entropy_failure_consumes_successful_prefix) ... ok\ntest_module_owned_uuid_type (__main__.PrototypeContracts.test_module_owned_uuid_type) ... ok\ntest_ordering_oracle_rejects_corrupted_histories (__main__.PrototypeContracts.test_ordering_oracle_rejects_corrupted_histories) ... ok\ntest_result_allocation_failure_keeps_consumed_reservation (__main__.PrototypeContracts.test_result_allocation_failure_keeps_consumed_reservation) ... ok\ntest_rollback_and_counter_carry (__main__.PrototypeContracts.test_rollback_and_counter_carry) ... ok\ntest_seed_success_then_tail_failure_does_not_commit (__main__.PrototypeContracts.test_seed_success_then_tail_failure_does_not_commit) ... ok\ntest_subinterpreter_ownership_and_process_sequence (__main__.PrototypeContracts.test_subinterpreter_ownership_and_process_sequence) ... ok\ntest_timestamp_exhaustion_consumes_prefix_but_returns_no_batch (__main__.PrototypeContracts.test_timestamp_exhaustion_consumes_prefix_but_returns_no_batch) ... ok\ntest_validation_and_empty_batch_do_not_advance (__main__.PrototypeContracts.test_validation_and_empty_batch_do_not_advance) ... ok\n\n----------------------------------------------------------------------\nRan 18 tests in 0.364s\n\nOK\n",
       "baseline_import_warning": "<frozen importlib._bootstrap>:491: RuntimeWarning: The global interpreter lock (GIL) has been enabled to load module 'uuidv7.uuidv7_impl.uuid7_gen', which has not declared that it can run safely without the GIL. To override this behavior and keep the GIL disabled (at your own risk), run with PYTHON_GIL=0 or -Xgil=0.\n",
       "baseline": {
-        "recorded_at_utc": "2026-09-17T22:18:34.454060+00:00",
+        "recorded_at_utc": "2026-09-17T22:26:40.491086+00:00",
         "python": "3.14.6 free-threading build (main, Jun 23 2026, 15:54:43) [Clang 22.1.3 ]",
         "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
         "cpu": "Apple M3 Pro",
@@ -408,15 +408,15 @@
         "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
         "source_sha256": {
           "tools/experiments/free_threading/prototype.c": "700e6f9f5bc7814111b7e86aba19166306200d4be0a190ca236cb52871790a89",
-          "tools/experiments/free_threading/build.py": "a638dc2c26b8fe5a96633abf80d9c55df96c464af9d29b778a504b449f9de3fc",
+          "tools/experiments/free_threading/build.py": "4f2236cc12bd20338ab29ebaa8717de7e396aad5d88ebfe784a9d85f72b51417",
           "tools/experiments/free_threading/check.py": "1c06200ea79c2ce5727fa979dfa33deddea87d0efe17778ccfa6b4f5b24cf158",
           "tools/experiments/free_threading/measure.py": "d2481d510f127acd5d4ead84b04db4f48963c465c7689eca55b2bb131c6ac9f0",
           "tools/experiments/free_threading/run.py": "a561e3292a6bf99d83b9c87058516ef37c2209712f2752f89013ff063d92e967",
           "uuidv7/uuidv7_impl/src/uuid7_gen.c": "e6d2cfe1db7371b03dd10556f4f75e7099097631b3c29cc6f8fa9d890afca722",
-          "uuidv7/uuidv7_impl/include/uuid7_gen.h": "ab583b2d111c70ab6d7e3de055d66d58b185e2427f30fc8b2c6ab71223d62e86",
           "uuidv7/uuidv7_impl/uuid7_gen.c": "6caf2ee972c1d99e8eaae39d37122aeafdf14c9a87249372432e2143468d5be7",
           "uuidv7/__init__.py": "fb0b4114e240fdfd91ae9b9d5fc4c81a13005e6d6ef0bb48db08f73183026a23",
-          "fastuuid7/__init__.py": "72c868febbe86947ffe654743697ee1274ebf6bf24defd4b3c2d55a7c7222a5c"
+          "fastuuid7/__init__.py": "72c868febbe86947ffe654743697ee1274ebf6bf24defd4b3c2d55a7c7222a5c",
+          "uuidv7/uuidv7_impl/include/uuid7_gen.h": "ab583b2d111c70ab6d7e3de055d66d58b185e2427f30fc8b2c6ab71223d62e86"
         },
         "build_gil_disabled": true,
         "gil_before_import": false,
@@ -431,14 +431,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              47.04697799682617,
-              47.07447814941406,
-              46.922367095947266,
-              46.7982292175293,
-              46.05181884765625
+              47.583580017089844,
+              47.844093322753906,
+              47.9041748046875,
+              47.32147979736328,
+              47.64747619628906
             ],
-            "ns_per_uuid_median": 46.922367095947266,
-            "uuids_per_second": 21311797.803277727
+            "ns_per_uuid_median": 47.64747619628906,
+            "uuids_per_second": 20987470.47756295
           },
           {
             "batch": 1,
@@ -446,14 +446,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              44.792808532714844,
-              46.24859619140625,
-              50.10716247558594,
-              48.71622848510742,
-              47.20115661621094
+              47.48868942260742,
+              47.297000885009766,
+              47.84138870239258,
+              47.65144729614258,
+              47.8962287902832
             ],
-            "ns_per_uuid_median": 47.20115661621094,
-            "uuids_per_second": 21185921.525841516
+            "ns_per_uuid_median": 47.65144729614258,
+            "uuids_per_second": 20985721.457424667
           },
           {
             "batch": 1,
@@ -461,14 +461,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              48.773765563964844,
-              46.179931640625,
-              47.13996124267578,
-              47.8515625,
-              46.63848876953125
+              48.22142791748047,
+              48.084259033203125,
+              48.588436126708984,
+              48.02783203125,
+              47.951698303222656
             ],
-            "ns_per_uuid_median": 47.13996124267578,
-            "uuids_per_second": 21213424.314288586
+            "ns_per_uuid_median": 48.084259033203125,
+            "uuids_per_second": 20796826.656088855
           },
           {
             "batch": 1,
@@ -476,14 +476,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              46.19598388671875,
-              47.134239196777344,
-              46.68918991088867,
-              47.343414306640625,
-              47.386009216308594
+              48.37449264526367,
+              48.352874755859375,
+              48.45158386230469,
+              48.77837371826172,
+              47.02679443359375
             ],
-            "ns_per_uuid_median": 47.134239196777344,
-            "uuids_per_second": 21215999.60116407
+            "ns_per_uuid_median": 48.37449264526367,
+            "uuids_per_second": 20672051.43283109
           },
           {
             "batch": 64,
@@ -491,14 +491,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              31.577266693115234,
-              31.831741333007812,
-              31.979721069335938,
-              32.36325454711914,
-              33.60748291015625
+              33.71906280517578,
+              33.92584991455078,
+              34.01470184326172,
+              33.83970260620117,
+              33.94794464111328
             ],
-            "ns_per_uuid_median": 31.979721069335938,
-            "uuids_per_second": 31269816.201081865
+            "ns_per_uuid_median": 33.92584991455078,
+            "uuids_per_second": 29476048.574131683
           },
           {
             "batch": 64,
@@ -506,14 +506,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              31.80376434326172,
-              32.85995864868164,
-              31.654041290283203,
-              31.70840072631836,
-              31.643550872802734
+              33.90534591674805,
+              33.86211395263672,
+              34.060794830322266,
+              34.24835205078125,
+              34.00357437133789
             ],
-            "ns_per_uuid_median": 31.70840072631836,
-            "uuids_per_second": 31537383.69308509
+            "ns_per_uuid_median": 34.00357437133789,
+            "uuids_per_second": 29408673.014179196
           },
           {
             "batch": 64,
@@ -521,14 +521,14 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              31.935531616210938,
-              33.246517181396484,
-              33.244293212890625,
-              31.55231475830078,
-              32.04313659667969
+              34.07319259643555,
+              33.94428634643555,
+              34.32130813598633,
+              34.207664489746094,
+              34.32258224487305
             ],
-            "ns_per_uuid_median": 32.04313659667969,
-            "uuids_per_second": 31207931.12693032
+            "ns_per_uuid_median": 34.207664489746094,
+            "uuids_per_second": 29233214.687888283
           },
           {
             "batch": 64,
@@ -536,19 +536,19 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              32.15249252319336,
-              33.05244445800781,
-              31.964458465576172,
-              32.156944274902344,
-              33.060707092285156
+              34.278072357177734,
+              34.277915954589844,
+              34.295875549316406,
+              34.35103225708008,
+              34.534454345703125
             ],
-            "ns_per_uuid_median": 32.156944274902344,
-            "uuids_per_second": 31097482.131735817
+            "ns_per_uuid_median": 34.295875549316406,
+            "uuids_per_second": 29158025.097275354
           }
         ]
       },
       "prototype": {
-        "recorded_at_utc": "2026-09-17T22:18:35.782694+00:00",
+        "recorded_at_utc": "2026-09-17T22:26:41.842964+00:00",
         "python": "3.14.6 free-threading build (main, Jun 23 2026, 15:54:43) [Clang 22.1.3 ]",
         "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
         "cpu": "Apple M3 Pro",
@@ -556,15 +556,15 @@
         "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
         "source_sha256": {
           "tools/experiments/free_threading/prototype.c": "700e6f9f5bc7814111b7e86aba19166306200d4be0a190ca236cb52871790a89",
-          "tools/experiments/free_threading/build.py": "a638dc2c26b8fe5a96633abf80d9c55df96c464af9d29b778a504b449f9de3fc",
+          "tools/experiments/free_threading/build.py": "4f2236cc12bd20338ab29ebaa8717de7e396aad5d88ebfe784a9d85f72b51417",
           "tools/experiments/free_threading/check.py": "1c06200ea79c2ce5727fa979dfa33deddea87d0efe17778ccfa6b4f5b24cf158",
           "tools/experiments/free_threading/measure.py": "d2481d510f127acd5d4ead84b04db4f48963c465c7689eca55b2bb131c6ac9f0",
           "tools/experiments/free_threading/run.py": "a561e3292a6bf99d83b9c87058516ef37c2209712f2752f89013ff063d92e967",
           "uuidv7/uuidv7_impl/src/uuid7_gen.c": "e6d2cfe1db7371b03dd10556f4f75e7099097631b3c29cc6f8fa9d890afca722",
-          "uuidv7/uuidv7_impl/include/uuid7_gen.h": "ab583b2d111c70ab6d7e3de055d66d58b185e2427f30fc8b2c6ab71223d62e86",
           "uuidv7/uuidv7_impl/uuid7_gen.c": "6caf2ee972c1d99e8eaae39d37122aeafdf14c9a87249372432e2143468d5be7",
           "uuidv7/__init__.py": "fb0b4114e240fdfd91ae9b9d5fc4c81a13005e6d6ef0bb48db08f73183026a23",
-          "fastuuid7/__init__.py": "72c868febbe86947ffe654743697ee1274ebf6bf24defd4b3c2d55a7c7222a5c"
+          "fastuuid7/__init__.py": "72c868febbe86947ffe654743697ee1274ebf6bf24defd4b3c2d55a7c7222a5c",
+          "uuidv7/uuidv7_impl/include/uuid7_gen.h": "ab583b2d111c70ab6d7e3de055d66d58b185e2427f30fc8b2c6ab71223d62e86"
         },
         "build_gil_disabled": true,
         "gil_before_import": false,
@@ -579,21 +579,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              86.4179916381836,
-              80.69324493408203,
-              82.43306350708008,
-              81.43377304077148,
-              82.27030181884766
+              89.16409683227539,
+              91.99253845214844,
+              83.74373245239258,
+              84.2968635559082,
+              83.73451232910156
             ],
-            "ns_per_uuid_median": 82.27030181884766,
-            "uuids_per_second": 12155054.471562736,
+            "ns_per_uuid_median": 84.2968635559082,
+            "uuids_per_second": 11862837.569713019,
             "instrumented_contention_separate_run": {
               "samples": 1000,
               "wait_ns_p50": 0.0,
               "wait_ns_p95": 42,
-              "hold_ns_p50": 42.0,
+              "hold_ns_p50": 41.0,
               "hold_ns_p95": 42,
-              "wait_fraction_of_native_time": 0.26089508437270725
+              "wait_fraction_of_native_time": 0.2464405550013603
             }
           },
           {
@@ -602,21 +602,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              123.2630386352539,
-              121.2611198425293,
-              121.27431106567383,
-              127.068359375,
-              126.59406661987305
+              134.48461151123047,
+              130.27048110961914,
+              127.17087936401367,
+              130.12933731079102,
+              134.36921310424805
             ],
-            "ns_per_uuid_median": 123.2630386352539,
-            "uuids_per_second": 8112732.016603025,
+            "ns_per_uuid_median": 130.27048110961914,
+            "uuids_per_second": 7676336.123749529,
             "instrumented_contention_separate_run": {
               "samples": 2000,
               "wait_ns_p50": 41.0,
-              "wait_ns_p95": 1042,
+              "wait_ns_p95": 2500,
               "hold_ns_p50": 42.0,
               "hold_ns_p95": 42,
-              "wait_fraction_of_native_time": 0.8568494172794279
+              "wait_fraction_of_native_time": 0.8641510602841054
             }
           },
           {
@@ -625,21 +625,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              178.91454696655273,
-              177.22622299194336,
-              180.08009338378906,
-              179.78525161743164,
-              177.6984519958496
+              173.81064224243164,
+              174.69406127929688,
+              178.18133163452148,
+              176.97636032104492,
+              178.31834411621094
             ],
-            "ns_per_uuid_median": 178.91454696655273,
-            "uuids_per_second": 5589260.442790857,
+            "ns_per_uuid_median": 176.97636032104492,
+            "uuids_per_second": 5650472.177108539,
             "instrumented_contention_separate_run": {
               "samples": 4000,
               "wait_ns_p50": 42.0,
-              "wait_ns_p95": 5959,
+              "wait_ns_p95": 6000,
               "hold_ns_p50": 42.0,
               "hold_ns_p95": 42,
-              "wait_fraction_of_native_time": 0.9417677461747818
+              "wait_fraction_of_native_time": 0.9454082269976039
             }
           },
           {
@@ -648,21 +648,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              286.505859375,
-              281.2913246154785,
-              285.8678512573242,
-              283.675350189209,
-              284.90209579467773
+              297.85029220581055,
+              299.3578910827637,
+              295.66589736938477,
+              297.73744201660156,
+              299.9906539916992
             ],
-            "ns_per_uuid_median": 284.90209579467773,
-            "uuids_per_second": 3509977.6897418,
+            "ns_per_uuid_median": 297.85029220581055,
+            "uuids_per_second": 3357391.3679729193,
             "instrumented_contention_separate_run": {
               "samples": 8000,
               "wait_ns_p50": 42.0,
-              "wait_ns_p95": 16583,
+              "wait_ns_p95": 18458,
               "hold_ns_p50": 42.0,
-              "hold_ns_p95": 83,
-              "wait_fraction_of_native_time": 0.9734259533812736
+              "hold_ns_p95": 84,
+              "wait_fraction_of_native_time": 0.9746784374134428
             }
           },
           {
@@ -671,21 +671,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              32.99760818481445,
-              34.9057502746582,
-              34.15473175048828,
-              34.399349212646484,
-              32.302696228027344
+              35.006046295166016,
+              34.825164794921875,
+              34.898597717285156,
+              34.702301025390625,
+              34.921329498291016
             ],
-            "ns_per_uuid_median": 34.15473175048828,
-            "uuids_per_second": 29278520.0980448,
+            "ns_per_uuid_median": 34.898597717285156,
+            "uuids_per_second": 28654446.465185717,
             "instrumented_contention_separate_run": {
               "samples": 1000,
               "wait_ns_p50": 0.0,
               "wait_ns_p95": 42,
-              "hold_ns_p50": 1042.0,
-              "hold_ns_p95": 8625,
-              "wait_fraction_of_native_time": 0.007187461850315469
+              "hold_ns_p50": 1166.5,
+              "hold_ns_p95": 9375,
+              "wait_fraction_of_native_time": 0.007002320890219775
             }
           },
           {
@@ -694,21 +694,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              44.203121185302734,
-              39.74501419067383,
-              42.54261779785156,
-              42.19166564941406,
-              42.4504280090332
+              49.150146484375,
+              44.33043670654297,
+              46.448551177978516,
+              51.34455490112305,
+              51.16240310668945
             ],
-            "ns_per_uuid_median": 42.4504280090332,
-            "uuids_per_second": 23556888.51446223,
+            "ns_per_uuid_median": 49.150146484375,
+            "uuids_per_second": 20345819.32157422,
             "instrumented_contention_separate_run": {
               "samples": 2000,
-              "wait_ns_p50": 0.0,
-              "wait_ns_p95": 42,
-              "hold_ns_p50": 1292.0,
-              "hold_ns_p95": 9416,
-              "wait_fraction_of_native_time": 0.5373135965298429
+              "wait_ns_p50": 41.0,
+              "wait_ns_p95": 29250,
+              "hold_ns_p50": 1459.0,
+              "hold_ns_p95": 12416,
+              "wait_fraction_of_native_time": 0.5623158891409409
             }
           },
           {
@@ -717,21 +717,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              55.62289810180664,
-              56.680362701416016,
-              55.16656494140625,
-              56.735836029052734,
-              59.8734245300293
+              57.17595672607422,
+              58.2969970703125,
+              57.7534065246582,
+              58.12533950805664,
+              58.233421325683594
             ],
-            "ns_per_uuid_median": 56.680362701416016,
-            "uuids_per_second": 17642794.65302394,
+            "ns_per_uuid_median": 58.12533950805664,
+            "uuids_per_second": 17204200.58555343,
             "instrumented_contention_separate_run": {
               "samples": 4000,
-              "wait_ns_p50": 41.0,
-              "wait_ns_p95": 63458,
+              "wait_ns_p50": 42.0,
+              "wait_ns_p95": 58708,
               "hold_ns_p50": 1459.0,
-              "hold_ns_p95": 12334,
-              "wait_fraction_of_native_time": 0.8039708900185388
+              "hold_ns_p95": 12250,
+              "wait_fraction_of_native_time": 0.7990655811561688
             }
           },
           {
@@ -740,21 +740,21 @@
             "uuids_per_round": 262144,
             "rounds": 5,
             "ns_per_uuid_samples": [
-              59.87755584716797,
-              59.36924743652344,
-              58.69642639160156,
-              59.75230407714844,
-              58.84901809692383
+              59.511024475097656,
+              60.674827575683594,
+              59.31536102294922,
+              60.077667236328125,
+              59.72719192504883
             ],
-            "ns_per_uuid_median": 59.36924743652344,
-            "uuids_per_second": 16843737.17334353,
+            "ns_per_uuid_median": 59.72719192504883,
+            "uuids_per_second": 16742792.817966262,
             "instrumented_contention_separate_run": {
               "samples": 8000,
               "wait_ns_p50": 42.0,
-              "wait_ns_p95": 190209,
+              "wait_ns_p95": 188084,
               "hold_ns_p50": 1459.0,
-              "hold_ns_p95": 12417,
-              "wait_fraction_of_native_time": 0.9040921495602227
+              "hold_ns_p95": 12416,
+              "wait_fraction_of_native_time": 0.9061277305638106
             }
           }
         ],
