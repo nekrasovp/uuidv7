@@ -1,5 +1,6 @@
 """Tests for UUID v7 generation functionality."""
 
+import math
 import os
 import re
 import time
@@ -248,12 +249,17 @@ def test_batch_functions_validate_count(batch_function):
 
 def test_uuid_time_matches_uuidv7_timestamp_bits():
     """Test Python 3.14-compatible UUIDv7 time semantics."""
-    before = int(time.time() * 1000)
+    _reset_state_for_tests()
+    # Before Python 3.13, Windows time.time() uses the coarse FILETIME clock;
+    # our C core uses GetSystemTimePreciseAsFileTime. Compare within the actual
+    # resolution reported by Python instead of assuming a 1 ms system tick.
+    resolution_ms = max(1, math.ceil(time.get_clock_info("time").resolution * 1000))
+    before = time.time_ns() // 1_000_000
     value = uuid7()
-    after = int(time.time() * 1000)
+    after = time.time_ns() // 1_000_000
 
     assert value.time == _timestamp_ms(value)
-    assert before <= value.time <= after + 1
+    assert before - resolution_ms <= value.time <= after + resolution_ms
 
 
 def test_same_millisecond_values_are_monotonic():

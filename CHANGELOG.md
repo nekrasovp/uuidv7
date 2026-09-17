@@ -28,6 +28,8 @@ All notable changes to this project are documented here. The project follows
 
 ### Fixed
 
+- Timestamp checks respect Python's reported clock resolution, including the
+  coarse Windows clock used by Python versions before 3.13.
 - Exhaustion of the final representable UUIDv7 timestamp now raises
   `OverflowError` instead of wrapping to zero. Failed generation does not commit
   partial timestamp/counter changes; failed batches return no partial result.

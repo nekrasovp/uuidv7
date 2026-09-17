@@ -1,10 +1,19 @@
 """Prevent valid-looking legacy UUIDs and changed API shapes entering rankings."""
 
 import uuid
+from types import SimpleNamespace
 
 import pytest
 
 from benchmarks.benchmark_competitors import build_cases, validate_uuid7
+
+
+def test_coarse_windows_clock_resolution_is_respected(monkeypatch):
+    monkeypatch.setattr("time.get_clock_info", lambda _name: SimpleNamespace(resolution=0.015625))
+    ms = 1_800_000_000_000
+    assert validate_uuid7(value_at(ms + 15), "uuid.UUID", before_ms=ms, after_ms=ms)
+    with pytest.raises(ValueError, match="timestamp"):
+        validate_uuid7(value_at(ms + 100), "uuid.UUID", before_ms=ms, after_ms=ms)
 
 
 def value_at(ms):

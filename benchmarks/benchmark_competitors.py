@@ -6,6 +6,7 @@ import argparse
 import importlib
 import importlib.metadata
 import json
+import math
 import os
 import platform
 import statistics
@@ -185,7 +186,11 @@ def validate_uuid7(value, shape, *, before_ms=None, after_ms=None):
         raise ValueError("noncanonical UUID string")
     if shape == "hex" and value != parsed.hex:
         raise ValueError("noncanonical UUID hex")
-    if before_ms is not None and not before_ms - 10 <= parsed.int >> 80 <= after_ms + 10:
+    tolerance_ms = max(10, math.ceil(time.get_clock_info("time").resolution * 1000))
+    if (
+        before_ms is not None
+        and not before_ms - tolerance_ms <= parsed.int >> 80 <= after_ms + tolerance_ms
+    ):
         raise ValueError(
             "timestamp does not encode current Unix milliseconds (legacy layout or clock drift)"
         )
@@ -300,7 +305,7 @@ def report(results, skipped, sha, dirty=False):
         f"Platform: {platform.platform()} / {platform.machine()}",
         "",
         "Each case runs in a fresh process. Versions are pinned in competitors.json. "
-        "Validation checks shape, canonical encoding, initial timestamp (10 ms tolerance), "
+        "Validation checks shape, canonical encoding, initial timestamp (10 ms or the system clock resolution, whichever is larger), "
         "uniqueness and advertised ordering on a small sample. It is not a proof of "
         "fork safety or RNG strength; guarantee labels describe upstream contracts. "
         "Unknown guarantees remain explicitly unverified. The final clock delta shows "
