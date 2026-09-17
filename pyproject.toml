@@ -40,6 +40,17 @@ dev = [
     "pytest-cov>=4.0.0",
     "ruff>=0.1.0",
 ]
+properties = [
+    "hypothesis>=6.100,<7",
+]
+integrations = [
+    "sqlalchemy>=2.0,<2.1; python_version >= '3.10'",
+    "django>=5.2.8,<5.3; python_version >= '3.10'",
+    "pydantic>=2.12,<3; python_version >= '3.10'",
+    "fastapi>=0.115,<1; python_version >= '3.10'",
+    "httpx>=0.28,<0.29; python_version >= '3.10'",
+    "psycopg[binary]>=3.2,<4; python_version >= '3.10'",
+]
 release = [
     "build>=1.2.0",
     "cibuildwheel>=3.4.1; python_version >= '3.11'",
