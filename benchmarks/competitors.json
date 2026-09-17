@@ -1,0 +1,10 @@
+{
+  "fastuuid7": {"version": "0.3.0", "source": "https://github.com/nekrasovp/uuidv7/releases/tag/v0.3.0"},
+  "uuid-utils": {"version": "1.0.0", "source": "https://github.com/aminalaee/uuid-utils/releases/tag/1.0.0"},
+  "fastuuidv7": {"version": "0.1.9", "source": "https://github.com/marcomq/fast-uuid-v7/releases/tag/v0.1.9"},
+  "uuid7-rs": {"version": "0.1.0", "source": "https://github.com/lava-sh/uuid7-rs/releases/tag/0.1.0"},
+  "c_uuid_v7": {"version": "0.0.11", "source": "https://github.com/lava-sh/c_uuid_v7"},
+  "uuid7": {"version": "0.1.0", "source": "https://github.com/stevesimmons/uuid7/issues/1"},
+  "uuid-v7": {"version": "1.0.0", "source": "https://pypi.org/project/uuid-v7/1.0.0/"},
+  "uuid6": {"version": "2025.0.1", "source": "https://github.com/oittaa/uuid6-python"}
+}

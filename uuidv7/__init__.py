@@ -7,6 +7,7 @@ import uuid as _uuid
 from uuidv7.uuidv7_impl.uuid7_gen import (
     UUID7Obj,
     _configure_uuid7,
+    _generate_uuid7_at_bytes,
 )
 from uuidv7.uuidv7_impl.uuid7_gen import (
     generate_uuid7 as _generate_uuid7_str,
@@ -66,6 +67,19 @@ def _uuid7_python() -> _uuid.UUID:
     return _uuid7_from_int(_generate_uuid7_int())
 
 
+def uuid7_at(*, unix_ms: int) -> _uuid.UUID:
+    """Generate a UUID at an exact Unix millisecond timestamp, with 74 random bits.
+
+    Independent of the live generator's monotonic counter. Repeated calls for
+    one timestamp are random, not monotonically ordered or deterministic.
+    """
+    if isinstance(unix_ms, bool) or not isinstance(unix_ms, int):
+        raise TypeError("unix_ms must be an integer number of Unix milliseconds")
+    if not 0 <= unix_ms < (1 << 48):
+        raise ValueError("unix_ms must be between 0 and 2**48 - 1")
+    return _UUID7(bytes=_generate_uuid7_at_bytes(unix_ms))
+
+
 _configure_uuid7(_UUID7, _SAFE_UUID_UNKNOWN)
 uuid7 = _generate_uuid7_uuid
 uuid7_obj = _generate_uuid7_obj
@@ -77,10 +91,11 @@ uuid7_str_many = _generate_uuid7_str_many
 uuid7_bytes_many = _generate_uuid7_bytes_many
 
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __all__ = [
     "UUID7Obj",
     "uuid7",
+    "uuid7_at",
     "uuid7_bytes",
     "uuid7_bytes_many",
     "uuid7_many",

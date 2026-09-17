@@ -173,6 +173,17 @@ void reset_uuid7_state(void) {
     reset_process_state(current_process_id());
 }
 
+int set_uuid7_state_for_tests(uint64_t timestamp_ms, uint64_t counter_value) {
+    if (timestamp_ms > UUID7_MAX_TIMESTAMP || counter_value > UUID7_COUNTER_MASK) {
+        return -1;
+    }
+    ensure_current_process();
+    last_ms = timestamp_ms;
+    counter = counter_value;
+    initialized = 1;
+    return 0;
+}
+
 static void write_uuid7_words(unsigned char uuid[16], uint64_t high, uint64_t low) {
     uuid[0] = (unsigned char)(high >> 56);
     uuid[1] = (unsigned char)(high >> 48);
@@ -200,30 +211,29 @@ static int generate_uuid7_words_for_timestamp(
     uint64_t timestamp_ms = unix_ts_ms;
     uint64_t rand_b;
     uint64_t random_value;
+    uint64_t next_counter;
     uint32_t random_tail;
     uint16_t rand_a;
 
     ensure_current_process();
 
-    if (!initialized) {
-        if (next_counter_start(&counter) < 0) {
-            return -1;
-        }
-        initialized = 1;
+    if (timestamp_ms > UUID7_MAX_TIMESTAMP) {
+        return UUID7_TIMESTAMP_EXHAUSTED;
     }
 
-    if (timestamp_ms > last_ms) {
-        last_ms = timestamp_ms;
-        if (next_counter_start(&counter) < 0) {
+    if (!initialized || timestamp_ms > last_ms) {
+        if (next_counter_start(&next_counter) < 0) {
             return -1;
         }
     } else {
         timestamp_ms = last_ms;
-        counter = (counter + 1) & UUID7_COUNTER_MASK;
-        if (counter == 0) {
-            last_ms += 1;
-            timestamp_ms = last_ms;
-            if (next_counter_start(&counter) < 0) {
+        next_counter = (counter + 1) & UUID7_COUNTER_MASK;
+        if (next_counter == 0) {
+            if (last_ms == UUID7_MAX_TIMESTAMP) {
+                return UUID7_TIMESTAMP_EXHAUSTED;
+            }
+            timestamp_ms = last_ms + 1;
+            if (next_counter_start(&next_counter) < 0) {
                 return -1;
             }
         }
@@ -233,11 +243,34 @@ static int generate_uuid7_words_for_timestamp(
         return -1;
     }
     random_tail = (uint32_t)random_value;
-    rand_a = (uint16_t)((counter >> 30) & UINT64_C(0x0fff));
-    rand_b = ((counter & UUID7_COUNTER_LOW_MASK) << 32) | (uint64_t)random_tail;
+    /* Commit only after all random reads succeed. */
+    last_ms = timestamp_ms;
+    counter = next_counter;
+    initialized = 1;
+    rand_a = (uint16_t)((next_counter >> 30) & UINT64_C(0x0fff));
+    rand_b = ((next_counter & UUID7_COUNTER_LOW_MASK) << 32) | (uint64_t)random_tail;
 
     *high = (timestamp_ms << 16) | (UINT64_C(0x7000) | (uint64_t)rand_a);
     *low = UINT64_C(0x8000000000000000) | rand_b;
+    return 0;
+}
+
+int generate_uuid7_at_bytes(unsigned char uuid[16], uint64_t unix_ts_ms) {
+    uint64_t random_high;
+    uint64_t random_low;
+
+    if (unix_ts_ms > UUID7_MAX_TIMESTAMP) {
+        return UUID7_TIMESTAMP_EXHAUSTED;
+    }
+    ensure_current_process();
+    if (secure_random_u64(&random_high) < 0 || secure_random_u64(&random_low) < 0) {
+        return -1;
+    }
+    write_uuid7_words(
+        uuid,
+        (unix_ts_ms << 16) | UINT64_C(0x7000) | (random_high & UINT64_C(0xfff)),
+        UINT64_C(0x8000000000000000) | (random_low & UINT64_C(0x3fffffffffffffff))
+    );
     return 0;
 }
 
@@ -245,8 +278,9 @@ int generate_uuid7_bytes_for_timestamp(unsigned char uuid[16], uint64_t unix_ts_
     uint64_t high;
     uint64_t low;
 
-    if (generate_uuid7_words_for_timestamp(&high, &low, unix_ts_ms) < 0) {
-        return -1;
+    int status = generate_uuid7_words_for_timestamp(&high, &low, unix_ts_ms);
+    if (status < 0) {
+        return status;
     }
     write_uuid7_words(uuid, high, low);
     return 0;
@@ -256,8 +290,9 @@ int generate_uuid7_bytes(unsigned char uuid[16]) {
     uint64_t high;
     uint64_t low;
 
-    if (generate_uuid7_words_for_timestamp(&high, &low, current_time_ms()) < 0) {
-        return -1;
+    int status = generate_uuid7_words_for_timestamp(&high, &low, current_time_ms());
+    if (status < 0) {
+        return status;
     }
     write_uuid7_words(uuid, high, low);
     return 0;

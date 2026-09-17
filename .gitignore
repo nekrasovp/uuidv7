@@ -45,7 +45,6 @@ htmlcov/
 
 # uv
 .uv/
-uv.lock
 
 # OS
 .DS_Store
@@ -54,4 +53,3 @@ Thumbs.db
 # C extensions
 *.o
 *.a
-

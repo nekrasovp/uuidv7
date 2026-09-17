@@ -15,6 +15,7 @@ in C and compatible with Python's `uuid.UUID` API.
 - Automatic entropy and counter reset after a process fork
 - `uuid.uuid7()`-compatible API returning `uuid.UUID`
 - Native object, canonical string, and raw bytes fast paths
+- Explicit Unix millisecond timestamps for historical records with `uuid7_at()`
 - Python 3.9-3.14 on Linux, macOS, and Windows
 - Typed `fastuuid7` and backward-compatible `uuidv7` imports
 
@@ -95,6 +96,11 @@ paths. The `*_many()` functions generate a batch in one C call;
 The original `from uuidv7 import ...` path remains supported for existing
 applications.
 
+For historical records use `uuid7_at(unix_ms=1_645_557_742_123)`. It preserves
+the exact timestamp and uses fresh OS randomness without changing the live
+generator's monotonic counter. Repeated historical calls are not ordered.
+See the [backfill recipe](docs/integrations.md#backfilling-historical-records).
+
 See the [API reference](docs/api.md) for complete scalar and batch contracts.
 
 ### Security properties
@@ -138,33 +144,33 @@ See the [examples README](examples/README.md) for more details.
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install the project and development dependencies
-uv sync --extra dev
+uv sync --extra dev --locked
 ```
 
 ### Running Tests
 
 ```bash
 # Using pytest
-uv run --extra dev pytest
+uv run --extra dev --locked pytest
 
 # Using uv
-uv run --extra dev pytest tests/
+uv run --extra dev --locked pytest tests/
 ```
 
 ### Linting and Formatting
 
 ```bash
 # Run ruff linter
-uv run --extra dev ruff check .
+uv run --extra dev --locked ruff check .
 
 # Run ruff formatter
-uv run --extra dev ruff format .
+uv run --extra dev --locked ruff format .
 
 # Fix auto-fixable issues
-uv run --extra dev ruff check --fix .
+uv run --extra dev --locked ruff check --fix .
 
 # Check the typed public API
-uv run --extra dev mypy
+uv run --extra dev --locked mypy
 ```
 
 ### Building
@@ -196,6 +202,7 @@ python benchmarks/benchmark.py --output benchmark-results.md
 python benchmarks/benchmark_competitors.py --install-optional --rounds 5 --output competitor-results.md
 python benchmarks/benchmark_batch.py --output batch-results.md
 python benchmarks/clock_sources.py --output clock-source-results.md
+python benchmarks/batch_clock.py --output batch-clock-results.md
 ```
 
 The benchmark report includes OS, CPU, Python version, package versions,
@@ -207,7 +214,7 @@ iterations, UUIDs/second, and ns/op for:
 - `fastuuid7.uuid7_bytes()`
 - `str(fastuuid7.uuid7())`
 - Python stdlib `uuid.uuid7()` when available
-- published `fastuuid7==0.1.0` in an isolated temporary environment
+- published `fastuuid7==0.3.0` in an isolated temporary environment
 - optional competitors when installed: `uuid-utils`, `fastuuidv7`, `uuid7`,
   `uuid7-rs`, `c_uuid_v7`, `uuid-v7`, and `uuid6`
 
@@ -239,12 +246,11 @@ This project uses GitHub Actions for continuous integration and deployment:
 
 ### Publishing a New Release
 
-Follow the complete [release checklist](docs/releasing.md), including the
-security-advisory order for 0.3.0.
+Follow the complete [release checklist](docs/releasing.md), before publishing.
 
 1. Run tests, builds, and benchmarks.
 2. Review benchmark results and decide whether optimization is needed.
-3. Verify all source versions with `python tools/check_release_version.py v0.3.0`.
+3. Verify all source versions with `python tools/check_release_version.py v0.4.0`.
 4. Create a new [GitHub Release](https://github.com/nekrasovp/uuidv7/releases/new).
 5. The workflow will validate, build, inspect, and publish the distributions.
 

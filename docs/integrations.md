@@ -21,6 +21,28 @@ required.
 
 ## SQLAlchemy 2
 
+### Backfilling historical records
+
+Use an explicit timestamp when migrating existing rows. Require a timezone-aware
+`datetime` and use integer arithmetic to avoid floating-point timestamp rounding:
+
+```python
+from datetime import datetime, timezone
+
+from fastuuid7 import uuid7_at
+
+created_at = datetime(2022, 2, 22, 19, 22, 22, 123000, tzinfo=timezone.utc)
+delta = created_at - datetime(1970, 1, 1, tzinfo=timezone.utc)
+unix_ms = (delta.days * 86400 + delta.seconds) * 1000 + delta.microseconds // 1000
+new_id = uuid7_at(unix_ms=unix_ms)
+```
+
+Persist the generated value as part of the migration. Running the same call
+again generates a different identifier. Rows within one millisecond have no
+guaranteed relative order; retain a separate sequence column if that matters.
+
+### New records
+
 ```python
 import uuid
 

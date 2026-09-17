@@ -502,7 +502,11 @@ static PyTypeObject NativeUUID7Type = {
     .tp_setattro = native_uuid7_setattro,
 };
 
-static PyObject *raise_entropy_error(void) {
+static PyObject *raise_generation_error(int status) {
+    if (status == UUID7_TIMESTAMP_EXHAUSTED) {
+        PyErr_SetString(PyExc_OverflowError, "UUIDv7 timestamp exceeds 48 bits");
+        return NULL;
+    }
     PyErr_SetString(
         PyExc_RuntimeError,
         "system CSPRNG failed while generating UUID v7"
@@ -521,9 +525,10 @@ static PyObject *py_uuid7_obj(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    if (generate_uuid7_words(&result->high, &result->low) < 0) {
+    int generation_status = generate_uuid7_words(&result->high, &result->low);
+    if (generation_status < 0) {
         PyObject_Del(result);
-        return raise_entropy_error();
+        return raise_generation_error(generation_status);
     }
     return (PyObject *)result;
 }
@@ -567,8 +572,9 @@ static PyObject *py_uuid7(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    if (generate_uuid7_bytes(uuid) < 0) {
-        return raise_entropy_error();
+    int generation_status = generate_uuid7_bytes(uuid);
+    if (generation_status < 0) {
+        return raise_generation_error(generation_status);
     }
     value = uuid_bytes_to_int(uuid);
     if (value == NULL) {
@@ -635,8 +641,9 @@ static PyObject *py_generate_uuid7(PyObject *self, PyObject *args) {
     (void)self;
     (void)args;
 
-    if (generate_uuid7_bytes(uuid) < 0) {
-        return raise_entropy_error();
+    int generation_status = generate_uuid7_bytes(uuid);
+    if (generation_status < 0) {
+        return raise_generation_error(generation_status);
     }
 
 #if !defined(Py_LIMITED_API)
@@ -684,9 +691,10 @@ static PyObject *py_generate_uuid7_bytes(PyObject *self, PyObject *args) {
     }
 #endif
 
-    if (generate_uuid7_bytes((unsigned char *)uuid) < 0) {
+    int generation_status = generate_uuid7_bytes((unsigned char *)uuid);
+    if (generation_status < 0) {
         Py_DECREF(result);
-        return raise_entropy_error();
+        return raise_generation_error(generation_status);
     }
     return result;
 }
@@ -697,8 +705,9 @@ static PyObject *py_generate_uuid7_int(PyObject *self, PyObject *args) {
     (void)self;
     (void)args;
 
-    if (generate_uuid7_bytes(uuid) < 0) {
-        return raise_entropy_error();
+    int generation_status = generate_uuid7_bytes(uuid);
+    if (generation_status < 0) {
+        return raise_generation_error(generation_status);
     }
 
     return uuid_bytes_to_int(uuid);
@@ -714,8 +723,9 @@ static PyObject *py_generate_uuid7_bytes_for_tests(PyObject *self, PyObject *arg
         return NULL;
     }
 
-    if (generate_uuid7_bytes_for_timestamp(uuid, (uint64_t)timestamp_ms) < 0) {
-        return raise_entropy_error();
+    int generation_status = generate_uuid7_bytes_for_timestamp(uuid, (uint64_t)timestamp_ms);
+    if (generation_status < 0) {
+        return raise_generation_error(generation_status);
     }
 
     return PyBytes_FromStringAndSize((const char *)uuid, 16);
@@ -726,6 +736,37 @@ static PyObject *py_reset_state_for_tests(PyObject *self, PyObject *args) {
     (void)args;
 
     reset_uuid7_state();
+    Py_RETURN_NONE;
+}
+
+static PyObject *py_generate_uuid7_at_bytes(PyObject *self, PyObject *arg) {
+    unsigned char uuid[16];
+    uint64_t timestamp_ms;
+    int status;
+    (void)self;
+
+    timestamp_ms = PyLong_AsUnsignedLongLong(arg);
+    if (PyErr_Occurred()) {
+        return NULL;
+    }
+    status = generate_uuid7_at_bytes(uuid, timestamp_ms);
+    if (status < 0) {
+        return raise_generation_error(status);
+    }
+    return PyBytes_FromStringAndSize((const char *)uuid, 16);
+}
+
+static PyObject *py_set_state_for_tests(PyObject *self, PyObject *args) {
+    unsigned long long timestamp_ms;
+    unsigned long long counter_value;
+    (void)self;
+    if (!PyArg_ParseTuple(args, "KK", &timestamp_ms, &counter_value)) {
+        return NULL;
+    }
+    if (set_uuid7_state_for_tests(timestamp_ms, counter_value) < 0) {
+        PyErr_SetString(PyExc_ValueError, "state exceeds timestamp or counter width");
+        return NULL;
+    }
     Py_RETURN_NONE;
 }
 
@@ -845,9 +886,10 @@ static PyObject *py_uuid7_bytes_many(PyObject *self, PyObject *args) {
 #endif
 
     for (Py_ssize_t index = 0; index < count; index++) {
-        if (generate_uuid7_bytes((unsigned char *)(buffer + index * 16)) < 0) {
+        int generation_status = generate_uuid7_bytes((unsigned char *)(buffer + index * 16));
+        if (generation_status < 0) {
             Py_DECREF(result);
-            return raise_entropy_error();
+            return raise_generation_error(generation_status);
         }
     }
 
@@ -855,6 +897,10 @@ static PyObject *py_uuid7_bytes_many(PyObject *self, PyObject *args) {
 }
 
 static PyMethodDef uuid7_gen_methods[] = {
+    {"_generate_uuid7_at_bytes", py_generate_uuid7_at_bytes, METH_O,
+     "Generate independent UUID v7 bytes at a Unix millisecond timestamp"},
+    {"_set_state_for_tests", py_set_state_for_tests, METH_VARARGS,
+     "Set timestamp and counter for deterministic boundary tests"},
     {"uuid7", py_uuid7, METH_NOARGS, "Generate a UUID v7 uuid.UUID object"},
     {"uuid7_obj", py_uuid7_obj, METH_NOARGS, "Generate a compact native UUID v7 object"},
     {"uuid7_many", py_uuid7_many, METH_VARARGS, "Generate UUID v7 objects in one call"},

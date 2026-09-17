@@ -4,6 +4,7 @@ from uuidv7 import (
     UUID7Obj,
     __version__,
     uuid7,
+    uuid7_at,
     uuid7_bytes,
     uuid7_bytes_many,
     uuid7_many,
@@ -16,6 +17,7 @@ from uuidv7 import (
 __all__ = [
     "UUID7Obj",
     "uuid7",
+    "uuid7_at",
     "uuid7_bytes",
     "uuid7_bytes_many",
     "uuid7_many",

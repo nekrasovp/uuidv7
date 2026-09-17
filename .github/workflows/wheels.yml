@@ -50,8 +50,10 @@ jobs:
           CIBW_ARCHS_LINUX: ${{ matrix.cibw-archs-linux }}
           CIBW_ARCHS_MACOS: ${{ matrix.cibw-archs-macos }}
           CIBW_ARCHS_WINDOWS: ${{ matrix.cibw-archs-windows }}
+          CIBW_TEST_REQUIRES: "pytest>=7"
           CIBW_TEST_COMMAND: >-
-            python -c "import uuid, fastuuid7, uuidv7; values = fastuuid7.uuid7_many(10); assert fastuuid7.uuid7 is uuidv7.uuid7; assert all(isinstance(u, uuid.UUID) and u.version == 7 for u in values)"
+            python {project}/tools/smoke_wheel.py &&
+            python -m pytest --import-mode=importlib {project}/tests/test_boundaries.py {project}/tests/test_uuidv7.py -q
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
