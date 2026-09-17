@@ -53,7 +53,7 @@ jobs:
           CIBW_TEST_REQUIRES: "pytest>=7"
           CIBW_TEST_COMMAND: >-
             python {project}/tools/smoke_wheel.py &&
-            python -m pytest --import-mode=importlib {project}/tests/test_boundaries.py {project}/tests/test_uuidv7.py -q
+            python -m pytest --import-mode=importlib {project}/tests/test_boundaries.py {project}/tests/test_uuidv7.py {project}/tests/test_historical_batch.py -q
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
