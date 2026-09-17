@@ -47,7 +47,7 @@ def build_cases():
     ]
     for published in [False, True]:
         for function, shape in shapes:
-            label = "published 0.3.0" if published else "candidate"
+            label = f"published {PINS['fastuuid7']['version']}" if published else "candidate"
             cases.append(
                 Case(
                     f"{label}: {function}",
@@ -312,7 +312,7 @@ def report(results, skipped, sha, dirty=False):
         "logical-clock drift during the workload, not a conformance verdict.",
         "",
         "Compare only matching output shapes AND generation guarantees. "
-        "The candidate and published 0.3.0 both use OS CSPRNG entropy and PID reset.",
+        f"The candidate and published {PINS['fastuuid7']['version']} both use OS CSPRNG entropy and PID reset.",
         "",
     ]
     for shape in sorted({r["shape"] for r in results}):

@@ -3,6 +3,32 @@
 All notable changes to this project are documented here. The project follows
 [Semantic Versioning](https://semver.org/).
 
+## 0.5.0 - 2026-09-18
+
+### Added
+
+- `uuid7_at_many(*, unix_ms=...)` generates historical UUIDs from a finite
+  iterable, preserving each exact timestamp and validating the entire input
+  before generation. Both import paths expose the typed API.
+- A transactional SQLite migration example persists old-to-new ID mappings,
+  resumes after interruption and verifies related-record integrity.
+- Executed SQLAlchemy, Django, Pydantic/FastAPI and psycopg integration tests
+  with PostgreSQL, plus property tests for UUID compatibility.
+- Reproducible PostgreSQL 18 bulk INSERT, binary COPY and historical-import
+  workloads with pinned dependencies, persisted-row verification and raw reports.
+- An isolated free-threading prototype and architecture decision, plus adoption
+  guidance, public dependency evidence and a technical article draft.
+
+### Changed
+
+- Python 3.14+ integer conversion uses the public `PyLongWriter` API with a
+  checked layout and public fallback. Older supported Python keeps its fast
+  path; `_PyLong_FromByteArray` is no longer used.
+- A separate Linux/macOS/Windows matrix checks Python 3.15.0rc2. Stable support
+  remains Python 3.9–3.14; this release does not claim ABI3 or GIL-free support.
+- Release wheels run the historical batch and migration suite as well as the
+  existing boundary tests. The published benchmark baseline is fastuuid7 0.4.0.
+
 ## 0.4.0 - 2026-09-17
 
 ### Added

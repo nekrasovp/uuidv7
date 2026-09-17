@@ -1,5 +1,5 @@
 {
-  "fastuuid7": {"version": "0.3.0", "source": "https://github.com/nekrasovp/uuidv7/releases/tag/v0.3.0"},
+  "fastuuid7": {"version": "0.4.0", "source": "https://github.com/nekrasovp/uuidv7/releases/tag/v0.4.0"},
   "uuid-utils": {"version": "1.0.0", "source": "https://github.com/aminalaee/uuid-utils/releases/tag/1.0.0"},
   "fastuuidv7": {"version": "0.1.9", "source": "https://github.com/marcomq/fast-uuid-v7/releases/tag/v0.1.9"},
   "uuid7-rs": {"version": "0.1.0", "source": "https://github.com/lava-sh/uuid7-rs/releases/tag/0.1.0"},

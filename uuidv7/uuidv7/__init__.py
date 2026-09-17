@@ -14,7 +14,7 @@ from uuidv7 import (
 )
 from uuidv7.uuidv7_impl.uuid7_gen import generate_uuid7
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __all__ = [
     "uuid7",
     "uuid7_at",

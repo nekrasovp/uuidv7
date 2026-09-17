@@ -15,7 +15,7 @@ in C and compatible with Python's `uuid.UUID` API.
 - Automatic entropy and counter reset after a process fork
 - `uuid.uuid7()`-compatible API returning `uuid.UUID`
 - Native object, canonical string, and raw bytes fast paths
-- Explicit Unix millisecond timestamps for historical records with `uuid7_at()`
+- Exact historical timestamps with `uuid7_at()` and `uuid7_at_many()`
 - Python 3.9-3.14 on Linux, macOS, and Windows
 - Typed `fastuuid7` and backward-compatible `uuidv7` imports
 
@@ -101,6 +101,19 @@ the exact timestamp and uses fresh OS randomness without changing the live
 generator's monotonic counter. Repeated historical calls are not ordered.
 See the [backfill recipe](docs/integrations.md#backfilling-historical-records).
 
+For a chunk of historical records, pass their timestamps in source order:
+
+```python
+from fastuuid7 import uuid7_at_many
+
+ids = uuid7_at_many(unix_ms=[1_645_557_742_123, 1_645_557_742_124])
+assert [item.time for item in ids] == [1_645_557_742_123, 1_645_557_742_124]
+```
+
+The entire finite iterable is consumed and validated before generation. Save
+assigned IDs with source keys so retries can reuse them; see the executable
+[resumable migration example](examples/historical_migration/README.md).
+
 See the [API reference](docs/api.md) for complete scalar and batch contracts.
 
 ### Security properties
@@ -118,6 +131,8 @@ For more detailed usage examples, see the [`examples/`](examples/) directory:
 - **[Batch Generation](examples/batch_generation.py)** - High-throughput UUID generation and uniqueness verification
 - **[Database Usage](examples/database_usage.py)** - Real SQLAlchemy 2 primary-key integration
 - **[Integration Recipes](docs/integrations.md)** - Django, Pydantic/FastAPI, and PostgreSQL
+- **[Integration Tests](docs/integration-testing.md)** - Executed ORM, driver, validation and UUID compatibility checks
+- **[Adoption Guide](docs/adoption/README.md)** - Choosing a generator, public usage evidence and feedback
 
 **Quick Start:**
 ```bash
@@ -214,7 +229,7 @@ iterations, UUIDs/second, and ns/op for:
 - `fastuuid7.uuid7_bytes()`
 - `str(fastuuid7.uuid7())`
 - Python stdlib `uuid.uuid7()` when available
-- published `fastuuid7==0.3.0` in an isolated temporary environment
+- published `fastuuid7==0.4.0` in an isolated temporary environment
 - optional competitors when installed: `uuid-utils`, `fastuuidv7`, `uuid7`,
   `uuid7-rs`, `c_uuid_v7`, `uuid-v7`, and `uuid6`
 
@@ -222,6 +237,16 @@ Published benchmark results must describe both the output shape and generation
 guarantees. In particular, CSPRNG-backed and non-cryptographic generators are
 not presented as equivalent cases. Release benchmarks are generated in CI from
 the exact release candidate rather than copied from a developer workstation.
+
+The [PostgreSQL workload harness](docs/performance-workloads.md) measures full
+SQLAlchemy bulk INSERT, binary COPY and historical import, including persisted
+row verification. It separates client libraries from PostgreSQL 18 server-side
+generation and records time, client CPU and memory. Use end-to-end measurements
+to decide whether generator changes matter for your workload.
+
+Python 3.15.0rc2 is checked in a separate [prerelease matrix](docs/python-compatibility.md);
+the stable support range remains 3.9–3.14. The [free-threading research](docs/design/free-threading.md)
+is an isolated prototype and does not enable production generation without the GIL.
 
 ## CI/CD
 
@@ -250,7 +275,7 @@ Follow the complete [release checklist](docs/releasing.md), before publishing.
 
 1. Run tests, builds, and benchmarks.
 2. Review benchmark results and decide whether optimization is needed.
-3. Verify all source versions with `python tools/check_release_version.py v0.4.0`.
+3. Verify all source versions with `python tools/check_release_version.py v0.5.0`.
 4. Create a new [GitHub Release](https://github.com/nekrasovp/uuidv7/releases/new).
 5. The workflow will validate, build, inspect, and publish the distributions.
 

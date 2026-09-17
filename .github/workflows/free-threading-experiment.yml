@@ -1,0 +1,44 @@
+name: Free-threading experiment
+
+on:
+  pull_request:
+    paths:
+      - "tools/experiments/free_threading/**"
+      - "docs/design/free-threading.md"
+      - "uuidv7/uuidv7_impl/**"
+      - ".github/workflows/free-threading-experiment.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  experiment:
+    name: Experiment ${{ matrix.os }} Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-15]
+        python: ["3.14", "3.14t"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Run isolated prototype contracts and short measurements
+        run: >-
+          python tools/experiments/free_threading/run.py
+          --output "${{ runner.temp }}/free-threading"
+          --rounds 3 --uuids 65536
+      - name: Upload research evidence (not release wheels)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: free-threading-${{ matrix.os }}-${{ matrix.python }}
+          path: |
+            ${{ runner.temp }}/free-threading/*.json
+            ${{ runner.temp }}/free-threading/*.log
+            ${{ runner.temp }}/free-threading/build/build.json
+          if-no-files-found: error

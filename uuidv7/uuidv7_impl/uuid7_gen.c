@@ -2,116 +2,7 @@
 #include <Python.h>
 #include <string.h>
 #include "uuid7_gen.h"
-
-static uint64_t read_u64_be(const unsigned char bytes[8]) {
-    return ((uint64_t)bytes[0] << 56) |
-           ((uint64_t)bytes[1] << 48) |
-           ((uint64_t)bytes[2] << 40) |
-           ((uint64_t)bytes[3] << 32) |
-           ((uint64_t)bytes[4] << 24) |
-           ((uint64_t)bytes[5] << 16) |
-           ((uint64_t)bytes[6] << 8) |
-           (uint64_t)bytes[7];
-}
-
-static void write_u64_be(unsigned char bytes[8], uint64_t value) {
-    bytes[0] = (unsigned char)(value >> 56);
-    bytes[1] = (unsigned char)(value >> 48);
-    bytes[2] = (unsigned char)(value >> 40);
-    bytes[3] = (unsigned char)(value >> 32);
-    bytes[4] = (unsigned char)(value >> 24);
-    bytes[5] = (unsigned char)(value >> 16);
-    bytes[6] = (unsigned char)(value >> 8);
-    bytes[7] = (unsigned char)value;
-}
-
-#if !defined(Py_LIMITED_API)
-#if PY_VERSION_HEX >= 0x030C0000
-#define UUIDV7_LONG_DIGITS(op) (((PyLongObject *)(op))->long_value.ob_digit)
-#else
-#define UUIDV7_LONG_DIGITS(op) (((PyLongObject *)(op))->ob_digit)
-#endif
-#endif
-
-static PyObject *uuid_words_to_int(uint64_t high, uint64_t low) {
-#if !defined(Py_LIMITED_API) && PyLong_SHIFT == 30
-    digit digits[5];
-    Py_ssize_t ndigits = 5;
-    PyLongObject *result;
-    digit *result_digits;
-
-    digits[0] = (digit)(low & PyLong_MASK);
-    digits[1] = (digit)((low >> 30) & PyLong_MASK);
-    digits[2] = (digit)(((low >> 60) | ((high & UINT64_C(0x3ffffff)) << 4)) & PyLong_MASK);
-    digits[3] = (digit)((high >> 26) & PyLong_MASK);
-    digits[4] = (digit)(high >> 56);
-
-    while (ndigits > 0 && digits[ndigits - 1] == 0) {
-        ndigits--;
-    }
-
-    if (ndigits == 0) {
-        return PyLong_FromLong(0);
-    }
-
-    result = _PyLong_New(ndigits);
-    if (result == NULL) {
-        return NULL;
-    }
-
-    result_digits = UUIDV7_LONG_DIGITS(result);
-    for (Py_ssize_t index = 0; index < ndigits; index++) {
-        result_digits[index] = digits[index];
-    }
-
-    return (PyObject *)result;
-#elif !defined(Py_LIMITED_API)
-    unsigned char uuid[16];
-
-    write_u64_be(uuid, high);
-    write_u64_be(uuid + 8, low);
-    return _PyLong_FromByteArray(uuid, 16, 0, 0);
-#else
-    PyObject *high_obj = NULL;
-    PyObject *low_obj = NULL;
-    PyObject *shift = NULL;
-    PyObject *shifted = NULL;
-    PyObject *result = NULL;
-
-    high_obj = PyLong_FromUnsignedLongLong(high);
-    if (high_obj == NULL) {
-        goto done;
-    }
-
-    low_obj = PyLong_FromUnsignedLongLong(low);
-    if (low_obj == NULL) {
-        goto done;
-    }
-
-    shift = PyLong_FromLong(64);
-    if (shift == NULL) {
-        goto done;
-    }
-
-    shifted = PyNumber_Lshift(high_obj, shift);
-    if (shifted == NULL) {
-        goto done;
-    }
-
-    result = PyNumber_Or(shifted, low_obj);
-
-done:
-    Py_XDECREF(high_obj);
-    Py_XDECREF(low_obj);
-    Py_XDECREF(shift);
-    Py_XDECREF(shifted);
-    return result;
-#endif
-}
-
-static PyObject *uuid_bytes_to_int(const unsigned char uuid[16]) {
-    return uuid_words_to_int(read_u64_be(uuid), read_u64_be(uuid + 8));
-}
+#include "uuid7_int.h"
 
 static PyObject *uuid7_type = NULL;
 static PyObject *uuid7_safe_uuid = NULL;
@@ -560,23 +451,8 @@ static PyObject *py_configure_uuid7(PyObject *self, PyObject *const *args, Py_ss
     Py_RETURN_NONE;
 }
 
-static PyObject *py_uuid7(PyObject *self, PyObject *args) {
-    unsigned char uuid[16];
-    PyObject *value;
-
-    (void)self;
-    (void)args;
-
-    if (uuid7_type == NULL || uuid7_safe_uuid == NULL) {
-        PyErr_SetString(PyExc_RuntimeError, "uuid7 object fast path is not configured");
-        return NULL;
-    }
-
-    int generation_status = generate_uuid7_bytes(uuid);
-    if (generation_status < 0) {
-        return raise_generation_error(generation_status);
-    }
-    value = uuid_bytes_to_int(uuid);
+/* Takes ownership of value, including on allocation/attribute errors. */
+static PyObject *uuid7_from_owned_int(PyObject *value) {
     if (value == NULL) {
         return NULL;
     }
@@ -633,6 +509,22 @@ done:
         return result;
     }
 #endif
+}
+
+static PyObject *py_uuid7(PyObject *self, PyObject *args) {
+    unsigned char uuid[16];
+    (void)self;
+    (void)args;
+
+    if (uuid7_type == NULL || uuid7_safe_uuid == NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "uuid7 object fast path is not configured");
+        return NULL;
+    }
+    int status = generate_uuid7_bytes(uuid);
+    if (status < 0) {
+        return raise_generation_error(status);
+    }
+    return uuid7_from_owned_int(uuid_bytes_to_int(uuid));
 }
 
 static PyObject *py_generate_uuid7(PyObject *self, PyObject *args) {
@@ -770,6 +662,87 @@ static PyObject *py_set_state_for_tests(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
+static PyObject *py_uuid7_at_many(PyObject *self, PyObject *arg) {
+    PyObject *snapshot;
+    PyObject *result = NULL;
+    uint64_t *timestamps = NULL;
+    Py_ssize_t count;
+    (void)self;
+
+    /* Snapshot first: iteration may execute arbitrary Python or raise late. */
+    snapshot = PySequence_Tuple(arg);
+    if (snapshot == NULL) {
+        return NULL;
+    }
+    count = PyTuple_GET_SIZE(snapshot);
+    if (count == 0) {
+        Py_DECREF(snapshot);
+        return PyList_New(0);
+    }
+    if ((size_t)count > SIZE_MAX / sizeof(*timestamps)) {
+        Py_DECREF(snapshot);
+        return PyErr_NoMemory();
+    }
+    timestamps = PyMem_Malloc((size_t)count * sizeof(*timestamps));
+    if (timestamps == NULL) {
+        Py_DECREF(snapshot);
+        return PyErr_NoMemory();
+    }
+    /* Validate every value before consuming any generator entropy. */
+    for (Py_ssize_t index = 0; index < count; index++) {
+        PyObject *item = PyTuple_GET_ITEM(snapshot, index);
+        unsigned long long value;
+        if (PyBool_Check(item) || !PyLong_Check(item)) {
+            PyErr_Format(PyExc_TypeError, "unix_ms[%zd] must be an integer number of Unix milliseconds", index);
+            goto done;
+        }
+        value = PyLong_AsUnsignedLongLong(item);
+        if (PyErr_Occurred()) {
+            if (!PyErr_ExceptionMatches(PyExc_OverflowError)) {
+                goto done;
+            }
+            PyErr_Clear();
+            PyErr_Format(PyExc_ValueError, "unix_ms[%zd] must be between 0 and 2**48 - 1", index);
+            goto done;
+        }
+        if (value > UUID7_MAX_TIMESTAMP) {
+            PyErr_Format(PyExc_ValueError, "unix_ms[%zd] must be between 0 and 2**48 - 1", index);
+            goto done;
+        }
+        timestamps[index] = (uint64_t)value;
+    }
+    if (uuid7_type == NULL || uuid7_safe_uuid == NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "uuid7 object fast path is not configured");
+        goto done;
+    }
+    result = PyList_New(count);
+    if (result == NULL) {
+        goto done;
+    }
+    for (Py_ssize_t index = 0; index < count; index++) {
+        uint64_t high;
+        uint64_t low;
+        PyObject *item;
+        int status = generate_uuid7_at_words(&high, &low, timestamps[index]);
+        if (status < 0) {
+            raise_generation_error(status);
+            Py_CLEAR(result);
+            goto done;
+        }
+        item = uuid7_from_owned_int(uuid_words_to_int(high, low));
+        if (item == NULL) {
+            Py_CLEAR(result);
+            goto done;
+        }
+        PyList_SET_ITEM(result, index, item);
+    }
+
+done:
+    PyMem_Free(timestamps);
+    Py_DECREF(snapshot);
+    return result;
+}
+
 static int parse_batch_count(PyObject *args, Py_ssize_t *count) {
     if (!PyArg_ParseTuple(args, "n", count)) {
         return -1;
@@ -897,6 +870,8 @@ static PyObject *py_uuid7_bytes_many(PyObject *self, PyObject *args) {
 }
 
 static PyMethodDef uuid7_gen_methods[] = {
+    {"_uuid7_at_many", py_uuid7_at_many, METH_O,
+     "Generate independent UUID v7 objects after validating all timestamps"},
     {"_generate_uuid7_at_bytes", py_generate_uuid7_at_bytes, METH_O,
      "Generate independent UUID v7 bytes at a Unix millisecond timestamp"},
     {"_set_state_for_tests", py_set_state_for_tests, METH_VARARGS,

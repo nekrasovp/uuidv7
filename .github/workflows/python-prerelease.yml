@@ -1,0 +1,42 @@
+name: Python prerelease
+
+on:
+  pull_request:
+    branches: [main, master, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python315:
+    name: CPython 3.15.0rc2 on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        id: python
+        with:
+          python-version: "3.15.0-rc.2"
+          allow-prereleases: true
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.11.28"
+      - name: Report exact interpreter
+        run: python -VV
+      - name: Install locked development dependencies
+        run: uv sync --python "${{ steps.python.outputs.python-path }}" --extra dev --locked
+      - name: Test prerelease (including direct C integer conversion)
+        run: uv run --extra dev --locked pytest
+      - name: Build source distribution and wheel
+        run: uv build --python "${{ steps.python.outputs.python-path }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python315-prerelease-${{ matrix.os }}
+          path: dist/*
+          retention-days: 7

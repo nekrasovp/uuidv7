@@ -7,8 +7,13 @@ recursive-include docs *.md
 recursive-include examples *.md *.py
 recursive-include benchmarks *.py
 recursive-include benchmarks *.json
+include benchmarks/README.md
+recursive-include benchmarks/workloads *.toml *.lock *.md *.sql
+prune benchmarks/workloads/.venv
 include uv.lock
 recursive-include tools *.py
+recursive-include tools/experiments/free_threading *.c *.md *.json
+prune tools/experiments/free_threading/.venv
 recursive-include tests *.py
 recursive-include uuidv7/uuidv7_impl/include *
 recursive-include uuidv7/uuidv7_impl/src *
