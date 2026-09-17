@@ -111,3 +111,43 @@ CREATE TABLE event (
 Application-side generation lets an ID exist before an insert and works across
 PostgreSQL versions. PostgreSQL 18 can instead generate UUIDv7 values on the
 server with `uuidv7()` when application-side IDs are unnecessary.
+
+## Resumable migration of related historical records
+
+The runnable [SQLite example](../examples/historical_migration/README.md) uses
+`uuid7_at_many(unix_ms=...)` to backfill customers and their orders. It persists
+`(entity, old_id) -> new_id` in a mapping table. Each transaction inserts mappings,
+updates customer and order UUID columns, and updates order-to-customer UUID
+references together. Committed mappings survive process exit; resume selects
+unmigrated customers and reuses any persisted assignments. UUID generation alone
+is not idempotent.
+
+From a source checkout:
+
+```bash
+uv sync --extra dev --locked
+uv run --extra dev --locked python examples/historical_migration/migrate.py /tmp/history.sqlite --max-batches 1
+uv run --extra dev --locked python examples/historical_migration/migrate.py /tmp/history.sqlite
+```
+
+The first invocation stops after a committed chunk; the second completes the
+migration. Further runs leave assigned UUIDs unchanged. The example checks SQL
+foreign keys, old/new relationship agreement, mapping correspondence, UUID
+version/variant, and exact historical timestamps. Tests also interrupt a chunk
+between related updates to prove rollback and resume. Source writes are paused
+for this demonstration; the legacy keys remain available throughout.
+
+For PostgreSQL, preserve the same transaction boundaries and persistent unique
+mapping keys, use native `uuid` columns, and pass `uuid.UUID` values through the
+driver. Select and lock the parent rows for each chunk in a transaction; concurrent
+workers need an explicit ownership/locking policy, with each parent's dependent
+rows handled by the same transaction. Unique constraints on both old mapping
+keys and new UUIDs must remain in place. On conflict, load the winning committed
+mapping rather than generating a replacement. Coordinate or pause source writers
+so that newly inserted children cannot miss the backfill. Validate the complete
+mapping and foreign keys before a separately planned switch of primary keys.
+The SQLite example demonstrates this data flow; it does not execute or benchmark
+a PostgreSQL migration.
+
+PostgreSQL reference: [row-level locking](https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-ROWS)
+and the [native UUID type](https://www.postgresql.org/docs/current/datatype-uuid.html).

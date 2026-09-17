@@ -255,7 +255,7 @@ static int generate_uuid7_words_for_timestamp(
     return 0;
 }
 
-int generate_uuid7_at_bytes(unsigned char uuid[16], uint64_t unix_ts_ms) {
+int generate_uuid7_at_words(uint64_t *high, uint64_t *low, uint64_t unix_ts_ms) {
     uint64_t random_high;
     uint64_t random_low;
 
@@ -266,11 +266,19 @@ int generate_uuid7_at_bytes(unsigned char uuid[16], uint64_t unix_ts_ms) {
     if (secure_random_u64(&random_high) < 0 || secure_random_u64(&random_low) < 0) {
         return -1;
     }
-    write_uuid7_words(
-        uuid,
-        (unix_ts_ms << 16) | UINT64_C(0x7000) | (random_high & UINT64_C(0xfff)),
-        UINT64_C(0x8000000000000000) | (random_low & UINT64_C(0x3fffffffffffffff))
-    );
+    *high = (unix_ts_ms << 16) | UINT64_C(0x7000) | (random_high & UINT64_C(0xfff));
+    *low = UINT64_C(0x8000000000000000) | (random_low & UINT64_C(0x3fffffffffffffff));
+    return 0;
+}
+
+int generate_uuid7_at_bytes(unsigned char uuid[16], uint64_t unix_ts_ms) {
+    uint64_t high;
+    uint64_t low;
+    int status = generate_uuid7_at_words(&high, &low, unix_ts_ms);
+    if (status < 0) {
+        return status;
+    }
+    write_uuid7_words(uuid, high, low);
     return 0;
 }
 

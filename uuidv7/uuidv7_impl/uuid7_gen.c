@@ -560,23 +560,8 @@ static PyObject *py_configure_uuid7(PyObject *self, PyObject *const *args, Py_ss
     Py_RETURN_NONE;
 }
 
-static PyObject *py_uuid7(PyObject *self, PyObject *args) {
-    unsigned char uuid[16];
-    PyObject *value;
-
-    (void)self;
-    (void)args;
-
-    if (uuid7_type == NULL || uuid7_safe_uuid == NULL) {
-        PyErr_SetString(PyExc_RuntimeError, "uuid7 object fast path is not configured");
-        return NULL;
-    }
-
-    int generation_status = generate_uuid7_bytes(uuid);
-    if (generation_status < 0) {
-        return raise_generation_error(generation_status);
-    }
-    value = uuid_bytes_to_int(uuid);
+/* Takes ownership of value, including on allocation/attribute errors. */
+static PyObject *uuid7_from_owned_int(PyObject *value) {
     if (value == NULL) {
         return NULL;
     }
@@ -633,6 +618,22 @@ done:
         return result;
     }
 #endif
+}
+
+static PyObject *py_uuid7(PyObject *self, PyObject *args) {
+    unsigned char uuid[16];
+    (void)self;
+    (void)args;
+
+    if (uuid7_type == NULL || uuid7_safe_uuid == NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "uuid7 object fast path is not configured");
+        return NULL;
+    }
+    int status = generate_uuid7_bytes(uuid);
+    if (status < 0) {
+        return raise_generation_error(status);
+    }
+    return uuid7_from_owned_int(uuid_bytes_to_int(uuid));
 }
 
 static PyObject *py_generate_uuid7(PyObject *self, PyObject *args) {
@@ -770,6 +771,87 @@ static PyObject *py_set_state_for_tests(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;
 }
 
+static PyObject *py_uuid7_at_many(PyObject *self, PyObject *arg) {
+    PyObject *snapshot;
+    PyObject *result = NULL;
+    uint64_t *timestamps = NULL;
+    Py_ssize_t count;
+    (void)self;
+
+    /* Snapshot first: iteration may execute arbitrary Python or raise late. */
+    snapshot = PySequence_Tuple(arg);
+    if (snapshot == NULL) {
+        return NULL;
+    }
+    count = PyTuple_GET_SIZE(snapshot);
+    if (count == 0) {
+        Py_DECREF(snapshot);
+        return PyList_New(0);
+    }
+    if ((size_t)count > SIZE_MAX / sizeof(*timestamps)) {
+        Py_DECREF(snapshot);
+        return PyErr_NoMemory();
+    }
+    timestamps = PyMem_Malloc((size_t)count * sizeof(*timestamps));
+    if (timestamps == NULL) {
+        Py_DECREF(snapshot);
+        return PyErr_NoMemory();
+    }
+    /* Validate every value before consuming any generator entropy. */
+    for (Py_ssize_t index = 0; index < count; index++) {
+        PyObject *item = PyTuple_GET_ITEM(snapshot, index);
+        unsigned long long value;
+        if (PyBool_Check(item) || !PyLong_Check(item)) {
+            PyErr_Format(PyExc_TypeError, "unix_ms[%zd] must be an integer number of Unix milliseconds", index);
+            goto done;
+        }
+        value = PyLong_AsUnsignedLongLong(item);
+        if (PyErr_Occurred()) {
+            if (!PyErr_ExceptionMatches(PyExc_OverflowError)) {
+                goto done;
+            }
+            PyErr_Clear();
+            PyErr_Format(PyExc_ValueError, "unix_ms[%zd] must be between 0 and 2**48 - 1", index);
+            goto done;
+        }
+        if (value > UUID7_MAX_TIMESTAMP) {
+            PyErr_Format(PyExc_ValueError, "unix_ms[%zd] must be between 0 and 2**48 - 1", index);
+            goto done;
+        }
+        timestamps[index] = (uint64_t)value;
+    }
+    if (uuid7_type == NULL || uuid7_safe_uuid == NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "uuid7 object fast path is not configured");
+        goto done;
+    }
+    result = PyList_New(count);
+    if (result == NULL) {
+        goto done;
+    }
+    for (Py_ssize_t index = 0; index < count; index++) {
+        uint64_t high;
+        uint64_t low;
+        PyObject *item;
+        int status = generate_uuid7_at_words(&high, &low, timestamps[index]);
+        if (status < 0) {
+            raise_generation_error(status);
+            Py_CLEAR(result);
+            goto done;
+        }
+        item = uuid7_from_owned_int(uuid_words_to_int(high, low));
+        if (item == NULL) {
+            Py_CLEAR(result);
+            goto done;
+        }
+        PyList_SET_ITEM(result, index, item);
+    }
+
+done:
+    PyMem_Free(timestamps);
+    Py_DECREF(snapshot);
+    return result;
+}
+
 static int parse_batch_count(PyObject *args, Py_ssize_t *count) {
     if (!PyArg_ParseTuple(args, "n", count)) {
         return -1;
@@ -897,6 +979,8 @@ static PyObject *py_uuid7_bytes_many(PyObject *self, PyObject *args) {
 }
 
 static PyMethodDef uuid7_gen_methods[] = {
+    {"_uuid7_at_many", py_uuid7_at_many, METH_O,
+     "Generate independent UUID v7 objects after validating all timestamps"},
     {"_generate_uuid7_at_bytes", py_generate_uuid7_at_bytes, METH_O,
      "Generate independent UUID v7 bytes at a Unix millisecond timestamp"},
     {"_set_state_for_tests", py_set_state_for_tests, METH_VARARGS,

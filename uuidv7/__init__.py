@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import uuid as _uuid
+from collections.abc import Iterable
 
 from uuidv7.uuidv7_impl.uuid7_gen import (
     UUID7Obj,
     _configure_uuid7,
     _generate_uuid7_at_bytes,
+    _uuid7_at_many,
 )
 from uuidv7.uuidv7_impl.uuid7_gen import (
     generate_uuid7 as _generate_uuid7_str,
@@ -80,6 +82,15 @@ def uuid7_at(*, unix_ms: int) -> _uuid.UUID:
     return _UUID7(bytes=_generate_uuid7_at_bytes(unix_ms))
 
 
+def uuid7_at_many(*, unix_ms: Iterable[int]) -> list[_uuid.UUID]:
+    """Generate independent historical UUIDs from a finite iterable of milliseconds.
+
+    Eagerly snapshot and validate every timestamp before generating any UUID.
+    Preserve input order; empty input returns []. Iterator errors propagate.
+    """
+    return _uuid7_at_many(unix_ms)
+
+
 _configure_uuid7(_UUID7, _SAFE_UUID_UNKNOWN)
 uuid7 = _generate_uuid7_uuid
 uuid7_obj = _generate_uuid7_obj
@@ -96,6 +107,7 @@ __all__ = [
     "UUID7Obj",
     "uuid7",
     "uuid7_at",
+    "uuid7_at_many",
     "uuid7_bytes",
     "uuid7_bytes_many",
     "uuid7_many",
