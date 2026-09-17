@@ -1,0 +1,65 @@
+name: PostgreSQL workloads
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'benchmarks/workloads/**'
+      - 'tests/test_workload_contract.py'
+      - '.github/workflows/workloads.yml'
+      - 'fastuuid7/**'
+      - 'uuidv7/**'
+
+permissions:
+  contents: read
+
+jobs:
+  postgres18:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.3
+        env:
+          POSTGRES_USER: workload
+          POSTGRES_PASSWORD: disposable-workload-only
+          POSTGRES_DB: fastuuid7_workloads_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd 'pg_isready -U workload -d fastuuid7_workloads_ci'
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      WORKLOAD_DSN: postgresql://workload:disposable-workload-only@127.0.0.1:5432/fastuuid7_workloads_ci
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14.6'
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: '0.11.28'
+      - name: Install checkout and isolated workload dependencies
+        run: |
+          uv sync --extra dev --locked
+          uv sync --project benchmarks/workloads --locked
+      - name: Contract and repository tests
+        run: |
+          uv run --extra dev --locked pytest
+          uv run --extra dev --locked ruff check benchmarks/workloads tests/test_workload_contract.py
+          uv run --extra dev --locked ruff format --check benchmarks/workloads tests/test_workload_contract.py
+      - name: Real PostgreSQL 18 matrix
+        run: |
+          export WORKLOAD_POSTGRES_IMAGE="$(docker image inspect postgres:18.3 --format '{{index .RepoDigests 0}}')"
+          benchmarks/workloads/.venv/bin/python -I benchmarks/workloads/run.py --database fastuuid7_workloads_ci --rows 100000 --batch-size 1000 --rounds 3 --output "$RUNNER_TEMP/workloads.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: postgres18-workloads-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/workloads.json
+            ${{ runner.temp }}/workloads.md
+          if-no-files-found: error
