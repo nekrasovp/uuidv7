@@ -1,109 +1,169 @@
-"""Benchmark uuidv7 against optional competitor packages by API shape."""
-
-# ruff: noqa: E402
+"""Compare pinned UUIDv7 implementations in separate worker processes."""
 
 from __future__ import annotations
 
 import argparse
 import importlib
 import importlib.metadata
+import json
+import math
+import os
 import platform
 import statistics
 import subprocess
 import sys
+import tempfile
 import time
 import uuid
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Callable
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-from fastuuid7 import uuid7, uuid7_bytes, uuid7_obj, uuid7_str
-from uuidv7.uuidv7_impl.uuid7_gen import (
-    generate_uuid7 as ext_generate_uuid7_str,
-)
-from uuidv7.uuidv7_impl.uuid7_gen import (
-    generate_uuid7_bytes as ext_generate_uuid7_bytes,
-)
-from uuidv7.uuidv7_impl.uuid7_gen import (
-    generate_uuid7_int as ext_generate_uuid7_int,
-)
-
-DEFAULT_ITERATIONS = 1_000_000
-WARMUP_ITERATIONS = 2_000
-OPTIONAL_DISTRIBUTIONS = [
-    "uuid-utils",
-    "fastuuidv7",
-    "uuid7",
-    "uuid7-rs",
-    "c_uuid_v7",
-    "uuid-v7",
-    "uuid6",
-]
+ROOT = Path(__file__).resolve().parents[1]
+PINS = json.loads((Path(__file__).with_name("competitors.json")).read_text())
 
 
-@dataclass
-class BenchmarkCase:
-    name: str
+@dataclass(frozen=True)
+class Case:
+    key: str
     package: str
-    version: str
+    module: str
+    function: str
     shape: str
-    func: Callable[[], object]
+    entropy: str
+    ordering: str
+    fork: str
     source: str
+    transform: str = ""
+    published: bool = False
 
 
-@dataclass
-class BenchmarkResult:
-    name: str
-    package: str
-    version: str
-    shape: str
-    source: str
-    iterations: int
-    total_seconds: float
-    ops_per_second: float
-    ns_per_op: float
-    best_ns_per_op: float
-    median_ns_per_op: float
-    rounds: int
-    return_type: str
-
-
-@dataclass
-class SkippedCase:
-    name: str
-    package: str
-    reason: str
-    source: str
-
-
-def package_version(distribution_name: str) -> str:
-    try:
-        return importlib.metadata.version(distribution_name)
-    except importlib.metadata.PackageNotFoundError:
-        return "not installed"
-
-
-def install_optional_packages() -> dict[str, str]:
-    failures: dict[str, str] = {}
-    for distribution in OPTIONAL_DISTRIBUTIONS:
-        result = subprocess.run(
-            [sys.executable, "-m", "pip", "install", "--quiet", distribution],
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            check=False,
+def build_cases():
+    cases = []
+    shapes = [
+        ("uuid7", "uuid.UUID"),
+        ("uuid7_obj", "native"),
+        ("uuid7_str", "str"),
+        ("uuid7_bytes", "bytes"),
+    ]
+    for published in [False, True]:
+        for function, shape in shapes:
+            label = "published 0.3.0" if published else "candidate"
+            cases.append(
+                Case(
+                    f"{label}: {function}",
+                    "fastuuid7",
+                    "fastuuid7",
+                    function,
+                    shape,
+                    "OS CSPRNG",
+                    "process",
+                    "PID reset",
+                    "https://github.com/nekrasovp/uuidv7",
+                    published=published,
+                )
+            )
+        cases.append(
+            Case(
+                f"{label}: str(uuid7())",
+                "fastuuid7",
+                "fastuuid7",
+                "uuid7",
+                "str",
+                "OS CSPRNG",
+                "process",
+                "PID reset",
+                "https://github.com/nekrasovp/uuidv7",
+                "str",
+                published,
+            )
         )
-        if result.returncode != 0:
-            message = result.stderr.strip().splitlines()[-1:] or ["unknown pip failure"]
-            failures[distribution] = message[0]
-    return failures
+    cases.append(
+        Case(
+            "stdlib uuid7",
+            "python",
+            "uuid",
+            "uuid7",
+            "uuid.UUID",
+            "OS CSPRNG",
+            "process",
+            "not verified",
+            "https://docs.python.org/3/library/uuid.html#uuid.uuid7",
+        )
+    )
+    specs = [
+        ("uuid-utils", "uuid_utils", "uuid7", "native", "", "upstream RNG", "millisecond"),
+        (
+            "uuid-utils",
+            "uuid_utils.compat",
+            "uuid7",
+            "uuid.UUID",
+            "",
+            "upstream RNG",
+            "millisecond",
+        ),
+        ("uuid-utils", "uuid_utils", "uuid7", "str", "str", "upstream RNG", "millisecond"),
+        ("fastuuidv7", "fastuuidv7", "uuid7", "native", "", "non-cryptographic", "none"),
+        ("fastuuidv7", "fastuuidv7", "uuid7_str", "str", "", "non-cryptographic", "none"),
+        ("fastuuidv7", "fastuuidv7", "uuid7_hex", "hex", "", "non-cryptographic", "none"),
+        ("fastuuidv7", "fastuuidv7", "uuid7_bytes", "bytes", "", "non-cryptographic", "none"),
+        (
+            "fastuuidv7",
+            "fastuuidv7",
+            "uuid7_with_count",
+            "native",
+            "",
+            "non-cryptographic",
+            "thread",
+        ),
+        (
+            "fastuuidv7",
+            "fastuuidv7",
+            "SequentialGenerator",
+            "native",
+            "sequential",
+            "non-cryptographic",
+            "instance",
+        ),
+        ("uuid7-rs", "uuid7_rs", "uuid7", "native", "", "not verified", "not verified"),
+        ("uuid7-rs", "uuid7_rs.compat", "uuid7", "uuid.UUID", "", "not verified", "not verified"),
+        ("uuid7-rs", "uuid7_rs", "uuid7", "str", "str", "not verified", "not verified"),
+        ("c_uuid_v7", "c_uuid_v7", "uuid7", "native", "", "non-cryptographic", "not verified"),
+        (
+            "c_uuid_v7",
+            "c_uuid_v7.compat",
+            "uuid7",
+            "uuid.UUID",
+            "",
+            "non-cryptographic",
+            "not verified",
+        ),
+        ("c_uuid_v7", "c_uuid_v7", "uuid7", "str", "str", "non-cryptographic", "not verified"),
+        ("uuid7", "uuid_extensions", "uuid7", "uuid.UUID", "", "legacy draft", "not verified"),
+        ("uuid-v7", "uuid_v7.base", "uuid7", "uuid.UUID", "", "not verified", "not verified"),
+        ("uuid6", "uuid6", "uuid7", "uuid.UUID", "", "OS CSPRNG", "process"),
+    ]
+    for package, module, function, shape, transform, entropy, ordering in specs:
+        label = f"{module}.{function}()"
+        if transform == "str":
+            label = f"str({label})"
+        cases.append(
+            Case(
+                label,
+                package,
+                module,
+                function,
+                shape,
+                entropy,
+                ordering,
+                "not verified",
+                PINS[package]["source"],
+                transform,
+            )
+        )
+    return cases
 
 
-def parsed_uuid(value: object) -> uuid.UUID:
+def parsed_uuid(value):
     if isinstance(value, uuid.UUID):
         return value
     if isinstance(value, bytes):
@@ -113,492 +173,260 @@ def parsed_uuid(value: object) -> uuid.UUID:
     return uuid.UUID(str(value))
 
 
-def validate_uuid7(value: object) -> None:
+def validate_uuid7(value, shape, *, before_ms=None, after_ms=None):
+    expected = {"uuid.UUID": uuid.UUID, "str": str, "hex": str, "bytes": bytes}
+    if shape in expected and not isinstance(value, expected[shape]):
+        raise ValueError(f"expected {shape}, got {type(value).__module__}.{type(value).__name__}")
+    if shape == "native" and isinstance(value, (uuid.UUID, str, bytes, int)):
+        raise ValueError("expected a custom native object")
     parsed = parsed_uuid(value)
-    if parsed.version != 7:
-        raise AssertionError(f"{value!r} is not UUIDv7")
-    if parsed.variant != uuid.RFC_4122:
-        raise AssertionError(f"{value!r} is not RFC-compatible")
-
-
-def optional_case(
-    *,
-    distribution: str,
-    module_name: str,
-    function_name: str,
-    name: str,
-    shape: str,
-    source: str,
-) -> tuple[BenchmarkCase | None, SkippedCase | None]:
-    try:
-        module = importlib.import_module(module_name)
-    except ImportError as exc:
-        return None, SkippedCase(name, distribution, f"import failed: {exc}", source)
-
-    try:
-        func = getattr(module, function_name)
-    except AttributeError:
-        return None, SkippedCase(
-            name,
-            distribution,
-            f"{module_name}.{function_name} not found",
-            source,
+    if parsed.version != 7 or parsed.variant != uuid.RFC_4122:
+        raise ValueError("invalid UUIDv7 version/variant bits")
+    if shape == "str" and value != str(parsed):
+        raise ValueError("noncanonical UUID string")
+    if shape == "hex" and value != parsed.hex:
+        raise ValueError("noncanonical UUID hex")
+    tolerance_ms = max(10, math.ceil(time.get_clock_info("time").resolution * 1000))
+    if (
+        before_ms is not None
+        and not before_ms - tolerance_ms <= parsed.int >> 80 <= after_ms + tolerance_ms
+    ):
+        raise ValueError(
+            "timestamp does not encode current Unix milliseconds (legacy layout or clock drift)"
         )
+    return parsed
 
-    return (
-        BenchmarkCase(
-            name=name,
-            package=distribution,
-            version=package_version(distribution),
-            shape=shape,
-            func=func,
-            source=source,
-        ),
-        None,
+
+def measure(case, iterations, rounds):
+    # Never import another competitor in this worker. In particular, a process-
+    # wide allocator installed by one extension cannot influence another case.
+    if case.published:
+        sys.path[:] = [p for p in sys.path if Path(p or os.getcwd()).resolve() != ROOT]
+    else:
+        sys.path.insert(0, str(ROOT))
+    version = (
+        platform.python_version()
+        if case.package == "python"
+        else importlib.metadata.version(case.package)
     )
+    if (
+        case.package != "python"
+        and (case.package != "fastuuid7" or case.published)
+        and version != PINS[case.package]["version"]
+    ):
+        raise ValueError(f"expected pinned {PINS[case.package]['version']}, got {version}")
+    module = importlib.import_module(case.module)
+    if (
+        case.package == "fastuuid7"
+        and not case.published
+        and Path(module.__file__).resolve().parent.parent != ROOT
+    ):
+        raise ValueError("candidate import is not from this checkout")
+    function = getattr(module, case.function)
+    if case.transform == "sequential":
+        generator = function()
+        function = generator.next_uuid
+    elif case.transform == "str":
+        original = function
 
+        def function():
+            return str(original())
 
-def optional_factory_case(
-    *,
-    distribution: str,
-    module_name: str,
-    name: str,
-    shape: str,
-    source: str,
-    make_func: Callable[[object], Callable[[], object]],
-) -> tuple[BenchmarkCase | None, SkippedCase | None]:
-    try:
-        module = importlib.import_module(module_name)
-    except ImportError as exc:
-        return None, SkippedCase(name, distribution, f"import failed: {exc}", source)
-
-    try:
-        func = make_func(module)
-    except Exception as exc:  # noqa: BLE001 - optional API discovery should not fail the run.
-        return None, SkippedCase(name, distribution, f"factory failed: {exc}", source)
-
-    return (
-        BenchmarkCase(
-            name=name,
-            package=distribution,
-            version=package_version(distribution),
-            shape=shape,
-            func=func,
-            source=source,
-        ),
-        None,
-    )
-
-
-def benchmark_case(case: BenchmarkCase, iterations: int, rounds: int) -> BenchmarkResult:
-    for _ in range(WARMUP_ITERATIONS):
-        case.func()
-
-    sample = case.func()
-    validate_uuid7(sample)
-
-    measurements: list[float] = []
+    # Validate time on the first call, before a logical clock can legitimately
+    # advance during a high-throughput test (e.g. uuid6's timestamp counter).
+    before = time.time_ns() // 1_000_000
+    sample = function()
+    after = time.time_ns() // 1_000_000
+    previous = validate_uuid7(sample, case.shape, before_ms=before, after_ms=after)
+    seen = {previous.int}
+    for _ in range(64):
+        current = validate_uuid7(function(), case.shape)
+        if current.int in seen:
+            raise ValueError("duplicate UUID in validation sample")
+        seen.add(current.int)
+        if (
+            case.ordering in {"process", "thread", "instance", "millisecond"}
+            and current <= previous
+        ):
+            raise ValueError("sample violated advertised monotonicity")
+        previous = current
+    for _ in range(2000):
+        function()
+    timings = []
     for _ in range(rounds):
         start = time.perf_counter_ns()
         for _ in range(iterations):
-            case.func()
-        end = time.perf_counter_ns()
-        measurements.append((end - start) / iterations)
-
-    validate_uuid7(case.func())
-
-    best_ns_per_op = min(measurements)
-    median_ns_per_op = statistics.median(measurements)
-    total_seconds = best_ns_per_op * iterations / 1_000_000_000
-    return BenchmarkResult(
-        name=case.name,
-        package=case.package,
-        version=case.version,
-        shape=case.shape,
-        source=case.source,
-        iterations=iterations,
-        total_seconds=total_seconds,
-        ops_per_second=iterations / total_seconds,
-        ns_per_op=best_ns_per_op,
-        best_ns_per_op=best_ns_per_op,
-        median_ns_per_op=median_ns_per_op,
-        rounds=rounds,
-        return_type=type(sample).__name__,
-    )
+            function()
+        timings.append((time.perf_counter_ns() - start) / iterations)
+    final = validate_uuid7(function(), case.shape)
+    return {
+        **asdict(case),
+        "version": version,
+        "return_type": f"{type(sample).__module__}.{type(sample).__name__}",
+        "best_ns": min(timings),
+        "median_ns": statistics.median(timings),
+        "iterations": iterations,
+        "rounds": rounds,
+        "final_clock_delta_ms": (final.int >> 80) - time.time_ns() // 1_000_000,
+    }
 
 
-def build_cases() -> tuple[list[BenchmarkCase], list[SkippedCase]]:
-    cases = [
-        BenchmarkCase(
-            name="fastuuid7.uuid7_bytes()",
-            package="fastuuid7",
-            version=package_version("fastuuid7"),
-            shape="bytes",
-            func=uuid7_bytes,
-            source="local candidate",
-        ),
-        BenchmarkCase(
-            name="fastuuid7.uuid7_obj()",
-            package="fastuuid7",
-            version=package_version("fastuuid7"),
-            shape="custom native object",
-            func=uuid7_obj,
-            source="local candidate",
-        ),
-        BenchmarkCase(
-            name="fastuuid7.uuid7_str()",
-            package="fastuuid7",
-            version=package_version("fastuuid7"),
-            shape="string/default",
-            func=uuid7_str,
-            source="local candidate",
-        ),
-        BenchmarkCase(
-            name="fastuuid7.uuid7()",
-            package="fastuuid7",
-            version=package_version("fastuuid7"),
-            shape="uuid.UUID compat",
-            func=uuid7,
-            source="local candidate",
-        ),
-        BenchmarkCase(
-            name="str(fastuuid7.uuid7())",
-            package="fastuuid7",
-            version=package_version("fastuuid7"),
-            shape="convenience string",
-            func=lambda: str(uuid7()),
-            source="local candidate",
-        ),
-        BenchmarkCase(
-            name="str(fastuuid7.uuid7_obj())",
-            package="fastuuid7",
-            version=package_version("fastuuid7"),
-            shape="materialized string",
-            func=lambda: str(uuid7_obj()),
-            source="local candidate",
-        ),
-        BenchmarkCase(
-            name="uuidv7 C generate_uuid7_bytes()",
-            package="fastuuid7",
-            version=package_version("fastuuid7"),
-            shape="C extension output",
-            func=ext_generate_uuid7_bytes,
-            source="local candidate",
-        ),
-        BenchmarkCase(
-            name="uuidv7 C generate_uuid7()",
-            package="fastuuid7",
-            version=package_version("fastuuid7"),
-            shape="C extension output",
-            func=ext_generate_uuid7_str,
-            source="local candidate",
-        ),
-        BenchmarkCase(
-            name="uuidv7 C generate_uuid7_int()",
-            package="fastuuid7",
-            version=package_version("fastuuid7"),
-            shape="C extension output",
-            func=ext_generate_uuid7_int,
-            source="local candidate",
-        ),
-    ]
-    skipped: list[SkippedCase] = []
-
-    optional_specs = [
-        {
-            "distribution": "c_uuid_v7",
-            "module_name": "c_uuid_v7",
-            "function_name": "uuid7",
-            "name": "c_uuid_v7.uuid7()",
-            "shape": "custom default object",
-            "source": "https://github.com/lava-sh/c_uuid_v7",
-        },
-        {
-            "distribution": "c_uuid_v7",
-            "module_name": "c_uuid_v7.compat",
-            "function_name": "uuid7",
-            "name": "c_uuid_v7.compat.uuid7()",
-            "shape": "uuid.UUID compat",
-            "source": "https://github.com/lava-sh/c_uuid_v7",
-        },
-        {
-            "distribution": "uuid7-rs",
-            "module_name": "uuid7_rs",
-            "function_name": "uuid7",
-            "name": "uuid7_rs.uuid7()",
-            "shape": "custom default object",
-            "source": "https://github.com/lava-sh/uuid7-rs",
-        },
-        {
-            "distribution": "uuid7-rs",
-            "module_name": "uuid7_rs.compat",
-            "function_name": "uuid7",
-            "name": "uuid7_rs.compat.uuid7()",
-            "shape": "uuid.UUID compat",
-            "source": "https://github.com/lava-sh/uuid7-rs",
-        },
-        {
-            "distribution": "fastuuidv7",
-            "module_name": "fastuuidv7",
-            "function_name": "uuid7",
-            "name": "fastuuidv7.uuid7()",
-            "shape": "string/default",
-            "source": "https://pypi.org/project/fastuuidv7/",
-        },
-        {
-            "distribution": "uuid-utils",
-            "module_name": "uuid_utils",
-            "function_name": "uuid7",
-            "name": "uuid_utils.uuid7()",
-            "shape": "uuid/custom object",
-            "source": "https://pypi.org/project/uuid-utils/",
-        },
-        {
-            "distribution": "uuid7",
-            "module_name": "uuid_extensions",
-            "function_name": "uuid7",
-            "name": "uuid_extensions.uuid7()",
-            "shape": "uuid.UUID compat",
-            "source": "https://pypi.org/project/uuid7/",
-        },
-        {
-            "distribution": "uuid-v7",
-            "module_name": "uuid_v7",
-            "function_name": "uuid7",
-            "name": "uuid_v7.uuid7()",
-            "shape": "uuid.UUID compat",
-            "source": "https://pypi.org/project/uuid-v7/",
-        },
-        {
-            "distribution": "uuid6",
-            "module_name": "uuid6",
-            "function_name": "uuid7",
-            "name": "uuid6.uuid7()",
-            "shape": "uuid.UUID compat",
-            "source": "https://pypi.org/project/uuid6/",
-        },
-    ]
-
-    if hasattr(uuid, "uuid7"):
-        cases.append(
-            BenchmarkCase(
-                name="stdlib uuid.uuid7()",
-                package="python",
-                version=platform.python_version(),
-                shape="uuid.UUID compat",
-                func=uuid.uuid7,
-                source="https://docs.python.org/3/library/uuid.html#uuid.uuid7",
-            )
-        )
-    else:
-        skipped.append(
-            SkippedCase(
-                name="stdlib uuid.uuid7()",
-                package="python",
-                reason="not available on this Python runtime",
-                source="https://docs.python.org/3/library/uuid.html#uuid.uuid7",
-            )
-        )
-
-    for spec in optional_specs:
-        case, skip = optional_case(**spec)
-        if case is not None:
-            cases.append(case)
-        if skip is not None:
-            skipped.append(skip)
-
-    factory_specs = [
-        {
-            "distribution": "c_uuid_v7",
-            "module_name": "c_uuid_v7",
-            "name": "str(c_uuid_v7.uuid7())",
-            "shape": "materialized string",
-            "source": "https://github.com/lava-sh/c_uuid_v7",
-            "make_func": lambda module: lambda: str(module.uuid7()),
-        },
-        {
-            "distribution": "uuid7-rs",
-            "module_name": "uuid7_rs",
-            "name": "str(uuid7_rs.uuid7())",
-            "shape": "materialized string",
-            "source": "https://github.com/lava-sh/uuid7-rs",
-            "make_func": lambda module: lambda: str(module.uuid7()),
-        },
-        {
-            "distribution": "uuid-utils",
-            "module_name": "uuid_utils",
-            "name": "str(uuid_utils.uuid7())",
-            "shape": "materialized string",
-            "source": "https://pypi.org/project/uuid-utils/",
-            "make_func": lambda module: lambda: str(module.uuid7()),
-        },
-    ]
-
-    for spec in factory_specs:
-        case, skip = optional_factory_case(**spec)
-        if case is not None:
-            cases.append(case)
-        if skip is not None:
-            skipped.append(skip)
-
-    return cases, skipped
-
-
-def environment_markdown() -> str:
-    return "\n".join(
-        [
-            "## Environment",
-            "",
-            f"- OS: {platform.platform()}",
-            f"- Machine: {platform.machine()}",
-            f"- CPU: {platform.processor() or 'unknown'}",
-            f"- Python: {platform.python_version()}",
-        ]
-    )
-
-
-def results_markdown(results: list[BenchmarkResult]) -> str:
-    lines = [
-        "## Results",
-        "",
-        "| Shape | Case | Package | Version | Return type | ops/sec | best ns/op | median ns/op | Iterations | Rounds |",
-        "| --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: |",
-    ]
-    for result in sorted(results, key=lambda item: item.ops_per_second, reverse=True):
-        lines.append(
-            f"| {result.shape} | `{result.name}` | `{result.package}` | {result.version} | "
-            f"`{result.return_type}` | {result.ops_per_second:,.0f} | "
-            f"{result.best_ns_per_op:,.1f} | {result.median_ns_per_op:,.1f} | "
-            f"{result.iterations:,} | {result.rounds:,} |"
-        )
-    return "\n".join(lines)
-
-
-def grouped_markdown(results: list[BenchmarkResult]) -> str:
-    lines = ["## By API Shape", ""]
-    for shape in sorted({result.shape for result in results}):
-        group = sorted(
-            [result for result in results if result.shape == shape],
-            key=lambda item: item.ns_per_op,
-        )
-        lines.extend(
+def install_packages(directory, packages):
+    subprocess.run([sys.executable, "-m", "venv", str(directory)], check=True, capture_output=True)
+    python = directory / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    failures = {}
+    for package in sorted(packages):
+        result = subprocess.run(
             [
-                f"### {shape}",
-                "",
-                "| Case | ops/sec | best ns/op | median ns/op | Return type |",
-                "| --- | ---: | ---: | ---: | --- |",
-            ]
+                str(python),
+                "-m",
+                "pip",
+                "install",
+                "--disable-pip-version-check",
+                "--only-binary=:all:",
+                f"{package}=={PINS[package]['version']}",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=180,
         )
-        for result in group:
-            lines.append(
-                f"| `{result.name}` | {result.ops_per_second:,.0f} | "
-                f"{result.best_ns_per_op:,.1f} | {result.median_ns_per_op:,.1f} | "
-                f"`{result.return_type}` |"
-            )
-        lines.append("")
-    return "\n".join(lines).rstrip()
+        if result.returncode:
+            failures[package] = (result.stderr.strip().splitlines() or ["installation failed"])[-1]
+    return python, failures
 
 
-def skipped_markdown(skipped: list[SkippedCase]) -> str:
-    if not skipped:
-        return "## Skipped\n\nNone"
-
+def report(results, skipped, sha, dirty=False):
     lines = [
-        "## Skipped",
+        "# UUIDv7 comparison",
         "",
-        "| Case | Package | Reason | Source |",
-        "| --- | --- | --- | --- |",
-    ]
-    for item in skipped:
-        lines.append(f"| `{item.name}` | `{item.package}` | {item.reason} | {item.source} |")
-    return "\n".join(lines)
-
-
-def sources_markdown(results: list[BenchmarkResult], skipped: list[SkippedCase]) -> str:
-    rows = sorted({(item.package, item.source) for item in results + skipped})
-    lines = [
-        "## Sources",
+        f"Commit: `{sha}`",
+        f"Tracked source changes: {dirty}",
+        f"Python: {platform.python_version()}",
+        f"Platform: {platform.platform()} / {platform.machine()}",
         "",
-        "| Package | Source |",
-        "| --- | --- |",
+        "Each case runs in a fresh process. Versions are pinned in competitors.json. "
+        "Validation checks shape, canonical encoding, initial timestamp (10 ms or the system clock resolution, whichever is larger), "
+        "uniqueness and advertised ordering on a small sample. It is not a proof of "
+        "fork safety or RNG strength; guarantee labels describe upstream contracts. "
+        "Unknown guarantees remain explicitly unverified. The final clock delta shows "
+        "logical-clock drift during the workload, not a conformance verdict.",
+        "",
+        "Compare only matching output shapes AND generation guarantees. "
+        "The candidate and published 0.3.0 both use OS CSPRNG entropy and PID reset.",
+        "",
     ]
-    for package, source in rows:
-        lines.append(f"| `{package}` | {source} |")
-    return "\n".join(lines)
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "-n",
-        "--iterations",
-        type=int,
-        default=DEFAULT_ITERATIONS,
-        help=f"iterations per case, default {DEFAULT_ITERATIONS}",
-    )
-    parser.add_argument("--output", type=Path, help="write Markdown results to this path")
-    parser.add_argument(
-        "--rounds",
-        type=int,
-        default=1,
-        help="measurement rounds per case; best and median are reported",
-    )
-    parser.add_argument(
-        "--install-optional",
-        action="store_true",
-        help="pip install optional competitor distributions before benchmarking",
-    )
-    return parser.parse_args()
-
-
-def main() -> int:
-    args = parse_args()
-    if args.rounds < 1:
-        raise SystemExit("--rounds must be at least 1")
-
-    install_failures = install_optional_packages() if args.install_optional else {}
-    cases, skipped = build_cases()
-    for item in skipped:
-        if item.package in install_failures:
-            item.reason = f"install failed: {install_failures[item.package]}"
-    results: list[BenchmarkResult] = []
-    for case in cases:
-        try:
-            results.append(benchmark_case(case, args.iterations, args.rounds))
-        except Exception as exc:  # noqa: BLE001 - benchmark should report optional failures.
-            skipped.append(
-                SkippedCase(
-                    name=case.name,
-                    package=case.package,
-                    reason=f"benchmark failed: {exc}",
-                    source=case.source,
-                )
-            )
-
-    report = "\n\n".join(
-        [
-            "# UUIDv7 Competitor Benchmark",
-            environment_markdown(),
-            (
-                "## Interpretation\n\n"
-                "Cases can use different entropy, monotonicity, and fork-safety guarantees. "
-                "The local fastuuid7 candidate uses the operating-system CSPRNG, a monotonic "
-                "counter, and automatic fork reseeding. Consult each linked upstream source "
-                "before treating timing results as guarantee-equivalent."
-            ),
-            results_markdown(results),
-            grouped_markdown(results),
-            skipped_markdown(skipped),
-            sources_markdown(results, skipped),
+    for shape in sorted({r["shape"] for r in results}):
+        lines += [
+            f"## {shape}",
+            "",
+            "| Case | Version | Entropy | Order scope | Fork | ns/UUID median | best | final clock delta ms | Return type |",
+            "| --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |",
         ]
-    )
+        for r in sorted((r for r in results if r["shape"] == shape), key=lambda r: r["median_ns"]):
+            lines.append(
+                f"| {r['key']} | {r['version']} | {r['entropy']} | {r['ordering']} | {r['fork']} | {r['median_ns']:.1f} | {r['best_ns']:.1f} | {r['final_clock_delta_ms']} | {r['return_type']} |"
+            )
+    lines += ["", "## Skipped or rejected", ""]
+    lines.extend(f"- {s['key']}: {s['reason']}" for s in skipped)
+    lines += ["", "## Sources and pins", ""]
+    lines.extend(f"- {p}=={v['version']}: {v['source']}" for p, v in PINS.items())
+    if results:
+        lines += [
+            "",
+            f"Iterations per round: {results[0]['iterations']}; rounds: {results[0]['rounds']}.",
+        ]
+    return "\n".join(lines) + "\n"
 
-    print(report)
+
+def main(argv=None, *, scalar_only=False):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("-n", "--iterations", type=int, default=1_000_000)
+    parser.add_argument("--rounds", type=int, default=5)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--install-optional", action="store_true")
+    parser.add_argument("--skip-published", action="store_true")
+    parser.add_argument("--worker", help=argparse.SUPPRESS)
+    args = parser.parse_args(argv)
+    if args.iterations < 1 or args.rounds < 1:
+        parser.error("iterations and rounds must be positive")
+    cases = build_cases()
+    if args.worker:
+        case = next(c for c in cases if c.key == args.worker)
+        try:
+            result = {"result": measure(case, args.iterations, args.rounds)}
+        except Exception as exc:
+            result = {"skip": {"key": case.key, "reason": f"{type(exc).__name__}: {exc}"}}
+        print(json.dumps(result))
+        return 0
+    if scalar_only:
+        cases = [c for c in cases if c.package in {"fastuuid7", "python"}]
+    if args.skip_published:
+        cases = [c for c in cases if not c.published]
+    results, skipped = [], []
+    with tempfile.TemporaryDirectory(prefix="uuidv7-compare-") as directory:
+        python = Path(sys.executable)
+        failures = {}
+        if args.install_optional or (scalar_only and not args.skip_published):
+            packages = {
+                c.package
+                for c in cases
+                if c.package != "python" and (c.package != "fastuuid7" or c.published)
+            }
+            python, failures = install_packages(Path(directory) / "venv", packages)
+        for case in cases:
+            if case.package in failures and (case.package != "fastuuid7" or case.published):
+                skipped.append({"key": case.key, "reason": failures[case.package]})
+                continue
+            worker_python = (
+                sys.executable
+                if case.package == "fastuuid7" and not case.published
+                else str(python)
+            )
+            print(f"Measuring {case.key}", file=sys.stderr, flush=True)
+            run = subprocess.run(
+                [
+                    worker_python,
+                    str(Path(__file__).resolve()),
+                    "--worker",
+                    case.key,
+                    "-n",
+                    str(args.iterations),
+                    "--rounds",
+                    str(args.rounds),
+                ],
+                cwd=directory,
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
+            if run.returncode:
+                skipped.append(
+                    {
+                        "key": case.key,
+                        "reason": f"worker exited {run.returncode}: {run.stderr[-400:]}",
+                    }
+                )
+                continue
+            data = json.loads(run.stdout)
+            if "result" in data:
+                results.append(data["result"])
+            else:
+                skipped.append(data["skip"])
+    sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    dirty = subprocess.run(["git", "diff", "--quiet", "HEAD"], cwd=ROOT).returncode != 0
+    output = report(results, skipped, sha, dirty)
+    print(output)
     if args.output:
-        args.output.write_text(report + "\n", encoding="utf-8")
-        print()
-        print(f"Wrote {args.output}")
-    return 0
+        args.output.write_text(output, encoding="utf-8")
+        args.output.with_suffix(".json").write_text(
+            json.dumps(
+                {"commit": sha, "source_dirty": dirty, "results": results, "skipped": skipped},
+                indent=2,
+            )
+            + "\n"
+        )
+    # A broken candidate is a release failure, never an optional skip.
+    return int(any(s["key"].startswith("candidate:") for s in skipped))
 
 
 if __name__ == "__main__":

@@ -5,12 +5,18 @@ on:
     branches: [main, master]
     paths:
       - "uuidv7/**"
+      - "fastuuid7/**"
+      - "pyproject.toml"
+      - "uv.lock"
       - "benchmarks/**"
       - ".github/workflows/benchmark.yml"
   pull_request:
     branches: [main, master]
     paths:
       - "uuidv7/**"
+      - "fastuuid7/**"
+      - "pyproject.toml"
+      - "uv.lock"
       - "benchmarks/**"
       - ".github/workflows/benchmark.yml"
   workflow_dispatch:
@@ -49,6 +55,7 @@ jobs:
           source .venv/bin/activate
           python benchmarks/benchmark.py --output benchmark-results.md
           python benchmarks/benchmark_batch.py --output batch-results.md
+          python benchmarks/benchmark_competitors.py --install-optional --rounds 5 --output competitor-results.md
 
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
@@ -57,7 +64,10 @@ jobs:
           path: |
             benchmark-results.md
             batch-results.md
-          retention-days: 14
+            competitor-results.md
+            competitor-results.json
+            benchmark-results.json
+          retention-days: 90
 
       - name: Comment benchmark results
         if: github.event_name == 'pull_request'
@@ -82,7 +92,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, macos-15, windows-latest]
 
     steps:
       - uses: actions/checkout@v4
@@ -97,11 +107,16 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Run clock source benchmark
-        run: python benchmarks/clock_sources.py --output clock-source-results.md
+        run: |
+          python benchmarks/clock_sources.py --output clock-source-results.md
+          python benchmarks/batch_clock.py --output batch-clock-results.md
 
       - name: Upload clock source results
         uses: actions/upload-artifact@v4
         with:
           name: clock-source-results-${{ matrix.os }}
-          path: clock-source-results.md
-          retention-days: 14
+          path: |
+            clock-source-results.md
+            batch-clock-results.md
+            batch-clock-results.json
+          retention-days: 90

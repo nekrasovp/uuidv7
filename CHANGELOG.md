@@ -3,6 +3,39 @@
 All notable changes to this project are documented here. The project follows
 [Semantic Versioning](https://semver.org/).
 
+## 0.4.0 - 2026-09-17
+
+### Added
+
+- `uuid7_at(*, unix_ms=...)` for historical records, preserving the exact 48-bit
+  Unix millisecond timestamp with 74 OS-CSPRNG random bits. It is independent of
+  the live generator's monotonic counter and available from both import paths.
+- Deterministic counter-carry, timestamp-exhaustion, repeated clock-rollback,
+  historical-data isolation, fork-entropy, and subprocess regression tests.
+- A reproducible C-core batch-clock experiment, including a scheduling-pause
+  probe. Production batch APIs retain per-UUID wall-clock reads.
+
+### Changed
+
+- Benchmarks pin competitors, isolate each case in its own process, validate
+  actual output types and timestamp layout, and identify entropy, ordering and
+  fork guarantees. The published comparison baseline is now fastuuid7 0.3.0.
+- Added modern fastuuidv7 string/bytes/hex/sequential cases and uuid-utils'
+  stdlib compatibility path; corrected the uuid-v7 import path.
+- Development dependencies are locked; mypy stays on its Python-3.9-compatible
+  release line. Wheel builds run the boundary suite and installed-package smoke
+  tests on all supported build platforms.
+
+### Fixed
+
+- Timestamp checks respect Python's reported clock resolution, including the
+  coarse Windows clock used by Python versions before 3.13.
+- Exhaustion of the final representable UUIDv7 timestamp now raises
+  `OverflowError` instead of wrapping to zero. Failed generation does not commit
+  partial timestamp/counter changes; failed batches return no partial result.
+- Legacy-draft UUIDs with incorrect epoch encoding and changed return types
+  cannot silently enter the benchmark's valid comparison results.
+
 ## 0.3.0 - 2026-07-12
 
 ### Added

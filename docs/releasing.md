@@ -8,20 +8,24 @@
 3. Run:
 
    ```bash
-   uv sync --python 3.14 --extra dev --extra release
-   uv run pytest
-   uv run ruff check .
-   uv run ruff format --check .
-   uv run mypy
+   uv sync --python 3.14 --extra dev --extra release --locked
+   uv run --extra dev --extra release --locked pytest
+   uv run --extra dev --extra release --locked ruff check .
+   uv run --extra dev --extra release --locked ruff format --check .
+   uv run --extra dev --extra release --locked mypy
    uv build
-   uv run twine check dist/*
-   python tools/check_release_version.py v0.3.0
+   uv run --extra dev --extra release --locked twine check dist/*
+   python tools/check_release_version.py v0.4.0
    ```
 
-4. Run the scalar, competitor, batch, and clock-source benchmarks from the
+4. Run the scalar, competitor, batch, clock-source, and batch-clock experiment benchmarks from the
    exact release commit. Review output shapes and security guarantees before
    making comparative claims.
-5. Push the release commit and wait for CI and every wheel job to pass.
+5. Verify the exact commit in a clean `git clone --no-local`, with locked dependencies,
+   tests, lint, typing, source/wheel builds and installed-wheel smoke tests.
+6. Push the release commit and wait for CI, benchmarks, and every wheel job to pass.
+   Review both timing results and skipped/rejected cases. Attach CI benchmark
+   reports to the GitHub release; do not copy timing claims from older releases.
 
 ## Publish
 
@@ -31,7 +35,8 @@
 2. Verify the PyPI page shows the expected version, Python range, SPDX license,
    project links, and wheels.
 3. Install one published wheel into a clean environment and smoke-test both
-   import paths plus scalar and batch generation.
+   import paths plus scalar, historical, and batch generation. Compare all published artifact
+   filenames and SHA-256 hashes with the publish workflow artifacts.
 
 ## Security release 0.3.0
 
