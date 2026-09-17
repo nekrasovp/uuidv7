@@ -390,6 +390,10 @@ def provenance():
         "benchmarks/workloads/run.py",
         "benchmarks/workloads/uv.lock",
     ]
+    paths += [
+        str(path.relative_to(ROOT))
+        for path in sorted((ROOT / "uuidv7/uuidv7_impl/include").glob("*.h"))
+    ]
     return {
         "head": git("rev-parse", "HEAD"),
         "status": git("status", "--porcelain"),
