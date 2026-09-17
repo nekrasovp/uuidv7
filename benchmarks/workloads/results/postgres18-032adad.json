@@ -1,0 +1,3937 @@
+{
+  "format_version": 1,
+  "provenance": {
+    "head": "032adad79e7f319139e093dbac8cd27c8402d5b8",
+    "status": "",
+    "python": "3.14.6 (main, Jun 10 2026, 14:29:35) [GCC 13.3.0]",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu_count": 4,
+    "processor": "x86_64",
+    "packages": {
+      "SQLAlchemy": "2.0.54",
+      "psycopg": "3.3.5",
+      "psycopg-binary": "3.3.5",
+      "fastuuid7": "0.4.0",
+      "uuid-utils": "1.0.0",
+      "uuid6": "2025.0.1"
+    },
+    "sha256": {
+      "fastuuid7/__init__.py": "72c868febbe86947ffe654743697ee1274ebf6bf24defd4b3c2d55a7c7222a5c",
+      "uuidv7/__init__.py": "fb0b4114e240fdfd91ae9b9d5fc4c81a13005e6d6ef0bb48db08f73183026a23",
+      "uuidv7/uuidv7_impl/src/uuid7_gen.c": "e6d2cfe1db7371b03dd10556f4f75e7099097631b3c29cc6f8fa9d890afca722",
+      "uuidv7/uuidv7_impl/uuid7_gen.c": "6caf2ee972c1d99e8eaae39d37122aeafdf14c9a87249372432e2143468d5be7",
+      "benchmarks/workloads/run.py": "16bd0f9cced38ae0b373109f3a710a264984b790c6bccf8c01c41d42314a122d",
+      "benchmarks/workloads/uv.lock": "62ae74bf65a56871e88f314b55c4f245cb90582af03144af4ad84ea52e1142a9"
+    },
+    "extension_sha256": {
+      "uuidv7/uuidv7_impl/uuid7_gen.cpython-314-x86_64-linux-gnu.so": "6045874bb7bb7f85ad81e368d384a7f838f1148454c850c27f20c29b62e9c99f"
+    },
+    "postgres_image": "postgres@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db"
+  },
+  "rows": 100000,
+  "batch_size": 1000,
+  "rounds": 3,
+  "seed": 20260918,
+  "include_historical_batch": false,
+  "samples": [
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "uuid_utils_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5713284590000001,
+      "throughput_rows_s": 175030.66480362392,
+      "client_cpu_s": 0.23689271699999997,
+      "client_cpu_percent_one_core": 41.46348974364674,
+      "client_lifetime_peak_rss_bytes": 68550656,
+      "phases": {
+        "generation_s": 0.08052841999999316,
+        "row_build_s": 0.04541119499991453,
+        "execute_s": 0.44447024600005136,
+        "commit_s": 0.0005680579999989277
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683230017,
+      "final_clock_delta_ms": null,
+      "round": 1
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "published_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5009437820000073,
+      "throughput_rows_s": 199623.1984370624,
+      "client_cpu_s": 0.19208319500000004,
+      "client_cpu_percent_one_core": 38.34426175190996,
+      "client_lifetime_peak_rss_bytes": 68149248,
+      "phases": {
+        "generation_s": 0.04170051400005548,
+        "row_build_s": 0.044842693000077816,
+        "execute_s": 0.40232822600006557,
+        "commit_s": 0.011780279999996424
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683231017,
+        "max_uuid_ms": 1789683231502
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683231518,
+      "final_clock_delta_ms": -16,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "checkout_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.6529812709999874,
+      "throughput_rows_s": 27374.900822479565,
+      "client_cpu_s": 3.639252557,
+      "client_cpu_percent_one_core": 99.62417781583015,
+      "client_lifetime_peak_rss_bytes": 72052736,
+      "phases": {
+        "generation_s": 0.04943469599999162,
+        "row_build_s": 0.0564211440000264,
+        "execute_s": 3.545603949999915,
+        "commit_s": 0.0011209559999940666
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683232534,
+        "max_uuid_ms": 1789683236154
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683236187,
+      "final_clock_delta_ms": -33,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "uuid_utils",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.106104292000026,
+      "throughput_rows_s": 24353.984431138597,
+      "client_cpu_s": 4.094559941,
+      "client_cpu_percent_one_core": 99.71884905547776,
+      "client_lifetime_peak_rss_bytes": 72351744,
+      "phases": {
+        "generation_s": 0.07125538399984066,
+        "row_build_s": 0.05697687699975518,
+        "execute_s": 3.976215047000011,
+        "commit_s": 0.00125789199998394
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683237226,
+        "max_uuid_ms": 1789683241279
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683241332,
+      "final_clock_delta_ms": -53,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "stdlib_uuid7",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.9587953589999927,
+      "throughput_rows_s": 25260.20946565432,
+      "client_cpu_s": 3.946473555,
+      "client_cpu_percent_one_core": 99.68874864996545,
+      "client_lifetime_peak_rss_bytes": 71745536,
+      "phases": {
+        "generation_s": 0.2501270210001678,
+        "row_build_s": 0.05753971700011107,
+        "execute_s": 3.649192607000259,
+        "commit_s": 0.0015462380000030862
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683242356,
+        "max_uuid_ms": 1789683246268
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683246315,
+      "final_clock_delta_ms": -47,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "uuid6",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "2025.0.1",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.163263835000009,
+      "throughput_rows_s": 24019.61633065702,
+      "client_cpu_s": 4.150297238,
+      "client_cpu_percent_one_core": 99.68854731494552,
+      "client_lifetime_peak_rss_bytes": 72077312,
+      "phases": {
+        "generation_s": 0.3163997220001704,
+        "row_build_s": 0.05703918799974872,
+        "execute_s": 3.788281220999977,
+        "commit_s": 0.001103102999991279
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683247337,
+        "max_uuid_ms": 1789683347336
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683251500,
+      "final_clock_delta_ms": 95836,
+      "round": 1
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "uuid_utils",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5274170990000187,
+      "throughput_rows_s": 189603.25744007868,
+      "client_cpu_s": 0.228427184,
+      "client_cpu_percent_one_core": 43.310538174264224,
+      "client_lifetime_peak_rss_bytes": 68501504,
+      "phases": {
+        "generation_s": 0.06986957499995583,
+        "row_build_s": 0.04456088500020883,
+        "execute_s": 0.4113098919999345,
+        "commit_s": 0.0013419480000038675
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683252503,
+        "max_uuid_ms": 1789683253025
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683253031,
+      "final_clock_delta_ms": -6,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "published_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.8157238670000027,
+      "throughput_rows_s": 26207.347147114702,
+      "client_cpu_s": 3.8041604949999996,
+      "client_cpu_percent_one_core": 99.69695469580469,
+      "client_lifetime_peak_rss_bytes": 72126464,
+      "phases": {
+        "generation_s": 0.043108629999977666,
+        "row_build_s": 0.056013383000049544,
+        "execute_s": 3.715553493999977,
+        "commit_s": 0.0006713200000092456
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683254044,
+        "max_uuid_ms": 1789683257823
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683257860,
+      "final_clock_delta_ms": -37,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "published_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.847063297999995,
+      "throughput_rows_s": 25993.85355889201,
+      "client_cpu_s": 3.833188248,
+      "client_cpu_percent_one_core": 99.63933398217783,
+      "client_lifetime_peak_rss_bytes": 72110080,
+      "phases": {
+        "generation_s": 0.04930365399999914,
+        "row_build_s": 0.05650605099964423,
+        "execute_s": 3.7399139540000874,
+        "commit_s": 0.0009350610000069537
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683258910,
+        "max_uuid_ms": 1789683262722
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683262757,
+      "final_clock_delta_ms": -35,
+      "round": 1
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "published_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.50599925100002,
+      "throughput_rows_s": 197628.75103543594,
+      "client_cpu_s": 0.204152249,
+      "client_cpu_percent_one_core": 40.346353990945325,
+      "client_lifetime_peak_rss_bytes": 68268032,
+      "phases": {
+        "generation_s": 0.051235298000079865,
+        "row_build_s": 0.04869875600033424,
+        "execute_s": 0.4047769220001669,
+        "commit_s": 0.0009681829999976799
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683263764,
+        "max_uuid_ms": 1789683264265
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683264270,
+      "final_clock_delta_ms": -5,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "checkout_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.9998859879999884,
+      "throughput_rows_s": 25000.712595311175,
+      "client_cpu_s": 3.9894720689999996,
+      "client_cpu_percent_one_core": 99.73964460409043,
+      "client_lifetime_peak_rss_bytes": 72306688,
+      "phases": {
+        "generation_s": 0.04382808499991597,
+        "row_build_s": 0.061722979999842664,
+        "execute_s": 3.892923421999967,
+        "commit_s": 0.0009876189999999951
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683265306,
+        "max_uuid_ms": 1789683269270
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683269306,
+      "final_clock_delta_ms": -36,
+      "round": 1
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "stdlib_uuid7",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.7142483460000051,
+      "throughput_rows_s": 140007.32456718813,
+      "client_cpu_s": 0.41001017999999995,
+      "client_cpu_percent_one_core": 57.40442834711123,
+      "client_lifetime_peak_rss_bytes": 67964928,
+      "phases": {
+        "generation_s": 0.24953423600004498,
+        "row_build_s": 0.04430243199968231,
+        "execute_s": 0.4049480420000009,
+        "commit_s": 0.015149917000002233
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683270315,
+        "max_uuid_ms": 1789683271010
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683271029,
+      "final_clock_delta_ms": -19,
+      "round": 1
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "postgres_uuid7",
+        "group": "server_strategy",
+        "historical": false,
+        "batch": false
+      },
+      "version": "server",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.4475071489999891,
+      "throughput_rows_s": 223460.11728184132,
+      "client_cpu_s": 0.11108875900000004,
+      "client_cpu_percent_one_core": 24.823907114834213,
+      "client_lifetime_peak_rss_bytes": 67743744,
+      "phases": {
+        "generation_s": 2.6884999925869124e-05,
+        "row_build_s": 0.03305664299983846,
+        "execute_s": 0.4132043449999969,
+        "commit_s": 0.0009283980000134306
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683272007,
+        "max_uuid_ms": 1789683272453
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23265280,
+      "wall_end_ms": 1789683272454,
+      "final_clock_delta_ms": -1,
+      "round": 1
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "stdlib_uuid4",
+        "group": "uuid4_control",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.7188732040000048,
+      "throughput_rows_s": 139106.58992931296,
+      "client_cpu_s": 0.329611101,
+      "client_cpu_percent_one_core": 45.85107626295636,
+      "client_lifetime_peak_rss_bytes": 67911680,
+      "phases": {
+        "generation_s": 0.17417263400008665,
+        "row_build_s": 0.04700939299988249,
+        "execute_s": 0.49481894600006626,
+        "commit_s": 0.00249430299999176
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": null,
+        "max_uuid_ms": null
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 24469504,
+      "wall_end_ms": 1789683274156,
+      "final_clock_delta_ms": null,
+      "round": 1
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "checkout_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5070218750000208,
+      "throughput_rows_s": 197230.14909365773,
+      "client_cpu_s": 0.20121951700000007,
+      "client_cpu_percent_one_core": 39.686555338463805,
+      "client_lifetime_peak_rss_bytes": 68014080,
+      "phases": {
+        "generation_s": 0.04172080800009326,
+        "row_build_s": 0.04414385799981346,
+        "execute_s": 0.4196962310000174,
+        "commit_s": 0.0011263460000066061
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683275161,
+        "max_uuid_ms": 1789683275663
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683275668,
+      "final_clock_delta_ms": -5,
+      "round": 1
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "checkout_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6597537609999904,
+      "throughput_rows_s": 151571.70130933358,
+      "client_cpu_s": 0.3402801730000001,
+      "client_cpu_percent_one_core": 51.57684474344437,
+      "client_lifetime_peak_rss_bytes": 68030464,
+      "phases": {
+        "generation_s": 0.18860746700011077,
+        "row_build_s": 0.045237980000024436,
+        "execute_s": 0.4233863189999738,
+        "commit_s": 0.0021973910000099295
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683277310,
+      "final_clock_delta_ms": null,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "postgres_uuid7",
+        "group": "server_strategy",
+        "historical": false,
+        "batch": false
+      },
+      "version": "server",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.3035178119999955,
+      "throughput_rows_s": 30270.761561130683,
+      "client_cpu_s": 3.280437768,
+      "client_cpu_percent_one_core": 99.30134949125573,
+      "client_lifetime_peak_rss_bytes": 71737344,
+      "phases": {
+        "generation_s": 3.593799996792768e-05,
+        "row_build_s": 0.05268821700011017,
+        "execute_s": 3.24958454200015,
+        "commit_s": 0.0007857230000070103
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683278338,
+        "max_uuid_ms": 1789683281628
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683281629,
+      "final_clock_delta_ms": -1,
+      "round": 1
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "uuid6",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "2025.0.1",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.7781356200000005,
+      "throughput_rows_s": 128512.30226422477,
+      "client_cpu_s": 0.479453317,
+      "client_cpu_percent_one_core": 61.615649595889174,
+      "client_lifetime_peak_rss_bytes": 68153344,
+      "phases": {
+        "generation_s": 0.32748785099985867,
+        "row_build_s": 0.04610685799963221,
+        "execute_s": 0.4014957100000345,
+        "commit_s": 0.002669970999988891
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683282618,
+        "max_uuid_ms": 1789683382617
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683283396,
+      "final_clock_delta_ms": 99221,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "stdlib_uuid4",
+        "group": "uuid4_control",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.9774951100000067,
+      "throughput_rows_s": 25141.451399546746,
+      "client_cpu_s": 3.963867747,
+      "client_cpu_percent_one_core": 99.65738831543135,
+      "client_lifetime_peak_rss_bytes": 71680000,
+      "phases": {
+        "generation_s": 0.1698155239999437,
+        "row_build_s": 0.05558372600006578,
+        "execute_s": 3.748734294000002,
+        "commit_s": 0.002979806000013241
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": null,
+        "max_uuid_ms": null
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 24584192,
+      "wall_end_ms": 1789683288409,
+      "final_clock_delta_ms": null,
+      "round": 1
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "checkout_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.48744354999999473,
+      "throughput_rows_s": 205151.96067319196,
+      "client_cpu_s": 0.202424021,
+      "client_cpu_percent_one_core": 41.527684795501386,
+      "client_lifetime_peak_rss_bytes": 68038656,
+      "phases": {
+        "generation_s": 0.05185431699985088,
+        "row_build_s": 0.0469085680002479,
+        "execute_s": 0.38559047300020666,
+        "commit_s": 0.002792158000005429
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683289400,
+        "max_uuid_ms": 1789683289880
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683289887,
+      "final_clock_delta_ms": -7,
+      "round": 1
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "published_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6421060940000132,
+      "throughput_rows_s": 155737.50340391247,
+      "client_cpu_s": 0.334076716,
+      "client_cpu_percent_one_core": 52.028273695217905,
+      "client_lifetime_peak_rss_bytes": 68091904,
+      "phases": {
+        "generation_s": 0.18172112300001686,
+        "row_build_s": 0.045429227000227,
+        "execute_s": 0.4131875340000306,
+        "commit_s": 0.0014435770000034154
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683291502,
+      "final_clock_delta_ms": null,
+      "round": 1
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "rfc_random_at",
+        "group": "reference_strategy",
+        "historical": true,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6741416020000202,
+      "throughput_rows_s": 148336.7881515151,
+      "client_cpu_s": 0.372266127,
+      "client_cpu_percent_one_core": 55.22076161678402,
+      "client_lifetime_peak_rss_bytes": 68046848,
+      "phases": {
+        "generation_s": 0.21968961900003592,
+        "row_build_s": 0.04416403800010471,
+        "execute_s": 0.4082185530001823,
+        "commit_s": 0.001739759000003005
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683293138,
+      "final_clock_delta_ms": null,
+      "round": 1
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "published_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.688013151000007,
+      "throughput_rows_s": 27114.870773409508,
+      "client_cpu_s": 3.677203432,
+      "client_cpu_percent_one_core": 99.70689586621795,
+      "client_lifetime_peak_rss_bytes": 72056832,
+      "phases": {
+        "generation_s": 0.04354776800005311,
+        "row_build_s": 0.05571478999999613,
+        "execute_s": 3.587452604000106,
+        "commit_s": 0.0009013679999725355
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683294157,
+        "max_uuid_ms": 1789683297802
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683297846,
+      "final_clock_delta_ms": -44,
+      "round": 2
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "uuid_utils_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5310135090000188,
+      "throughput_rows_s": 188319.12617122603,
+      "client_cpu_s": 0.22809810199999997,
+      "client_cpu_percent_one_core": 42.95523524995517,
+      "client_lifetime_peak_rss_bytes": 68603904,
+      "phases": {
+        "generation_s": 0.07654873000001317,
+        "row_build_s": 0.043235750999826905,
+        "execute_s": 0.4080522619998135,
+        "commit_s": 0.0028788589999919623
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683299370,
+      "final_clock_delta_ms": null,
+      "round": 2
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "checkout_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.4864878260000012,
+      "throughput_rows_s": 205554.989571311,
+      "client_cpu_s": 0.19643629700000004,
+      "client_cpu_percent_one_core": 40.37846098126195,
+      "client_lifetime_peak_rss_bytes": 67981312,
+      "phases": {
+        "generation_s": 0.04270456999975636,
+        "row_build_s": 0.04639039799999978,
+        "execute_s": 0.39515807700001915,
+        "commit_s": 0.0019540379999796187
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683300335,
+        "max_uuid_ms": 1789683300815
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683300822,
+      "final_clock_delta_ms": -7,
+      "round": 2
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "uuid6",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "2025.0.1",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.205235058999989,
+      "throughput_rows_s": 23779.88354919217,
+      "client_cpu_s": 4.192905345,
+      "client_cpu_percent_one_core": 99.7068008368854,
+      "client_lifetime_peak_rss_bytes": 72347648,
+      "phases": {
+        "generation_s": 0.3158631380000827,
+        "row_build_s": 0.06014237300016134,
+        "execute_s": 3.8276962920000415,
+        "commit_s": 0.0011289120000128605
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683301843,
+        "max_uuid_ms": 1789683401842
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683306048,
+      "final_clock_delta_ms": 95794,
+      "round": 2
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "uuid_utils",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.884218335999975,
+      "throughput_rows_s": 25745.205688664108,
+      "client_cpu_s": 3.8710554549999996,
+      "client_cpu_percent_one_core": 99.66111892120023,
+      "client_lifetime_peak_rss_bytes": 72663040,
+      "phases": {
+        "generation_s": 0.07252564999996025,
+        "row_build_s": 0.0579926060001128,
+        "execute_s": 3.7518821140000966,
+        "commit_s": 0.0014484770000251501
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683307068,
+        "max_uuid_ms": 1789683310913
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683310952,
+      "final_clock_delta_ms": -39,
+      "round": 2
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "uuid6",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "2025.0.1",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.7592592379999985,
+      "throughput_rows_s": 131707.32076097597,
+      "client_cpu_s": 0.471144849,
+      "client_cpu_percent_one_core": 62.05322575212458,
+      "client_lifetime_peak_rss_bytes": 68268032,
+      "phases": {
+        "generation_s": 0.32190062499989835,
+        "row_build_s": 0.04509222099997601,
+        "execute_s": 0.3910056070001531,
+        "commit_s": 0.0009245809999924859
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683311938,
+        "max_uuid_ms": 1789683411937
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683312698,
+      "final_clock_delta_ms": 99239,
+      "round": 2
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "checkout_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6318192459999921,
+      "throughput_rows_s": 158273.11471294,
+      "client_cpu_s": 0.33657985900000004,
+      "client_cpu_percent_one_core": 53.271542633572174,
+      "client_lifetime_peak_rss_bytes": 68100096,
+      "phases": {
+        "generation_s": 0.18585467099995867,
+        "row_build_s": 0.04385877300012453,
+        "execute_s": 0.40047820900008446,
+        "commit_s": 0.001323813999988488
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683314297,
+      "final_clock_delta_ms": null,
+      "round": 2
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "published_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.47386982399999056,
+      "throughput_rows_s": 211028.4194842548,
+      "client_cpu_s": 0.19184570699999998,
+      "client_cpu_percent_one_core": 40.48489633304943,
+      "client_lifetime_peak_rss_bytes": 67993600,
+      "phases": {
+        "generation_s": 0.042463495000220064,
+        "row_build_s": 0.0458183470003064,
+        "execute_s": 0.3829433460000189,
+        "commit_s": 0.002384298999999146
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683315264,
+        "max_uuid_ms": 1789683315732
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683315739,
+      "final_clock_delta_ms": -7,
+      "round": 2
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "uuid_utils",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5073846469999808,
+      "throughput_rows_s": 197089.13265561184,
+      "client_cpu_s": 0.22898845100000004,
+      "client_cpu_percent_one_core": 45.13113519574208,
+      "client_lifetime_peak_rss_bytes": 68419584,
+      "phases": {
+        "generation_s": 0.0749302280001416,
+        "row_build_s": 0.0442675670000483,
+        "execute_s": 0.38455431900018766,
+        "commit_s": 0.0033301490000212652
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683316738,
+        "max_uuid_ms": 1789683317237
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683317245,
+      "final_clock_delta_ms": -8,
+      "round": 2
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "published_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.4856889899999999,
+      "throughput_rows_s": 205893.07573144705,
+      "client_cpu_s": 0.20031108699999994,
+      "client_cpu_percent_one_core": 41.24266580553947,
+      "client_lifetime_peak_rss_bytes": 68075520,
+      "phases": {
+        "generation_s": 0.04874581900008934,
+        "row_build_s": 0.045780265000075815,
+        "execute_s": 0.3899139530000184,
+        "commit_s": 0.0009485760000131904
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683318227,
+        "max_uuid_ms": 1789683318707
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683318712,
+      "final_clock_delta_ms": -5,
+      "round": 2
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "checkout_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.4818464619999929,
+      "throughput_rows_s": 207534.988603904,
+      "client_cpu_s": 0.20200756199999997,
+      "client_cpu_percent_one_core": 41.92363707757243,
+      "client_lifetime_peak_rss_bytes": 68096000,
+      "phases": {
+        "generation_s": 0.05097896999998852,
+        "row_build_s": 0.048849108000013075,
+        "execute_s": 0.37962372699993807,
+        "commit_s": 0.002115569000011419
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683319671,
+        "max_uuid_ms": 1789683320146
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683320153,
+      "final_clock_delta_ms": -7,
+      "round": 2
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "postgres_uuid7",
+        "group": "server_strategy",
+        "historical": false,
+        "batch": false
+      },
+      "version": "server",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.4329790490000107,
+      "throughput_rows_s": 230958.05728003604,
+      "client_cpu_s": 0.11275111300000001,
+      "client_cpu_percent_one_core": 26.04077801464182,
+      "client_lifetime_peak_rss_bytes": 67534848,
+      "phases": {
+        "generation_s": 2.686400009110912e-05,
+        "row_build_s": 0.03256057499999088,
+        "execute_s": 0.39787811199994394,
+        "commit_s": 0.002253824999996823
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683321141,
+        "max_uuid_ms": 1789683321570
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23265280,
+      "wall_end_ms": 1789683321573,
+      "final_clock_delta_ms": -3,
+      "round": 2
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "checkout_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.9091258139999923,
+      "throughput_rows_s": 25581.166930433363,
+      "client_cpu_s": 3.896622832,
+      "client_cpu_percent_one_core": 99.68015913033,
+      "client_lifetime_peak_rss_bytes": 72114176,
+      "phases": {
+        "generation_s": 0.04841412600009676,
+        "row_build_s": 0.05643096599999353,
+        "execute_s": 3.802876005000087,
+        "commit_s": 0.0010329320000153075
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683322590,
+        "max_uuid_ms": 1789683326465
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683326499,
+      "final_clock_delta_ms": -34,
+      "round": 2
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "stdlib_uuid7",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.2580538529999785,
+      "throughput_rows_s": 23484.907296216035,
+      "client_cpu_s": 4.247328005,
+      "client_cpu_percent_one_core": 99.74810445404721,
+      "client_lifetime_peak_rss_bytes": 71823360,
+      "phases": {
+        "generation_s": 0.25571470399987106,
+        "row_build_s": 0.058135242999981074,
+        "execute_s": 3.94259185899989,
+        "commit_s": 0.0012013559999957124
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683327528,
+        "max_uuid_ms": 1789683331752
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683331787,
+      "final_clock_delta_ms": -35,
+      "round": 2
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "published_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.7670560239999986,
+      "throughput_rows_s": 26545.928534881816,
+      "client_cpu_s": 3.7551176400000004,
+      "client_cpu_percent_one_core": 99.68308451151408,
+      "client_lifetime_peak_rss_bytes": 72024064,
+      "phases": {
+        "generation_s": 0.04865978000023574,
+        "row_build_s": 0.05705060099970183,
+        "execute_s": 3.659901546999862,
+        "commit_s": 0.0010230249999949592
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683332810,
+        "max_uuid_ms": 1789683336545
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683336578,
+      "final_clock_delta_ms": -33,
+      "round": 2
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "stdlib_uuid4",
+        "group": "uuid4_control",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.983975653000016,
+      "throughput_rows_s": 25100.55500080628,
+      "client_cpu_s": 3.970417933,
+      "client_cpu_percent_one_core": 99.65969370345407,
+      "client_lifetime_peak_rss_bytes": 71716864,
+      "phases": {
+        "generation_s": 0.17104158499989808,
+        "row_build_s": 0.05578162200004044,
+        "execute_s": 3.7555985549997786,
+        "commit_s": 0.0011303050000037729
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": null,
+        "max_uuid_ms": null
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 24412160,
+      "wall_end_ms": 1789683341584,
+      "final_clock_delta_ms": null,
+      "round": 2
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "stdlib_uuid4",
+        "group": "uuid4_control",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6590123039999867,
+      "throughput_rows_s": 151742.23514953072,
+      "client_cpu_s": 0.322985934,
+      "client_cpu_percent_one_core": 49.0106075470188,
+      "client_lifetime_peak_rss_bytes": 68145152,
+      "phases": {
+        "generation_s": 0.17051879299984307,
+        "row_build_s": 0.04269946100018274,
+        "execute_s": 0.44338715799986517,
+        "commit_s": 0.0021226419999891277
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": null,
+        "max_uuid_ms": null
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 24231936,
+      "wall_end_ms": 1789683343213,
+      "final_clock_delta_ms": null,
+      "round": 2
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "published_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6408581319999769,
+      "throughput_rows_s": 156040.77565173755,
+      "client_cpu_s": 0.336408122,
+      "client_cpu_percent_one_core": 52.49338429242435,
+      "client_lifetime_peak_rss_bytes": 68087808,
+      "phases": {
+        "generation_s": 0.18619314900001882,
+        "row_build_s": 0.0454432039999233,
+        "execute_s": 0.40754487400002404,
+        "commit_s": 0.0013596210000059727
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683344823,
+      "final_clock_delta_ms": null,
+      "round": 2
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "checkout_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.9555089380000084,
+      "throughput_rows_s": 25281.19682383076,
+      "client_cpu_s": 3.942514316,
+      "client_cpu_percent_one_core": 99.6714804035665,
+      "client_lifetime_peak_rss_bytes": 72081408,
+      "phases": {
+        "generation_s": 0.04238127400009262,
+        "row_build_s": 0.05599878200013109,
+        "execute_s": 3.855674087000068,
+        "commit_s": 0.0010656540000013592
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683345829,
+        "max_uuid_ms": 1789683349751
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683349785,
+      "final_clock_delta_ms": -34,
+      "round": 2
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "rfc_random_at",
+        "group": "reference_strategy",
+        "historical": true,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.673893009000011,
+      "throughput_rows_s": 148391.508243111,
+      "client_cpu_s": 0.37409671,
+      "client_cpu_percent_one_core": 55.5127750256857,
+      "client_lifetime_peak_rss_bytes": 68128768,
+      "phases": {
+        "generation_s": 0.22195257300012372,
+        "row_build_s": 0.044716134999930546,
+        "execute_s": 0.40462065900001676,
+        "commit_s": 0.0022808869999835224
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683351443,
+      "final_clock_delta_ms": null,
+      "round": 2
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "stdlib_uuid7",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6862360590000094,
+      "throughput_rows_s": 145722.45029752748,
+      "client_cpu_s": 0.402162104,
+      "client_cpu_percent_one_core": 58.60404721168908,
+      "client_lifetime_peak_rss_bytes": 67903488,
+      "phases": {
+        "generation_s": 0.25428295600005413,
+        "row_build_s": 0.04487820900018846,
+        "execute_s": 0.3851239090002707,
+        "commit_s": 0.0016543400000159636
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683352436,
+        "max_uuid_ms": 1789683353116
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683353122,
+      "final_clock_delta_ms": -6,
+      "round": 2
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "postgres_uuid7",
+        "group": "server_strategy",
+        "historical": false,
+        "batch": false
+      },
+      "version": "server",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.495946009999983,
+      "throughput_rows_s": 28604.560743774324,
+      "client_cpu_s": 3.4807714159999996,
+      "client_cpu_percent_one_core": 99.56593740416537,
+      "client_lifetime_peak_rss_bytes": 71401472,
+      "phases": {
+        "generation_s": 3.4322000175279754e-05,
+        "row_build_s": 0.04637847599977363,
+        "execute_s": 3.44798439000013,
+        "commit_s": 0.0011613420000173846
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683354124,
+        "max_uuid_ms": 1789683357607
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683357610,
+      "final_clock_delta_ms": -3,
+      "round": 2
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "published_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.745034809999993,
+      "throughput_rows_s": 26702.021496029884,
+      "client_cpu_s": 3.732722042,
+      "client_cpu_percent_one_core": 99.67122420418856,
+      "client_lifetime_peak_rss_bytes": 71737344,
+      "phases": {
+        "generation_s": 0.04797262599990404,
+        "row_build_s": 0.0564619869999774,
+        "execute_s": 3.6388232309999466,
+        "commit_s": 0.0014019799999687166
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683358636,
+        "max_uuid_ms": 1789683362347
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683362381,
+      "final_clock_delta_ms": -34,
+      "round": 3
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "stdlib_uuid7",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.130615017000025,
+      "throughput_rows_s": 24209.469918750212,
+      "client_cpu_s": 4.118283448,
+      "client_cpu_percent_one_core": 99.7014592512429,
+      "client_lifetime_peak_rss_bytes": 71827456,
+      "phases": {
+        "generation_s": 0.25259798499979524,
+        "row_build_s": 0.06254759599994486,
+        "execute_s": 3.8143410800000765,
+        "commit_s": 0.0006665910000265285
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683363409,
+        "max_uuid_ms": 1789683367504
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683367540,
+      "final_clock_delta_ms": -36,
+      "round": 3
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "uuid_utils_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5294302549999657,
+      "throughput_rows_s": 188882.29196498505,
+      "client_cpu_s": 0.22733425800000007,
+      "client_cpu_percent_one_core": 42.93941569319925,
+      "client_lifetime_peak_rss_bytes": 68489216,
+      "phases": {
+        "generation_s": 0.07592940799980852,
+        "row_build_s": 0.04716568100030827,
+        "execute_s": 0.4039026739997098,
+        "commit_s": 0.00216144399996665
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683369030,
+      "final_clock_delta_ms": null,
+      "round": 3
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "stdlib_uuid4",
+        "group": "uuid4_control",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6903283039999906,
+      "throughput_rows_s": 144858.61208437625,
+      "client_cpu_s": 0.330938395,
+      "client_cpu_percent_one_core": 47.93927658513108,
+      "client_lifetime_peak_rss_bytes": 67858432,
+      "phases": {
+        "generation_s": 0.1745689089995608,
+        "row_build_s": 0.04373379200018235,
+        "execute_s": 0.46870368599979884,
+        "commit_s": 0.0029836940000222967
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": null,
+        "max_uuid_ms": null
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 24346624,
+      "wall_end_ms": 1789683370675,
+      "final_clock_delta_ms": null,
+      "round": 3
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "postgres_uuid7",
+        "group": "server_strategy",
+        "historical": false,
+        "batch": false
+      },
+      "version": "server",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.45560030499996174,
+      "throughput_rows_s": 219490.63444987903,
+      "client_cpu_s": 0.10984076099999995,
+      "client_cpu_percent_one_core": 24.10901832034752,
+      "client_lifetime_peak_rss_bytes": 67559424,
+      "phases": {
+        "generation_s": 2.901399977872643e-05,
+        "row_build_s": 0.03283142300011832,
+        "execute_s": 0.4176866649996782,
+        "commit_s": 0.004782412999986718
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683371645,
+        "max_uuid_ms": 1789683372095
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23265280,
+      "wall_end_ms": 1789683372100,
+      "final_clock_delta_ms": -5,
+      "round": 3
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "checkout_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6322445630000288,
+      "throughput_rows_s": 158166.64286600664,
+      "client_cpu_s": 0.33259385999999996,
+      "client_cpu_percent_one_core": 52.60525427404661,
+      "client_lifetime_peak_rss_bytes": 68059136,
+      "phases": {
+        "generation_s": 0.18461277100033158,
+        "row_build_s": 0.04346781600037275,
+        "execute_s": 0.3986270819999618,
+        "commit_s": 0.005249552999998741
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683373705,
+      "final_clock_delta_ms": null,
+      "round": 3
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "postgres_uuid7",
+        "group": "server_strategy",
+        "historical": false,
+        "batch": false
+      },
+      "version": "server",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.5916213630000016,
+      "throughput_rows_s": 27842.57857194396,
+      "client_cpu_s": 3.5756740120000003,
+      "client_cpu_percent_one_core": 99.55598462676811,
+      "client_lifetime_peak_rss_bytes": 71569408,
+      "phases": {
+        "generation_s": 3.524199945559303e-05,
+        "row_build_s": 0.046776859999795306,
+        "execute_s": 3.542985120000253,
+        "commit_s": 0.0014475050000442025
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683374736,
+        "max_uuid_ms": 1789683378314
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683378316,
+      "final_clock_delta_ms": -2,
+      "round": 3
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "published_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.47488242299999683,
+      "throughput_rows_s": 210578.44038165352,
+      "client_cpu_s": 0.19118100599999993,
+      "client_cpu_percent_one_core": 40.25859807407553,
+      "client_lifetime_peak_rss_bytes": 67911680,
+      "phases": {
+        "generation_s": 0.04464456200003042,
+        "row_build_s": 0.04788945699993974,
+        "execute_s": 0.37798839699996734,
+        "commit_s": 0.004082650999976067
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683379303,
+        "max_uuid_ms": 1789683379770
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683379778,
+      "final_clock_delta_ms": -8,
+      "round": 3
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "published_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6326579610000067,
+      "throughput_rows_s": 158063.29195942724,
+      "client_cpu_s": 0.326721832,
+      "client_cpu_percent_one_core": 51.642728320934935,
+      "client_lifetime_peak_rss_bytes": 68136960,
+      "phases": {
+        "generation_s": 0.18377652200013017,
+        "row_build_s": 0.046030043000484966,
+        "execute_s": 0.40135389999977633,
+        "commit_s": 0.0012010259999897244
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683381411,
+      "final_clock_delta_ms": null,
+      "round": 3
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "rfc_random_at",
+        "group": "reference_strategy",
+        "historical": true,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6734799079999902,
+      "throughput_rows_s": 148482.5290437639,
+      "client_cpu_s": 0.36735300000000004,
+      "client_cpu_percent_one_core": 54.545502491813814,
+      "client_lifetime_peak_rss_bytes": 67772416,
+      "phases": {
+        "generation_s": 0.2194275820003213,
+        "row_build_s": 0.04372081299959518,
+        "execute_s": 0.4069589939996945,
+        "commit_s": 0.003075275000014699
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683383067,
+      "final_clock_delta_ms": null,
+      "round": 3
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "uuid6",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "2025.0.1",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.7563712019999684,
+      "throughput_rows_s": 132210.21600978955,
+      "client_cpu_s": 0.476875417,
+      "client_cpu_percent_one_core": 63.04780189132848,
+      "client_lifetime_peak_rss_bytes": 68104192,
+      "phases": {
+        "generation_s": 0.32595043099962595,
+        "row_build_s": 0.044227731999455955,
+        "execute_s": 0.38325321699994674,
+        "commit_s": 0.002639112999986537
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683384042,
+        "max_uuid_ms": 1789683484041
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683384799,
+      "final_clock_delta_ms": 99242,
+      "round": 3
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "uuid_utils",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.8941393329999983,
+      "throughput_rows_s": 25679.615301017286,
+      "client_cpu_s": 3.88312383,
+      "client_cpu_percent_one_core": 99.71712612061285,
+      "client_lifetime_peak_rss_bytes": 72318976,
+      "phases": {
+        "generation_s": 0.07167407900004719,
+        "row_build_s": 0.055193125999892345,
+        "execute_s": 3.7659379410000042,
+        "commit_s": 0.0008972300000209543
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683385801,
+        "max_uuid_ms": 1789683389662
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683389695,
+      "final_clock_delta_ms": -33,
+      "round": 3
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "uuid6",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "2025.0.1",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.043697452999993,
+      "throughput_rows_s": 24729.84222046846,
+      "client_cpu_s": 4.029549300999999,
+      "client_cpu_percent_one_core": 99.65011843332896,
+      "client_lifetime_peak_rss_bytes": 72282112,
+      "phases": {
+        "generation_s": 0.3150987399997689,
+        "row_build_s": 0.0572440280001274,
+        "execute_s": 3.669733283999733,
+        "commit_s": 0.0012027590000229793
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683390725,
+        "max_uuid_ms": 1789683490724
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683394768,
+      "final_clock_delta_ms": 95956,
+      "round": 3
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "published_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.49280547099999694,
+      "throughput_rows_s": 202919.82513319261,
+      "client_cpu_s": 0.20988169800000006,
+      "client_cpu_percent_one_core": 42.58915745681755,
+      "client_lifetime_peak_rss_bytes": 68038656,
+      "phases": {
+        "generation_s": 0.05389931899992462,
+        "row_build_s": 0.048238834000756015,
+        "execute_s": 0.3862585389999822,
+        "commit_s": 0.004106416000013269
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683395746,
+        "max_uuid_ms": 1789683396231
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683396240,
+      "final_clock_delta_ms": -9,
+      "round": 3
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "checkout_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.876642989000004,
+      "throughput_rows_s": 25795.514388028652,
+      "client_cpu_s": 3.8504930240000004,
+      "client_cpu_percent_one_core": 99.32544820159596,
+      "client_lifetime_peak_rss_bytes": 72101888,
+      "phases": {
+        "generation_s": 0.04253711399996973,
+        "row_build_s": 0.05778912199957631,
+        "execute_s": 3.775120642000047,
+        "commit_s": 0.0008099579999907291
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683397237,
+        "max_uuid_ms": 1789683401071
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683401114,
+      "final_clock_delta_ms": -43,
+      "round": 3
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "stdlib_uuid4",
+        "group": "uuid4_control",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.083619016,
+      "throughput_rows_s": 24488.08265614169,
+      "client_cpu_s": 4.071653007,
+      "client_cpu_percent_one_core": 99.70697538254386,
+      "client_lifetime_peak_rss_bytes": 71827456,
+      "phases": {
+        "generation_s": 0.1710180239999204,
+        "row_build_s": 0.05703628100025071,
+        "execute_s": 3.854508721999707,
+        "commit_s": 0.0006677829999830465
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": null,
+        "max_uuid_ms": null
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 24322048,
+      "wall_end_ms": 1789683406228,
+      "final_clock_delta_ms": null,
+      "round": 3
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "uuid_utils",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5175866129999918,
+      "throughput_rows_s": 193204.37872298987,
+      "client_cpu_s": 0.22706186999999994,
+      "client_cpu_percent_one_core": 43.869347525030285,
+      "client_lifetime_peak_rss_bytes": 68464640,
+      "phases": {
+        "generation_s": 0.07442130400028191,
+        "row_build_s": 0.04475366899993105,
+        "execute_s": 0.3954130459995895,
+        "commit_s": 0.0026782560000242484
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683407234,
+        "max_uuid_ms": 1789683407745
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683407752,
+      "final_clock_delta_ms": -7,
+      "round": 3
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "checkout_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.4834696599999688,
+      "throughput_rows_s": 206838.21193662172,
+      "client_cpu_s": 0.20508087999999997,
+      "client_cpu_percent_one_core": 42.41856252158888,
+      "client_lifetime_peak_rss_bytes": 67907584,
+      "phases": {
+        "generation_s": 0.05137072599984549,
+        "row_build_s": 0.04486174800018716,
+        "execute_s": 0.38328247900005863,
+        "commit_s": 0.0036765049999871735
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683408725,
+        "max_uuid_ms": 1789683409200
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683409208,
+      "final_clock_delta_ms": -8,
+      "round": 3
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "checkout_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.4774314030000255,
+      "throughput_rows_s": 209454.17367109103,
+      "client_cpu_s": 0.196627175,
+      "client_cpu_percent_one_core": 41.18438246090601,
+      "client_lifetime_peak_rss_bytes": 68096000,
+      "phases": {
+        "generation_s": 0.04377039899998181,
+        "row_build_s": 0.04663507200001504,
+        "execute_s": 0.38526046999965047,
+        "commit_s": 0.00144522000005054
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683410186,
+        "max_uuid_ms": 1789683410658
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683410663,
+      "final_clock_delta_ms": -5,
+      "round": 3
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "published_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.838486064000051,
+      "throughput_rows_s": 26051.937751674657,
+      "client_cpu_s": 3.826832553,
+      "client_cpu_percent_one_core": 99.69640345683821,
+      "client_lifetime_peak_rss_bytes": 72077312,
+      "phases": {
+        "generation_s": 0.04276427000002059,
+        "row_build_s": 0.05614582700019355,
+        "execute_s": 3.7381896420001794,
+        "commit_s": 0.0009892029999605256
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683411699,
+        "max_uuid_ms": 1789683415501
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683415537,
+      "final_clock_delta_ms": -36,
+      "round": 3
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "stdlib_uuid7",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6879384000000073,
+      "throughput_rows_s": 145361.85216583192,
+      "client_cpu_s": 0.404518536,
+      "client_cpu_percent_one_core": 58.80156362837076,
+      "client_lifetime_peak_rss_bytes": 67751936,
+      "phases": {
+        "generation_s": 0.2555204079998816,
+        "row_build_s": 0.044013881000523725,
+        "execute_s": 0.3855329159997609,
+        "commit_s": 0.0025524719999907575
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683416519,
+        "max_uuid_ms": 1789683417200
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683417207,
+      "final_clock_delta_ms": -7,
+      "round": 3
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "checkout_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.168800573999988,
+      "throughput_rows_s": 23987.71498537994,
+      "client_cpu_s": 4.155667482999999,
+      "client_cpu_percent_one_core": 99.68496715621521,
+      "client_lifetime_peak_rss_bytes": 72105984,
+      "phases": {
+        "generation_s": 0.04881454600001689,
+        "row_build_s": 0.055981462999966425,
+        "execute_s": 4.062775354999928,
+        "commit_s": 0.0008504230000312418
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683418243,
+        "max_uuid_ms": 1789683422365
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683422412,
+      "final_clock_delta_ms": -47,
+      "round": 3
+    }
+  ],
+  "warmups": [
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "postgres_uuid7",
+        "group": "server_strategy",
+        "historical": false,
+        "batch": false
+      },
+      "version": "server",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.4795794110000031,
+      "throughput_rows_s": 208516.0407355339,
+      "client_cpu_s": 0.119269128,
+      "client_cpu_percent_one_core": 24.869526352539605,
+      "client_lifetime_peak_rss_bytes": 75530240,
+      "phases": {
+        "generation_s": 2.7638000005936192e-05,
+        "row_build_s": 0.03171947800003494,
+        "execute_s": 0.44430923999995997,
+        "commit_s": 0.0032508880000037266
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683164315,
+        "max_uuid_ms": 1789683164787
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23265280,
+      "wall_end_ms": 1789683164791,
+      "final_clock_delta_ms": -4,
+      "round": 0
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "published_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.9040192359999963,
+      "throughput_rows_s": 25614.62788858044,
+      "client_cpu_s": 3.888033961,
+      "client_cpu_percent_one_core": 99.59054312917847,
+      "client_lifetime_peak_rss_bytes": 77078528,
+      "phases": {
+        "generation_s": 0.03959068199999649,
+        "row_build_s": 0.06088178300004898,
+        "execute_s": 3.8017694950000234,
+        "commit_s": 0.001325617999995643
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683165923,
+        "max_uuid_ms": 1789683169792
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683169828,
+      "final_clock_delta_ms": -36,
+      "round": 0
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "uuid_utils_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5413111160000028,
+      "throughput_rows_s": 184736.64597717125,
+      "client_cpu_s": 0.22649832800000008,
+      "client_cpu_percent_one_core": 41.84254143415723,
+      "client_lifetime_peak_rss_bytes": 68657152,
+      "phases": {
+        "generation_s": 0.07660031000008871,
+        "row_build_s": 0.043808104999982334,
+        "execute_s": 0.41718504400006395,
+        "commit_s": 0.003430848999997238
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683171364,
+      "final_clock_delta_ms": null,
+      "round": 0
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "uuid6",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "2025.0.1",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.101139614999994,
+      "throughput_rows_s": 24383.466399009718,
+      "client_cpu_s": 4.079019398,
+      "client_cpu_percent_one_core": 99.46063243204183,
+      "client_lifetime_peak_rss_bytes": 72196096,
+      "phases": {
+        "generation_s": 0.33125964699995336,
+        "row_build_s": 0.05889715899995451,
+        "execute_s": 3.7095857450000125,
+        "commit_s": 0.0009436969999967459
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683172416,
+        "max_uuid_ms": 1789683272415
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683176517,
+      "final_clock_delta_ms": 95898,
+      "round": 0
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "rfc_random_at",
+        "group": "reference_strategy",
+        "historical": true,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6986203750000044,
+      "throughput_rows_s": 143139.25499238318,
+      "client_cpu_s": 0.372827468,
+      "client_cpu_percent_one_core": 53.36624601021659,
+      "client_lifetime_peak_rss_bytes": 68026368,
+      "phases": {
+        "generation_s": 0.2199993339999935,
+        "row_build_s": 0.04391427999999564,
+        "execute_s": 0.4218298660000954,
+        "commit_s": 0.012520721000001345
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683178202,
+      "final_clock_delta_ms": null,
+      "round": 0
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "stdlib_uuid4",
+        "group": "uuid4_control",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.8928306480000003,
+      "throughput_rows_s": 25688.248229184203,
+      "client_cpu_s": 3.860490658,
+      "client_cpu_percent_one_core": 99.16924230915065,
+      "client_lifetime_peak_rss_bytes": 71811072,
+      "phases": {
+        "generation_s": 0.17346825799999976,
+        "row_build_s": 0.061307976999941616,
+        "execute_s": 3.647201972000005,
+        "commit_s": 0.01044193900000323
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": null,
+        "max_uuid_ms": null
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 24387584,
+      "wall_end_ms": 1789683183130,
+      "final_clock_delta_ms": null,
+      "round": 0
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "checkout_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.8357858979999975,
+      "throughput_rows_s": 26070.27677226214,
+      "client_cpu_s": 3.823751819,
+      "client_cpu_percent_one_core": 99.68626822977079,
+      "client_lifetime_peak_rss_bytes": 72200192,
+      "phases": {
+        "generation_s": 0.0494036809999443,
+        "row_build_s": 0.0577128629999919,
+        "execute_s": 3.726638469999969,
+        "commit_s": 0.001618774000007761
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683184210,
+        "max_uuid_ms": 1789683187989
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683188046,
+      "final_clock_delta_ms": -57,
+      "round": 0
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "uuid_utils",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5297429200000039,
+      "throughput_rows_s": 188770.80981091596,
+      "client_cpu_s": 0.22895942700000005,
+      "client_cpu_percent_one_core": 43.220856448633306,
+      "client_lifetime_peak_rss_bytes": 68526080,
+      "phases": {
+        "generation_s": 0.06971196600008511,
+        "row_build_s": 0.04291989399987983,
+        "execute_s": 0.41462039600000367,
+        "commit_s": 0.0021669140000000198
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683189055,
+        "max_uuid_ms": 1789683189579
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683189585,
+      "final_clock_delta_ms": -6,
+      "round": 0
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "published_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.4965581820000011,
+      "throughput_rows_s": 201386.26977653903,
+      "client_cpu_s": 0.19585577199999998,
+      "client_cpu_percent_one_core": 39.442663337284316,
+      "client_lifetime_peak_rss_bytes": 68165632,
+      "phases": {
+        "generation_s": 0.045287286999979415,
+        "row_build_s": 0.048515051999942216,
+        "execute_s": 0.39934235099997295,
+        "commit_s": 0.0031056309999968335
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683190580,
+        "max_uuid_ms": 1789683191069
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683191077,
+      "final_clock_delta_ms": -8,
+      "round": 0
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "postgres_uuid7",
+        "group": "server_strategy",
+        "historical": false,
+        "batch": false
+      },
+      "version": "server",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.2926687920000006,
+      "throughput_rows_s": 30370.500744855963,
+      "client_cpu_s": 3.275518296,
+      "client_cpu_percent_one_core": 99.47913084845733,
+      "client_lifetime_peak_rss_bytes": 71684096,
+      "phases": {
+        "generation_s": 3.501599994137905e-05,
+        "row_build_s": 0.04802173700001333,
+        "execute_s": 3.2434406910000035,
+        "commit_s": 0.0008036069999945994
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683192102,
+        "max_uuid_ms": 1789683195381
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683195383,
+      "final_clock_delta_ms": -2,
+      "round": 0
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "checkout_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6683814729999966,
+      "throughput_rows_s": 149615.15846804524,
+      "client_cpu_s": 0.34294181800000006,
+      "client_cpu_percent_one_core": 51.30929444538954,
+      "client_lifetime_peak_rss_bytes": 68038656,
+      "phases": {
+        "generation_s": 0.18105302199997197,
+        "row_build_s": 0.0446717420000482,
+        "execute_s": 0.4300746260000494,
+        "commit_s": 0.012248592000005942
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683197051,
+      "final_clock_delta_ms": null,
+      "round": 0
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "stdlib_uuid4",
+        "group": "uuid4_control",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.7171730330000088,
+      "throughput_rows_s": 139436.3638879305,
+      "client_cpu_s": 0.33723169700000005,
+      "client_cpu_percent_one_core": 47.02236161743632,
+      "client_lifetime_peak_rss_bytes": 67821568,
+      "phases": {
+        "generation_s": 0.17534240499998077,
+        "row_build_s": 0.04701741500004175,
+        "execute_s": 0.4915921409999413,
+        "commit_s": 0.0027676829999876418
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": null,
+        "max_uuid_ms": null
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 24330240,
+      "wall_end_ms": 1789683198768,
+      "final_clock_delta_ms": null,
+      "round": 0
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "uuid_utils",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "1.0.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.9835071269999958,
+      "throughput_rows_s": 25103.507239187653,
+      "client_cpu_s": 3.9724120989999996,
+      "client_cpu_percent_one_core": 99.72147588428311,
+      "client_lifetime_peak_rss_bytes": 72523776,
+      "phases": {
+        "generation_s": 0.07283223699997166,
+        "row_build_s": 0.05767337299994324,
+        "execute_s": 3.851576966999943,
+        "commit_s": 0.00099908999999343
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683199834,
+        "max_uuid_ms": 1789683203772
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23207936,
+      "wall_end_ms": 1789683203817,
+      "final_clock_delta_ms": -45,
+      "round": 0
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "published_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.901389246000008,
+      "throughput_rows_s": 25631.8951262111,
+      "client_cpu_s": 3.88266015,
+      "client_cpu_percent_one_core": 99.51993777551905,
+      "client_lifetime_peak_rss_bytes": 72077312,
+      "phases": {
+        "generation_s": 0.04900725199996714,
+        "row_build_s": 0.059425610000005236,
+        "execute_s": 3.791294810000011,
+        "commit_s": 0.001278991000006613
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683204862,
+        "max_uuid_ms": 1789683208720
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683208764,
+      "final_clock_delta_ms": -44,
+      "round": 0
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "uuid6",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "2025.0.1",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.7661568239999923,
+      "throughput_rows_s": 130521.58104905295,
+      "client_cpu_s": 0.472642974,
+      "client_cpu_percent_one_core": 61.690108238206435,
+      "client_lifetime_peak_rss_bytes": 68173824,
+      "phases": {
+        "generation_s": 0.3213647199999343,
+        "row_build_s": 0.04401782099996865,
+        "execute_s": 0.3981834980000656,
+        "commit_s": 0.0022638749999970287
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683209771,
+        "max_uuid_ms": 1789683309770
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683210537,
+      "final_clock_delta_ms": 99233,
+      "round": 0
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "checkout_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.5078423110000045,
+      "throughput_rows_s": 196911.51728395294,
+      "client_cpu_s": 0.200920991,
+      "client_cpu_percent_one_core": 39.56365719200545,
+      "client_lifetime_peak_rss_bytes": 67887104,
+      "phases": {
+        "generation_s": 0.044997297999941566,
+        "row_build_s": 0.048126049000018156,
+        "execute_s": 0.4122404409999092,
+        "commit_s": 0.002121289000001525
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683211516,
+        "max_uuid_ms": 1789683212018
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683212024,
+      "final_clock_delta_ms": -6,
+      "round": 0
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "published_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.504106560000011,
+      "throughput_rows_s": 198370.7571668931,
+      "client_cpu_s": 0.20460941400000004,
+      "client_cpu_percent_one_core": 40.588524378654306,
+      "client_lifetime_peak_rss_bytes": 68034560,
+      "phases": {
+        "generation_s": 0.05052907900005721,
+        "row_build_s": 0.04706220499991787,
+        "execute_s": 0.40413600800005156,
+        "commit_s": 0.002039077000006273
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683213018,
+        "max_uuid_ms": 1789683213516
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683213523,
+      "final_clock_delta_ms": -7,
+      "round": 0
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "stdlib_uuid7",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.7140771919999906,
+      "throughput_rows_s": 140040.88230282156,
+      "client_cpu_s": 0.40750959099999995,
+      "client_cpu_percent_one_core": 57.06800267050194,
+      "client_lifetime_peak_rss_bytes": 67858432,
+      "phases": {
+        "generation_s": 0.2536340420000158,
+        "row_build_s": 0.045952468999971074,
+        "execute_s": 0.41242628299998785,
+        "commit_s": 0.0017497079999913012
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683214496,
+        "max_uuid_ms": 1789683215204
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683215210,
+      "final_clock_delta_ms": -6,
+      "round": 0
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "checkout_batch",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": true
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 3.9216256350000123,
+      "throughput_rows_s": 25499.62931380106,
+      "client_cpu_s": 3.910460306,
+      "client_cpu_percent_one_core": 99.71528824933306,
+      "client_lifetime_peak_rss_bytes": 72089600,
+      "phases": {
+        "generation_s": 0.04398549100001503,
+        "row_build_s": 0.05786777600002324,
+        "execute_s": 3.8186048429999744,
+        "commit_s": 0.000764372999995544
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683216235,
+        "max_uuid_ms": 1789683220118
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683220157,
+      "final_clock_delta_ms": -39,
+      "round": 0
+    },
+    {
+      "scenario": "historical",
+      "case": {
+        "name": "published_at",
+        "group": "client_uuid7",
+        "historical": true,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.6549639859999985,
+      "throughput_rows_s": 152680.15056937837,
+      "client_cpu_s": 0.34204075700000003,
+      "client_cpu_percent_one_core": 52.222834279624166,
+      "client_lifetime_peak_rss_bytes": 67833856,
+      "phases": {
+        "generation_s": 0.18598632900008738,
+        "row_build_s": 0.045768570000035425,
+        "execute_s": 0.42032630599996423,
+        "commit_s": 0.002554135000011115
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1577836800000,
+        "max_uuid_ms": 1578441515221
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23748608,
+      "wall_end_ms": 1789683221830,
+      "final_clock_delta_ms": null,
+      "round": 0
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": {
+        "name": "stdlib_uuid7",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "3.14.6",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 4.103631179000004,
+      "throughput_rows_s": 24368.661713981946,
+      "client_cpu_s": 4.091381403,
+      "client_cpu_percent_one_core": 99.70148935258383,
+      "client_lifetime_peak_rss_bytes": 71929856,
+      "phases": {
+        "generation_s": 0.25414488300000926,
+        "row_build_s": 0.05820861099989827,
+        "execute_s": 3.78951505000002,
+        "commit_s": 0.0013338830000009239
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683222858,
+        "max_uuid_ms": 1789683226928
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683226962,
+      "final_clock_delta_ms": -34,
+      "round": 0
+    },
+    {
+      "scenario": "copy",
+      "case": {
+        "name": "checkout_scalar",
+        "group": "client_uuid7",
+        "historical": false,
+        "batch": false
+      },
+      "version": "0.4.0",
+      "rows": 100000,
+      "batch_size": 1000,
+      "elapsed_s": 0.496431862999998,
+      "throughput_rows_s": 201437.51328870768,
+      "client_cpu_s": 0.20121117700000002,
+      "client_cpu_percent_one_core": 40.53147914077402,
+      "client_lifetime_peak_rss_bytes": 68096000,
+      "phases": {
+        "generation_s": 0.05042943999993099,
+        "row_build_s": 0.04525873799997271,
+        "execute_s": 0.3986734290000129,
+        "commit_s": 0.0017117560000059484
+      },
+      "verification": {
+        "rows": 100000,
+        "distinct_ids": 100000,
+        "all_rows_layout_checked": true,
+        "min_uuid_ms": 1789683227952,
+        "max_uuid_ms": 1789683228443
+      },
+      "postgres": "PostgreSQL 18.3 (Debian 18.3-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+      "postgres_settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "128MB",
+        "max_wal_size": "1GB"
+      },
+      "relation_bytes": 23199744,
+      "wall_end_ms": 1789683228449,
+      "final_clock_delta_ms": -6,
+      "round": 0
+    }
+  ],
+  "summary": [
+    {
+      "scenario": "sqlalchemy",
+      "case": "checkout_scalar",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 3.9091258139999923,
+      "throughput_rows_s": 25581.166930433363,
+      "client_cpu_s": 3.896622832,
+      "client_lifetime_peak_rss_bytes": 72105984,
+      "min_elapsed_s": 3.6529812709999874,
+      "max_elapsed_s": 4.168800573999988,
+      "generation_percent": 1.2384898389995092
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": "checkout_batch",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 3.9555089380000084,
+      "throughput_rows_s": 25281.19682383076,
+      "client_cpu_s": 3.942514316,
+      "client_lifetime_peak_rss_bytes": 72101888,
+      "min_elapsed_s": 3.876642989000004,
+      "max_elapsed_s": 3.9998859879999884,
+      "generation_percent": 1.095733356685768
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": "published_scalar",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 3.7670560239999986,
+      "throughput_rows_s": 26545.928534881816,
+      "client_cpu_s": 3.7551176400000004,
+      "client_lifetime_peak_rss_bytes": 72024064,
+      "min_elapsed_s": 3.745034809999993,
+      "max_elapsed_s": 3.847063297999995,
+      "generation_percent": 1.281591961994258
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": "published_batch",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 3.8157238670000027,
+      "throughput_rows_s": 26207.347147114702,
+      "client_cpu_s": 3.8041604949999996,
+      "client_lifetime_peak_rss_bytes": 72077312,
+      "min_elapsed_s": 3.688013151000007,
+      "max_elapsed_s": 3.838486064000051,
+      "generation_percent": 1.129762831445938
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": "stdlib_uuid7",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 4.130615017000025,
+      "throughput_rows_s": 24209.469918750212,
+      "client_cpu_s": 4.118283448,
+      "client_lifetime_peak_rss_bytes": 71823360,
+      "min_elapsed_s": 3.9587953589999927,
+      "max_elapsed_s": 4.2580538529999785,
+      "generation_percent": 6.11526331938946
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": "uuid_utils",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 3.8941393329999983,
+      "throughput_rows_s": 25679.615301017286,
+      "client_cpu_s": 3.88312383,
+      "client_lifetime_peak_rss_bytes": 72351744,
+      "min_elapsed_s": 3.884218335999975,
+      "max_elapsed_s": 4.106104292000026,
+      "generation_percent": 1.8405627757759333
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": "uuid6",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 4.163263835000009,
+      "throughput_rows_s": 24019.61633065702,
+      "client_cpu_s": 4.150297238,
+      "client_lifetime_peak_rss_bytes": 72282112,
+      "min_elapsed_s": 4.043697452999993,
+      "max_elapsed_s": 4.205235058999989,
+      "generation_percent": 7.599799929570635
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": "stdlib_uuid4",
+      "group": "uuid4_control",
+      "runs": 3,
+      "elapsed_s": 3.983975653000016,
+      "throughput_rows_s": 25100.55500080628,
+      "client_cpu_s": 3.970417933,
+      "client_lifetime_peak_rss_bytes": 71716864,
+      "min_elapsed_s": 3.9774951100000067,
+      "max_elapsed_s": 4.083619016,
+      "generation_percent": 4.269408743533148
+    },
+    {
+      "scenario": "sqlalchemy",
+      "case": "postgres_uuid7",
+      "group": "server_strategy",
+      "runs": 3,
+      "elapsed_s": 3.495946009999983,
+      "throughput_rows_s": 28604.560743774324,
+      "client_cpu_s": 3.4807714159999996,
+      "client_lifetime_peak_rss_bytes": 71569408,
+      "min_elapsed_s": 3.3035178119999955,
+      "max_elapsed_s": 3.5916213630000016,
+      "generation_percent": 0.0009817657388616228
+    },
+    {
+      "scenario": "copy",
+      "case": "checkout_scalar",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.4834696599999688,
+      "throughput_rows_s": 206838.21193662172,
+      "client_cpu_s": 0.202424021,
+      "client_lifetime_peak_rss_bytes": 68038656,
+      "min_elapsed_s": 0.4818464619999929,
+      "max_elapsed_s": 0.48744354999999473,
+      "generation_percent": 10.625429111694165
+    },
+    {
+      "scenario": "copy",
+      "case": "checkout_batch",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.4864878260000012,
+      "throughput_rows_s": 205554.989571311,
+      "client_cpu_s": 0.196627175,
+      "client_lifetime_peak_rss_bytes": 68014080,
+      "min_elapsed_s": 0.4774314030000255,
+      "max_elapsed_s": 0.5070218750000208,
+      "generation_percent": 8.778137440947239
+    },
+    {
+      "scenario": "copy",
+      "case": "published_scalar",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.49280547099999694,
+      "throughput_rows_s": 202919.82513319261,
+      "client_cpu_s": 0.204152249,
+      "client_lifetime_peak_rss_bytes": 68075520,
+      "min_elapsed_s": 0.4856889899999999,
+      "max_elapsed_s": 0.50599925100002,
+      "generation_percent": 10.125567952684152
+    },
+    {
+      "scenario": "copy",
+      "case": "published_batch",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.47488242299999683,
+      "throughput_rows_s": 210578.44038165352,
+      "client_cpu_s": 0.19184570699999998,
+      "client_lifetime_peak_rss_bytes": 67993600,
+      "min_elapsed_s": 0.47386982399999056,
+      "max_elapsed_s": 0.5009437820000073,
+      "generation_percent": 8.961004235673997
+    },
+    {
+      "scenario": "copy",
+      "case": "stdlib_uuid7",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.6879384000000073,
+      "throughput_rows_s": 145361.85216583192,
+      "client_cpu_s": 0.404518536,
+      "client_lifetime_peak_rss_bytes": 67903488,
+      "min_elapsed_s": 0.6862360590000094,
+      "max_elapsed_s": 0.7142483460000051,
+      "generation_percent": 37.054735417226254
+    },
+    {
+      "scenario": "copy",
+      "case": "uuid_utils",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.5175866129999918,
+      "throughput_rows_s": 193204.37872298987,
+      "client_cpu_s": 0.228427184,
+      "client_lifetime_peak_rss_bytes": 68464640,
+      "min_elapsed_s": 0.5073846469999808,
+      "max_elapsed_s": 0.5274170990000187,
+      "generation_percent": 14.378521803129226
+    },
+    {
+      "scenario": "copy",
+      "case": "uuid6",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.7592592379999985,
+      "throughput_rows_s": 131707.32076097597,
+      "client_cpu_s": 0.476875417,
+      "client_lifetime_peak_rss_bytes": 68153344,
+      "min_elapsed_s": 0.7563712019999684,
+      "max_elapsed_s": 0.7781356200000005,
+      "generation_percent": 42.39666887002026
+    },
+    {
+      "scenario": "copy",
+      "case": "stdlib_uuid4",
+      "group": "uuid4_control",
+      "runs": 3,
+      "elapsed_s": 0.6903283039999906,
+      "throughput_rows_s": 144858.61208437625,
+      "client_cpu_s": 0.329611101,
+      "client_lifetime_peak_rss_bytes": 67911680,
+      "min_elapsed_s": 0.6590123039999867,
+      "max_elapsed_s": 0.7188732040000048,
+      "generation_percent": 25.287809870760157
+    },
+    {
+      "scenario": "copy",
+      "case": "postgres_uuid7",
+      "group": "server_strategy",
+      "runs": 3,
+      "elapsed_s": 0.4475071489999891,
+      "throughput_rows_s": 223460.11728184132,
+      "client_cpu_s": 0.11108875900000004,
+      "client_lifetime_peak_rss_bytes": 67559424,
+      "min_elapsed_s": 0.4329790490000107,
+      "max_elapsed_s": 0.45560030499996174,
+      "generation_percent": 0.006204457271813273
+    },
+    {
+      "scenario": "historical",
+      "case": "checkout_at",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.6322445630000288,
+      "throughput_rows_s": 158166.64286600664,
+      "client_cpu_s": 0.33657985900000004,
+      "client_lifetime_peak_rss_bytes": 68059136,
+      "min_elapsed_s": 0.6318192459999921,
+      "max_elapsed_s": 0.6597537609999904,
+      "generation_percent": 29.199582219313314
+    },
+    {
+      "scenario": "historical",
+      "case": "published_at",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.6408581319999769,
+      "throughput_rows_s": 156040.77565173755,
+      "client_cpu_s": 0.334076716,
+      "client_lifetime_peak_rss_bytes": 68091904,
+      "min_elapsed_s": 0.6326579610000067,
+      "max_elapsed_s": 0.6421060940000132,
+      "generation_percent": 29.04832205219468
+    },
+    {
+      "scenario": "historical",
+      "case": "uuid_utils_at",
+      "group": "client_uuid7",
+      "runs": 3,
+      "elapsed_s": 0.5310135090000188,
+      "throughput_rows_s": 188319.12617122603,
+      "client_cpu_s": 0.22809810199999997,
+      "client_lifetime_peak_rss_bytes": 68550656,
+      "min_elapsed_s": 0.5294302549999657,
+      "max_elapsed_s": 0.5713284590000001,
+      "generation_percent": 14.341720610548304
+    },
+    {
+      "scenario": "historical",
+      "case": "rfc_random_at",
+      "group": "reference_strategy",
+      "runs": 3,
+      "elapsed_s": 0.673893009000011,
+      "throughput_rows_s": 148391.508243111,
+      "client_cpu_s": 0.372266127,
+      "client_lifetime_peak_rss_bytes": 68046848,
+      "min_elapsed_s": 0.6734799079999902,
+      "max_elapsed_s": 0.6741416020000202,
+      "generation_percent": 32.588052472695395
+    }
+  ]
+}
