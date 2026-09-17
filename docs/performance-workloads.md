@@ -116,3 +116,59 @@ framing and persistence verification. The present task adds no buffer API.
 - [Python 3.14 UUID API](https://docs.python.org/3.14/library/uuid.html)
 - [uuid-utils 1.0.0](https://github.com/aminalaee/uuid-utils/tree/1.0.0)
 - [uuid6 implementation](https://github.com/oittaa/uuid6-python)
+
+## Executed evidence: PostgreSQL 18.3, 2026-09-17 UTC
+
+[Actions run 35280765719](https://github.com/nekrasovp/uuidv7/actions/runs/35280765719)
+completed all 66 measured samples and 22 warmups: 8.8 million rows committed and
+fully reread. The tested source was clean HEAD
+`032adad79e7f319139e093dbac8cd27c8402d5b8`. Raw artifact bytes are retained in
+[`postgres18-032adad.json`](../benchmarks/workloads/results/postgres18-032adad.json)
+and the [complete table](../benchmarks/workloads/results/postgres18-032adad.md).
+Later evidence/documentation commits do not change that measurement's identity.
+
+Environment: Ubuntu 24.04 hosted runner, x86-64, four logical CPUs, Python 3.14.6,
+PostgreSQL 18.3 (pinned image digest in the workflow/report), fsync and
+synchronous_commit on, shared_buffers 128 MB. Dependency versions are in the
+lock and report. Only Python/SQLAlchemy/driver CPU is measured.
+
+| Path, 100,000 rows | Checkout median | Published 0.4.0 median | stdlib UUIDv7 median | Checkout generation share |
+|---|---:|---:|---:|---:|
+| SQLAlchemy bulk, uuid7_many | 3.9555 s | 3.8157 s | 4.1306 s | 1.10% |
+| Binary COPY, uuid7_many | 0.4865 s | 0.4749 s | 0.6879 s | 8.78% |
+| Historical COPY, scalar uuid7_at | 0.6322 s | 0.6409 s | unavailable | 29.20% |
+
+The checkout still contains the 0.4.0 generator: these are **not** measurements
+of the future 0.5.0 historical batch implementation. Checkout and PyPI build
+results fluctuate in either direction; no checkout improvement over 0.4.0 is
+established. The new `--include-historical-batch` case must be rerun by the release
+coordinator on the combined exact commit.
+
+SQLAlchemy bulk spends 97.38% of elapsed time in execute/adaptation and uses
+3.9425 client CPU seconds over 3.9555 elapsed seconds, pointing to the client
+ORM/driver path as the main bottleneck here. Live COPY spends 81.23% in the
+execute phase and uses only 0.1966 client CPU seconds over 0.4865 elapsed seconds;
+this phase includes driver work, transport and database waits, which these
+measurements cannot separate. COPY's median throughput is 205,555 rows/s versus
+25,281 rows/s for SQLAlchemy bulk with checkout batch generation.
+
+The historical scalar path spends 29.20% in generation and 63.38% in execution.
+The pinned uuid-utils historical path reaches 0.5310 s (188,319 rows/s), while
+checkout scalar reaches 0.6322 s (158,167 rows/s). This makes historical batching
+worth measuring; it does not establish identical entropy/counter guarantees or
+predict the new API's result. The reference OS-random constructor takes 0.6739 s.
+
+PostgreSQL server UUIDv7 has separate medians of 3.4959 s for bulk INSERT and
+0.4475 s for COPY. The UUIDv4 control has medians of 3.9840 s and 0.6903 s.
+These differences include representation/transport and generator costs; they
+must not be advertised as the benefit of one UUIDv7 library or of index ordering
+alone. Three runs and small empty tables do not establish production rankings.
+
+**Buffer conclusion:** eliminating the entire checkout generation phase could
+remove only about 1.1% of bulk INSERT or 8.8% of live COPY time in this setup.
+A caller-owned buffer would retain RNG/layout work and might affect adaptation,
+which was not isolated. There is no measured benefit sufficient to justify a
+new buffer API from this evidence. A future prototype should compare complete
+binary COPY framing/adaptation with equal UUID guarantees and retained-row
+verification. Historical batch generation is the more clearly motivated next
+measurement, with a 29.2% generation share; no gain is claimed in advance.
