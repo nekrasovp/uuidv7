@@ -18,10 +18,10 @@ uv sync --project benchmarks/workloads --locked
 # Example disposable server (remove this task-owned container after the run):
 docker run --name fastuuid7-workloads-pg --rm -d -p 127.0.0.1:55432:5432 \
   -e POSTGRES_USER=workload -e POSTGRES_PASSWORD=disposable-workload-only \
-  -e POSTGRES_DB=fastuuid7_workloads_run postgres:18.3
+  -e POSTGRES_DB=fastuuid7_workloads_run postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db
 # Wait until docker exec fastuuid7-workloads-pg pg_isready -U workload succeeds.
 export WORKLOAD_DSN=postgresql://workload:disposable-workload-only@127.0.0.1:55432/fastuuid7_workloads_run
-export WORKLOAD_POSTGRES_IMAGE="$(docker image inspect postgres:18.3 --format '{{index .RepoDigests 0}}')"
+export WORKLOAD_POSTGRES_IMAGE="$(docker image inspect postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db --format '{{index .RepoDigests 0}}')"
 benchmarks/workloads/.venv/bin/python -I benchmarks/workloads/run.py \
   --rows 100000 --batch-size 1000 --rounds 3 --output /tmp/workloads.json
 docker stop fastuuid7-workloads-pg

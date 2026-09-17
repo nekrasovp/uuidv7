@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 30
     services:
       postgres:
-        image: postgres:18.3
+        image: postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db
         env:
           POSTGRES_USER: workload
           POSTGRES_PASSWORD: disposable-workload-only
@@ -27,7 +27,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd 'pg_isready -U workload -d fastuuid7_workloads_ci'
+          --health-cmd "pg_isready -U workload -d fastuuid7_workloads_ci"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 12
@@ -54,7 +54,7 @@ jobs:
           uv run --extra dev --locked ruff format --check benchmarks/workloads tests/test_workload_contract.py
       - name: Real PostgreSQL 18 matrix
         run: |
-          export WORKLOAD_POSTGRES_IMAGE="$(docker image inspect postgres:18.3 --format '{{index .RepoDigests 0}}')"
+          export WORKLOAD_POSTGRES_IMAGE="$(docker image inspect postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db --format '{{index .RepoDigests 0}}')"
           benchmarks/workloads/.venv/bin/python -I benchmarks/workloads/run.py --database fastuuid7_workloads_ci --rows 100000 --batch-size 1000 --rounds 3 --output "$RUNNER_TEMP/workloads.json"
       - uses: actions/upload-artifact@v4
         with:

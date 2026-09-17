@@ -14,6 +14,7 @@ import statistics
 import subprocess
 import sys
 import time
+import traceback
 import uuid
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -494,8 +495,26 @@ def main(argv=None):
             for c in cases_for(args.scenario, args.include_historical_batch)
             if c.name == args.worker
         )
-        print(json.dumps(measure(args, case)))
-        return
+        try:
+            print(json.dumps(measure(args, case)))
+            return 0
+        except Exception as exc:
+            # Driver exception messages can contain credentials. Only emit class
+            # and code locations; retain neither DSN nor raw exception text.
+            print(
+                json.dumps(
+                    {
+                        "failure": {
+                            "type": type(exc).__name__,
+                            "locations": [
+                                f"{Path(f.filename).name}:{f.lineno}:{f.name}"
+                                for f in traceback.extract_tb(exc.__traceback__)
+                            ],
+                        }
+                    }
+                )
+            )
+            return 1
     if sys.version_info[:2] != (3, 14):
         raise ValueError("use the isolated Python 3.14 workload environment")
     meta = provenance()
@@ -545,8 +564,12 @@ def main(argv=None):
             result = subprocess.run(command, cwd=HERE, text=True, capture_output=True, timeout=600)
             if result.returncode:
                 # DB credentials can appear in driver exceptions; do not echo stderr.
+                try:
+                    failure = json.loads(result.stdout)["failure"]
+                except (ValueError, KeyError):
+                    failure = "worker terminated without structured diagnostic"
                 raise RuntimeError(
-                    f"{scenario}/{case.name} failed (exit {result.returncode}); no PASS/report produced"
+                    f"{scenario}/{case.name} failed (exit {result.returncode}): {failure}; no PASS/report produced"
                 )
             sample = json.loads(result.stdout)
             sample["round"] = run + 1
@@ -570,4 +593,4 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
