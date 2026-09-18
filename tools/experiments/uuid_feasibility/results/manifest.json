@@ -1,0 +1,205 @@
+{
+  "main_measurement_sha": "7bdf7040c1d4d194a5f5c67383627bbbd1c12c84",
+  "supplement_shas": [
+    "d27f5b22257617738050dc2b08a8ea6254a2afdf",
+    "fb8fb575efd81dffb96c9639406e43b95f749247"
+  ],
+  "workflow_runs": [
+    35366226764,
+    35367130385,
+    35367489768
+  ],
+  "arm64_cpu": "Apple M3 Pro",
+  "files": [
+    {
+      "file": "arm64/core-baseline.json",
+      "bytes": 25558,
+      "sha256": "eadffec98e1278233f609712de8c6c23928f3b635d3a5ca4095dd8aa15cff6e5"
+    },
+    {
+      "file": "arm64/core-baseline.log",
+      "bytes": 4374,
+      "sha256": "b9a7c76184bbfbaa6b83f9217afb24579a86450f26cd8b0ea2efb0a94bbd2e0e"
+    },
+    {
+      "file": "arm64/http.json",
+      "bytes": 92046,
+      "sha256": "cccc0493df81030d9f7d9ccf7568bda948ba9e51f468bf0cc46ba1b79f4a5269"
+    },
+    {
+      "file": "arm64/http.log",
+      "bytes": 4120,
+      "sha256": "bcbcab015258daae0647a6ee8ea07abf4cd648c004fddf4f2935bfb1b70e9a7e"
+    },
+    {
+      "file": "arm64/memory.json",
+      "bytes": 27075,
+      "sha256": "35de05cef89b2da2214b309c400fb3e62ce66fc358833ed328fe35079cd4f7ee"
+    },
+    {
+      "file": "arm64/memory.log",
+      "bytes": 1578,
+      "sha256": "46e4f2cca58c031a9828bb6b20d0c75d92ac51d06cbed0d5ac380e467b84470f"
+    },
+    {
+      "file": "arm64/micro.json",
+      "bytes": 330266,
+      "sha256": "00943d61334c2fa8670fc8e1f5263507a610f8a850e3ea48d3c7b1093543942d"
+    },
+    {
+      "file": "arm64/micro.log",
+      "bytes": 57563,
+      "sha256": "d263dfb6d39e547c81f56ff7e9e34a21e99230957512141de197d8a15eee6cce"
+    },
+    {
+      "file": "arm64/profile.json",
+      "bytes": 2792,
+      "sha256": "ffd164a2de5b9b2117b9de0b1c3a2c7ecbc017709de6db17307de9c550fee81c"
+    },
+    {
+      "file": "arm64/profile.json.pstats",
+      "bytes": 1000,
+      "sha256": "b8b5f233cd625b1ee2f8b68bc973f84cf0db14e117390c0cdc4c1c89d2c37b62"
+    },
+    {
+      "file": "arm64/threads.json",
+      "bytes": 10058,
+      "sha256": "1727550f2d66c4529884ee2f80412eafd354e22306255c15162d65fe7deb45dc"
+    },
+    {
+      "file": "core-linux-py314/core-baseline.json",
+      "bytes": 25230,
+      "sha256": "097cbce500bb9bc6d1c38968e631db57dae87c11b535cf21b2344c50422b60cb"
+    },
+    {
+      "file": "core-linux-py314/core-baseline.log",
+      "bytes": 4011,
+      "sha256": "b9a04fe58bdfa60b0fa59508b204bffb85a704ddf183b206f0f1e76385695e80"
+    },
+    {
+      "file": "core-linux-py314/packed-copy.json",
+      "bytes": 12314,
+      "sha256": "8afbea0bcfbc60ce7cf9b207471dc5123bc1ae17871cea1bff001aab241a8929"
+    },
+    {
+      "file": "linux-py312/copy.json",
+      "bytes": 20040,
+      "sha256": "0b4822cba8e6b16588c23c695a2ffd3a44b4aaf69c9c5cf52e60b0fd06154987"
+    },
+    {
+      "file": "linux-py312/copy.log",
+      "bytes": 1813,
+      "sha256": "53a51735ae18c066db3fb5977e7ac61d1c11aba9200a2c506014fab0b682405e"
+    },
+    {
+      "file": "linux-py312/fuzz.log",
+      "bytes": 7579,
+      "sha256": "d5e84d4ce20753fd0128a57cfb0d802efbaecf9b4b09ea685312ed163df8d7eb"
+    },
+    {
+      "file": "linux-py312/http.json",
+      "bytes": 91160,
+      "sha256": "c332231704dcd62965d92e0257b5314fc8f639760e08fa07db6c6c6eaf25f4ec"
+    },
+    {
+      "file": "linux-py312/http.log",
+      "bytes": 4130,
+      "sha256": "3e877bac9816317269f316019a929d72410d26e9b4be294c03ef13b4a2946ba2"
+    },
+    {
+      "file": "linux-py312/memory.json",
+      "bytes": 26641,
+      "sha256": "a22e45670e3ec4abee5e6bb7afb1b7cf0b2c6061493dee03228faf5f3e41bdd5"
+    },
+    {
+      "file": "linux-py312/micro.json",
+      "bytes": 340413,
+      "sha256": "e117d3c8c6d241e41d6a4310cdb6b70f863fbc5ac722a6ef874bdaa7aac52527"
+    },
+    {
+      "file": "linux-py312/micro.log",
+      "bytes": 59322,
+      "sha256": "decc2f3010d5d91ac5601e6817d7d6c6f67ea6ed3f23a5aa95177545fd7c9d77"
+    },
+    {
+      "file": "linux-py312/profile.json",
+      "bytes": 2841,
+      "sha256": "dad7b7bebc4ac0eb737b24add431942e67eab7cde354b80dc2be6d8f9ee230f0"
+    },
+    {
+      "file": "linux-py312/profile.json.pstats",
+      "bytes": 960,
+      "sha256": "413263e9ec7fbe89fe160e1ba2697718153b8121e9fc0ea80b82c81312b1146b"
+    },
+    {
+      "file": "linux-py312/threads.json",
+      "bytes": 10031,
+      "sha256": "c4d4a53234ebeb7a8e2ad0ab5afb7c09a7902cc0d68a09a83ce719d4ee62d407"
+    },
+    {
+      "file": "linux-py314/copy.json",
+      "bytes": 20076,
+      "sha256": "a44d303483e8c3dddc4ab8b161be604b550926034eeddd0bd61434149dd525f3"
+    },
+    {
+      "file": "linux-py314/copy.log",
+      "bytes": 1830,
+      "sha256": "88f109e35322048b4dee36afa003b7d124eab42c1145e8ac8f609085fca96a9d"
+    },
+    {
+      "file": "linux-py314/fuzz.log",
+      "bytes": 7579,
+      "sha256": "2a7064bca4291040521d7aa43a7b8240c98b7532b5ee45b5909ebd9895a1f1a0"
+    },
+    {
+      "file": "linux-py314/http.json",
+      "bytes": 91117,
+      "sha256": "8abefab4684f843df4f91b7b382c3ffd6cf50fa621562d1cc3182316bce945b5"
+    },
+    {
+      "file": "linux-py314/http.log",
+      "bytes": 4160,
+      "sha256": "b2d3ae8679337a1a4bd98dec88ec1f8e5812a8523d1fbcdeabf2aadf0aa997c8"
+    },
+    {
+      "file": "linux-py314/memory.json",
+      "bytes": 26640,
+      "sha256": "93d1ef9e9fa2c4bfaca488e47b79f89c7df57375defcfb58a9aad4ebaf8106c2"
+    },
+    {
+      "file": "linux-py314/micro.json",
+      "bytes": 337054,
+      "sha256": "843105f021afd43bdeed785d3fca52a2f7e0c7eb5aac2378772c57163f2a8167"
+    },
+    {
+      "file": "linux-py314/micro.log",
+      "bytes": 64011,
+      "sha256": "c65ef647d0ff4dc5929cb6192987ee9a09ee89594d88353424e579b71fe8a978"
+    },
+    {
+      "file": "linux-py314/profile.json",
+      "bytes": 2840,
+      "sha256": "7a9d71cc73c9a69d07991db1ed416cdfa67da8f325885cc9308791d0a06bad1a"
+    },
+    {
+      "file": "linux-py314/profile.json.pstats",
+      "bytes": 959,
+      "sha256": "7b61b8f64ad4ecdb595c49d7854901cbb321e3660ed14af696a4d46d8bf53660"
+    },
+    {
+      "file": "linux-py314/threads.json",
+      "bytes": 10059,
+      "sha256": "af730237d036974cf2bce388a40f65d9c9240a290fc25002521bb4c747fb4a7f"
+    },
+    {
+      "file": "packed-linux-py314/packed-copy.json",
+      "bytes": 12162,
+      "sha256": "5160c22529ae468d360f850d665570502387d622fe5df006cabc0d7ebac20699"
+    },
+    {
+      "file": "summary.json",
+      "bytes": 420562,
+      "sha256": "cea8104a6891c46061254b509fad5921f3c81058acf42dee15e7aa2e7fa2dcd8"
+    }
+  ]
+}

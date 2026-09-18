@@ -1,0 +1,2 @@
+# Preserve exact generated evidence, including libFuzzer's trailing spaces.
+results/**/*.log -whitespace
