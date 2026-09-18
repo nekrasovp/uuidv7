@@ -106,9 +106,14 @@ jobs:
         env:
           UUID_LAB_DSN: postgresql://workload:disposable-workload-only@127.0.0.1:5432/fastuuid7_feasibility_packed
         run: .venv/bin/python packed_copy.py --output "$RUNNER_TEMP/packed-copy.json"
+      - name: Distinguish TypeAdapter from direct core schema
+        run: .venv/bin/python core_baseline.py --processes 5 --values 3 --warmups 1 --min-time 0.05 -o "$RUNNER_TEMP/core-baseline.json" > "$RUNNER_TEMP/core-baseline.log" 2>&1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: packed-copy-${{ github.sha }}
-          path: ${{ runner.temp }}/packed-copy.json
+          path: |
+            ${{ runner.temp }}/packed-copy.json
+            ${{ runner.temp }}/core-baseline.json
+            ${{ runner.temp }}/core-baseline.log
           if-no-files-found: error
