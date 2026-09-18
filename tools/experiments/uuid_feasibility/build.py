@@ -9,6 +9,8 @@ os.chdir(Path(__file__).resolve().parent)
 setup(
     name="uuid-lab-prototype",
     version="0.0.0",
+    packages=[],
+    py_modules=[],
     ext_modules=[
         Extension("_uuid_lab", ["prototype.c"], extra_compile_args=["-O3", "-Wall", "-Wextra"])
     ],

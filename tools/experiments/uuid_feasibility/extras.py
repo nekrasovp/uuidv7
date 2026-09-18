@@ -27,17 +27,21 @@ def worker(args):
         count = 100_000
         inputs = [TEXTS[i % len(TEXTS)] for i in range(count)]
         gc.collect()
-        tracemalloc.start()
+        if args.measure == "traced":
+            tracemalloc.start()
         before = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
         fn = {**CONSUMERS, "native": lab.parse_many_native, "packed": lab.parse_many_bytes}[
             args.variant
         ]
         result = fn(inputs)
-        current, peak = tracemalloc.get_traced_memory()
+        current, peak = (
+            tracemalloc.get_traced_memory() if args.measure == "traced" else (None, None)
+        )
         after = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
         assert len(result) == count * (16 if args.variant == "packed" else 1)
         return {
             "variant": args.variant,
+            "measure": args.measure,
             "count": count,
             "traced_current": current,
             "traced_peak": peak,
@@ -131,17 +135,20 @@ def main(args):
                     "--rows",
                     str(args.rows),
                 ]
-                row = json.loads(subprocess.check_output(cmd, cwd=HERE, text=True))
-                row.update(repeat=repeat, warmup=repeat == -1)
-                out["samples"].append(row)
-                save(args.output, out)
-                print(
-                    args.kind,
-                    variant,
-                    repeat,
-                    row.get("elapsed", row.get("traced_current")),
-                    flush=True,
-                )
+                for measure in ["rss", "traced"] if args.kind == "memory" else ["rss"]:
+                    row = json.loads(
+                        subprocess.check_output(cmd + ["--measure", measure], cwd=HERE, text=True)
+                    )
+                    row.update(repeat=repeat, warmup=repeat == -1)
+                    out["samples"].append(row)
+                    save(args.output, out)
+                    print(
+                        args.kind,
+                        variant,
+                        repeat,
+                        row.get("elapsed", row.get("traced_current")),
+                        flush=True,
+                    )
     elif args.kind == "threads":
         values = TEXTS * 64
         expected = b"".join(RAW) * 64
@@ -195,6 +202,7 @@ if __name__ == "__main__":
     parser.add_argument("--worker", action="store_true")
     parser.add_argument("--variant")
     parser.add_argument("--rows", type=int, default=100000)
+    parser.add_argument("--measure", choices=["rss", "traced"], default="rss")
     parser.add_argument("--rounds", type=int, default=5)
     parser.add_argument("--output")
     main(parser.parse_args())
