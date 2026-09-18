@@ -1,0 +1,72 @@
+name: UUID feasibility research
+on:
+  workflow_dispatch:
+  push:
+    branches: [research/uuid-feasibility]
+    paths:
+      - 'tools/experiments/uuid_feasibility/**'
+      - '.github/workflows/uuid-feasibility.yml'
+permissions:
+  contents: read
+jobs:
+  study:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.12', '3.14']
+    services:
+      postgres:
+        image: postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db
+        env:
+          POSTGRES_USER: workload
+          POSTGRES_PASSWORD: disposable-workload-only
+          POSTGRES_DB: fastuuid7_feasibility_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U workload -d fastuuid7_feasibility_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    defaults:
+      run:
+        working-directory: tools/experiments/uuid_feasibility
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: '0.11.28'
+      - name: Locked experiment environment
+        run: uv sync --locked --python '${{ matrix.python }}'
+      - name: Compile and check contracts
+        run: |
+          .venv/bin/python build.py
+          .venv/bin/python -m pytest -q -o addopts='' test_contract.py
+          mkdir -p "$RUNNER_TEMP/uuid-study"
+      - name: Address and undefined behavior sanitizer fuzzing
+        run: |
+          mkdir -p "$RUNNER_TEMP/uuid-fuzz"
+          printf '01900000-0000-7000-8000-000000000001' > "$RUNNER_TEMP/uuid-fuzz/canonical"
+          printf 'urn:uuid:01900000-0000-7000-8000-000000000001' > "$RUNNER_TEMP/uuid-fuzz/urn"
+          clang -O1 -g -fsanitize=fuzzer,address,undefined fuzz.c -o "$RUNNER_TEMP/uuid-fuzz-bin"
+          "$RUNNER_TEMP/uuid-fuzz-bin" -runs=200000 -seed=9562 "$RUNNER_TEMP/uuid-fuzz" > "$RUNNER_TEMP/uuid-study/fuzz.log" 2>&1
+      - name: Fixed microbenchmark matrix
+        run: .venv/bin/python micro.py --prototype --processes 5 --values 3 --warmups 1 --min-time 0.05 -o "$RUNNER_TEMP/uuid-study/micro.json" > "$RUNNER_TEMP/uuid-study/micro.log" 2>&1
+      - name: Real HTTP requests
+        run: .venv/bin/python http_bench.py --rounds 5 --duration 2 --output "$RUNNER_TEMP/uuid-study/http.json" > "$RUNNER_TEMP/uuid-study/http.log" 2>&1
+      - name: COPY, memory and threading consumers
+        env:
+          UUID_LAB_DSN: postgresql://workload:disposable-workload-only@127.0.0.1:5432/fastuuid7_feasibility_ci
+        run: |
+          .venv/bin/python extras.py copy --rounds 5 --output "$RUNNER_TEMP/uuid-study/copy.json" > "$RUNNER_TEMP/uuid-study/copy.log" 2>&1
+          .venv/bin/python extras.py memory --rounds 3 --output "$RUNNER_TEMP/uuid-study/memory.json"
+          .venv/bin/python extras.py threads --rounds 5 --output "$RUNNER_TEMP/uuid-study/threads.json"
+          .venv/bin/python extras.py profile --output "$RUNNER_TEMP/uuid-study/profile.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: uuid-study-py${{ matrix.python }}-${{ github.sha }}
+          path: ${{ runner.temp }}/uuid-study/
+          if-no-files-found: error
