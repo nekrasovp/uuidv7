@@ -70,6 +70,40 @@ platform plumbing; neither uses an application-maintained entropy buffer.
 Other generators' entropy/fork properties are not established by speed or small
 uniqueness samples. No Windows direct-entropy implementation is included.
 
-The dedicated `UUID feasibility research` workflow reproduces Linux Python
-3.12/3.14. Source identity, package versions and lock/source/extension hashes
-are embedded in results. Run heavy measurements sequentially on a quiet machine.
+`packed_copy.py` is a separately identified consumer experiment using psycopg's
+public binary Dumper API, scoped to each disposable connection. It compares
+standard-object COPY with direct 16-byte UUID values, including slicing/framing
+costs, and verifies every persisted row. It avoids assuming that packed values
+must be converted back into stdlib UUIDs. Five randomized repeats plus a warmup
+are fixed before its first run. Run with the same disposable `UUID_LAB_DSN`:
+
+```sh
+.venv/bin/python packed_copy.py --output /tmp/packed-copy.json
+```
+
+The direct-core supplement separates public TypeAdapter call overhead from
+Pydantic's native schema validator, with the same standard UUID outputs:
+
+```sh
+.venv/bin/python core_baseline.py --processes 5 --values 3 --warmups 1 --min-time 0.05 -o /tmp/core-baseline.json
+```
+
+Memory RSS and tracemalloc runs use separate fresh processes so instrumentation
+does not inflate the reported untraced RSS measurement.
+
+The dedicated `UUID feasibility research` workflow is manually dispatched:
+`full` reproduces the main Linux Python 3.12/3.14 matrix, while `supplement`
+runs the direct-core and direct binary COPY consumers on Python 3.14. The
+completed study originally ran from the two recorded research branches; the
+final workflow is manual to avoid repeating long measurements on report edits.
+Source identity, package versions and lock/source/extension hashes are embedded
+in results. Run heavy measurements sequentially on a quiet machine.
+
+The [decision report](../../../docs/design/uuid-feasibility.md) explains outcomes
+and limitations. Retained raw evidence is under `results/`; regenerate the
+deterministic summary without rerunning measurements:
+
+```sh
+python3 analyze.py results /tmp/uuid-summary.json
+cmp results/summary.json /tmp/uuid-summary.json
+```

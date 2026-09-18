@@ -1,16 +1,18 @@
 name: UUID feasibility research
 on:
   workflow_dispatch:
-  push:
-    branches: [research/uuid-feasibility, research/uuid-packed-copy]
-    paths:
-      - 'tools/experiments/uuid_feasibility/**'
-      - '.github/workflows/uuid-feasibility.yml'
+    inputs:
+      mode:
+        description: Fixed main matrix or separately identified consumer supplements
+        type: choice
+        options: [full, supplement]
+        default: full
+        required: true
 permissions:
   contents: read
 jobs:
   study:
-    if: github.ref != 'refs/heads/research/uuid-packed-copy'
+    if: inputs.mode == 'full'
     runs-on: ubuntu-24.04
     timeout-minutes: 50
     strategy:
@@ -72,7 +74,7 @@ jobs:
           path: ${{ runner.temp }}/uuid-study/
           if-no-files-found: error
   packed-copy:
-    if: github.ref == 'refs/heads/research/uuid-packed-copy'
+    if: inputs.mode == 'supplement'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     services:
