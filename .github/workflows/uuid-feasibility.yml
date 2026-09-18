@@ -2,7 +2,7 @@ name: UUID feasibility research
 on:
   workflow_dispatch:
   push:
-    branches: [research/uuid-feasibility]
+    branches: [research/uuid-feasibility, research/uuid-packed-copy]
     paths:
       - 'tools/experiments/uuid_feasibility/**'
       - '.github/workflows/uuid-feasibility.yml'
@@ -10,6 +10,7 @@ permissions:
   contents: read
 jobs:
   study:
+    if: github.ref != 'refs/heads/research/uuid-packed-copy'
     runs-on: ubuntu-24.04
     timeout-minutes: 50
     strategy:
@@ -69,4 +70,45 @@ jobs:
         with:
           name: uuid-study-py${{ matrix.python }}-${{ github.sha }}
           path: ${{ runner.temp }}/uuid-study/
+          if-no-files-found: error
+  packed-copy:
+    if: github.ref == 'refs/heads/research/uuid-packed-copy'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db
+        env:
+          POSTGRES_USER: workload
+          POSTGRES_PASSWORD: disposable-workload-only
+          POSTGRES_DB: fastuuid7_feasibility_packed
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U workload -d fastuuid7_feasibility_packed"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    defaults:
+      run:
+        working-directory: tools/experiments/uuid_feasibility
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: '0.11.28'
+      - name: Build unchanged core and check contracts
+        run: |
+          uv sync --locked --python 3.14
+          .venv/bin/python build.py
+          .venv/bin/python -m pytest -q -o addopts='' test_contract.py
+      - name: Direct binary UUID adapter versus standard objects
+        env:
+          UUID_LAB_DSN: postgresql://workload:disposable-workload-only@127.0.0.1:5432/fastuuid7_feasibility_packed
+        run: .venv/bin/python packed_copy.py --output "$RUNNER_TEMP/packed-copy.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: packed-copy-${{ github.sha }}
+          path: ${{ runner.temp }}/packed-copy.json
           if-no-files-found: error
