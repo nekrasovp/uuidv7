@@ -3,6 +3,19 @@
 All notable changes to this project are documented here. The project follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+- Add OS-CSPRNG UUIDv4 generation as standard objects, strings, bytes, and batches,
+  sharing the fork-aware entropy pool without advancing the live UUIDv7 state.
+- Remove the per-UUID POSIX PID syscall using a native fork child hook, with
+  per-call PID checking if registration fails.
+- Add strict `parse`, `parse_many`, `parse_bytes_many`, and `format_uuid` APIs.
+  Parse all UUID versions/variants, including case-insensitive URNs, using the
+  production integer conversion helper and standard UUID return objects.
+- Promote Python 3.15 to stable CI/wheels and update cibuildwheel to 4.3.5.
+- Refresh competitor pins and add process-repeated lifetime-aware benchmarks,
+  parser sanitizer coverage, entropy fault injection, and local SDK contracts.
+
 ## 0.5.0 - 2026-09-18
 
 ### Added

@@ -3,6 +3,16 @@
 # This module is kept for backward compatibility
 # Use 'from uuidv7 import uuid7' instead
 from uuidv7 import (
+    format_uuid,
+    parse,
+    parse_bytes_many,
+    parse_many,
+    uuid4,
+    uuid4_bytes,
+    uuid4_bytes_many,
+    uuid4_many,
+    uuid4_str,
+    uuid4_str_many,
     uuid7,
     uuid7_at,
     uuid7_bytes,
@@ -16,6 +26,16 @@ from uuidv7.uuidv7_impl.uuid7_gen import generate_uuid7
 
 __version__ = "0.5.0"
 __all__ = [
+    "format_uuid",
+    "parse",
+    "parse_many",
+    "parse_bytes_many",
+    "uuid4",
+    "uuid4_str",
+    "uuid4_bytes",
+    "uuid4_many",
+    "uuid4_str_many",
+    "uuid4_bytes_many",
     "uuid7",
     "uuid7_at",
     "uuid7_bytes",

@@ -1,11 +1,16 @@
 # Python compatibility and integer conversion
 
-This work tests CPython **3.15.0rc2**, the prerelease available on 2026-09-18.
-It is not a claim about an untested final Python 3.15 release. The stable release
-matrix and package classifiers remain Python 3.9–3.14. The separate
-`python-prerelease.yml` workflow pins `3.15.0-rc.2` on Linux, macOS, and Windows,
-reports the interpreter, runs locked tests, and builds artifacts without publishing.
-A failing prerelease job is not suppressed with `continue-on-error`.
+The stable test and wheel matrices now cover CPython **3.9–3.15**, with a
+separate `python315.yml` matrix pinned to **3.15.2** on Linux, macOS and Windows.
+The test matrix installs interpreters with uv. The wheel and publish workflows
+use cibuildwheel 4.3.5 with its documented `build[uv]` frontend and explicitly exclude
+free-threaded builds. Their installed-wheel checks include UUIDv4 and parsing.
+The root lock updates psycopg to 3.3.8 and Pydantic to 2.14.3 for 3.15 wheels;
+these are optional test dependencies, not runtime requirements.
+
+The tables below record the earlier September integer-helper study; 3.15.0rc2
+results there are historical and do not stand in for the new stable checks.
+New acceptance results are recorded in [the implementation plan](design/uuid-expansion.md).
 
 ## C API choices
 

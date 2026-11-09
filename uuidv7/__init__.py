@@ -10,6 +10,16 @@ from uuidv7.uuidv7_impl.uuid7_gen import (
     _configure_uuid7,
     _generate_uuid7_at_bytes,
     _uuid7_at_many,
+    format_uuid,
+    parse,
+    parse_bytes_many,
+    parse_many,
+    uuid4,
+    uuid4_bytes,
+    uuid4_bytes_many,
+    uuid4_many,
+    uuid4_str,
+    uuid4_str_many,
 )
 from uuidv7.uuidv7_impl.uuid7_gen import (
     generate_uuid7 as _generate_uuid7_str,
@@ -91,7 +101,7 @@ def uuid7_at_many(*, unix_ms: Iterable[int]) -> list[_uuid.UUID]:
     return _uuid7_at_many(unix_ms)
 
 
-_configure_uuid7(_UUID7, _SAFE_UUID_UNKNOWN)
+_configure_uuid7(_UUID7, _SAFE_UUID_UNKNOWN, _uuid.UUID)
 uuid7 = _generate_uuid7_uuid
 uuid7_obj = _generate_uuid7_obj
 uuid7_str = _generate_uuid7_str
@@ -104,6 +114,16 @@ uuid7_bytes_many = _generate_uuid7_bytes_many
 
 __version__ = "0.5.0"
 __all__ = [
+    "format_uuid",
+    "parse",
+    "parse_many",
+    "parse_bytes_many",
+    "uuid4",
+    "uuid4_str",
+    "uuid4_bytes",
+    "uuid4_many",
+    "uuid4_str_many",
+    "uuid4_bytes_many",
     "UUID7Obj",
     "uuid7",
     "uuid7_at",

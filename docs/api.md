@@ -41,7 +41,7 @@ non-integer counts raise `TypeError`.
 
 ## Ordering and time
 
-UUIDs produced by the live scalar and batch APIs in one process are strictly increasing, including multiple
+UUIDv7 values produced by the live scalar and batch APIs in one process are strictly increasing, including multiple
 calls within the same millisecond and observed wall-clock rollback. The `time`
 property is the embedded Unix timestamp in milliseconds.
 
@@ -73,7 +73,7 @@ Calls at the same timestamp are unique with probabilistic UUID guarantees,
 not deterministic or monotonically ordered. Different timestamps sort by their
 embedded millisecond value. Historical calls do not read or advance the live
 generator's timestamp/counter, even if the supplied timestamp is in the future.
-They share the fork-aware entropy buffer and retain the same PID reset behavior.
+They share the fork-aware entropy buffer and retain the same child reset behavior.
 Mixing historical and live results does not preserve call-order monotonicity.
 
 ### Historical batches
@@ -117,3 +117,65 @@ User-supplied iterators can themselves call other APIs or have side effects;
 those effects are outside the batch function's guarantees. The API requires the
 GIL and uses O(n) input/output memory. Supply bounded chunks, never an infinite
 iterator. It allocates its own output and has no user-buffer interface.
+
+
+## Random UUIDv4
+
+`uuid4() -> uuid.UUID`, `uuid4_str() -> str`, and `uuid4_bytes() -> bytes`
+return a random version-4 UUID as a standard UUID object, canonical lowercase
+text, or 16 network-order bytes. `uuid4_many(count)`, `uuid4_str_many(count)`,
+and `uuid4_bytes_many(count)` return a list of UUIDs, a list of strings, or one
+contiguous `count * 16` byte buffer. Counts use the same integer/index rules as
+v7 batches; the argument is positional. Empty batches return empty containers.
+
+Each UUID has 122 random bits from the existing operating-system CSPRNG pool
+(`/dev/urandom` on POSIX; BCryptGenRandom on Windows). On POSIX a native
+`pthread_atfork` child handler invalidates process state; the next generation
+resets the pool and v7 counter before consuming entropy. This covers Python's
+`os.fork()` and libc `fork()`, not raw kernel clone/fork syscalls bypassing libc.
+If hook registration fails, every call checks the PID instead. Windows retains
+its process-ID check. v4 does not advance
+the v7 timestamp or counter and provides no ordering guarantee. A source failure
+raises `RuntimeError`; no partial batch escapes, though bytes may have been
+consumed. Returned objects are independent and never reused or mutated.
+
+## Strict text parsing and formatting
+
+```python
+from fastuuid7 import parse, parse_many, parse_bytes_many, format_uuid
+
+value = parse("URN:UUID:00112233-4455-4677-8899-AABBCCDDEEFF")
+assert format_uuid(value) == "00112233-4455-4677-8899-aabbccddeeff"
+assert format_uuid(value.bytes) == str(value)
+assert parse_many([str(value)]) == [value]
+assert parse_bytes_many([str(value)]) == value.bytes
+```
+
+`parse(text, /) -> uuid.UUID` accepts a string in exactly one of four forms:
+32 ASCII hex digits; canonical `8-4-4-4-12` text; that canonical text in one
+pair of braces; or `urn:uuid:` followed by canonical text. Both prefix and hex
+are case-insensitive. Whitespace, misplaced separators, extra braces, signs,
+non-ASCII characters and embedded NULs are rejected. This deliberately differs
+from the more permissive `uuid.UUID` string constructor; it is not a drop-in
+replacement for all of its inputs. Non-string input raises `TypeError`, malformed
+text raises `ValueError`. All versions and variants, including nil/max, retain
+all 128 bits; parsing does not enforce a particular UUID version.
+
+`parse_many(texts, /)` returns `list[uuid.UUID]` and `parse_bytes_many(texts, /)`
+returns packed network-order bytes. Both eagerly snapshot a **finite** iterable,
+then parse in input order. Iterator exceptions propagate before parsing.
+Element errors include the zero-based index. No partial result is returned;
+iterator side effects cannot be undone. Empty inputs return `[]` or `b""`.
+
+`format_uuid(value, /) -> str` returns canonical lowercase text from a
+`uuid.UUID` (including the library's v7 subclass), `UUID7Obj`, or exactly 16
+`bytes`. Wrong types raise `TypeError`, wrong byte lengths raise `ValueError`.
+Mutable buffers and memoryviews need an explicit `bytes(...)` conversion.
+UUID subclass property errors propagate. No version/variant bits are changed.
+
+The new standard-object APIs return the exact `uuid.UUID` class. Consequently,
+parsed v7 `.time` follows the installed stdlib's behavior (v7 milliseconds on
+Python 3.14+); on older Python use `value.int >> 80` for a parsed v7 timestamp.
+Generated live/historical v7 objects retain the existing compatibility subclass.
+No Pydantic or FastAPI validator is replaced automatically. All operations
+currently require the GIL, including packed parsing.

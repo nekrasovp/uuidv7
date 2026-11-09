@@ -1,0 +1,3825 @@
+{
+  "protocol": "uuid-operations-v1",
+  "source_sha": "84be21d20eeeb29f51da15f4c68326e423e44a94",
+  "harness_sha256": "e5e9718cdedbfed06fc03c9a7d3a1bfe0e5f05af4b46123068a7651f4217bb9a",
+  "batch_size": 64,
+  "samples": [
+    {
+      "seed": 9562,
+      "rows": [
+        {
+          "key": "format/stdlib-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 512,
+          "ns_per_uuid": [
+            764.5501098633642,
+            762.605255127339,
+            763.5888366699407
+          ],
+          "mean_ns": 763.581400553548
+        },
+        {
+          "key": "v7/fastuuidv7.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            93.61812400816915,
+            93.34077262878444,
+            93.20559501648948
+          ],
+          "mean_ns": 93.38816388448102
+        },
+        {
+          "key": "v7/fastuuidv7/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            69.04156875611636,
+            68.30812263489638,
+            68.59152984619665
+          ],
+          "mean_ns": 68.64707374573646
+        },
+        {
+          "key": "v7/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            987.1171569825026,
+            984.915802001822,
+            982.7300109866225
+          ],
+          "mean_ns": 984.9209899903157
+        },
+        {
+          "key": "v4/fastuuid.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            749.9635772704669,
+            774.5071563720635,
+            748.7479248046228
+          ],
+          "mean_ns": 757.7395528157177
+        },
+        {
+          "key": "format/stdlib-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 256,
+          "ns_per_uuid": [
+            2164.910217285036,
+            2183.486755371472,
+            2171.6672363282855
+          ],
+          "mean_ns": 2173.3547363282646
+        },
+        {
+          "key": "parse/uuid-utils.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            179.69644165038858,
+            179.1344795226777,
+            179.19887924190473
+          ],
+          "mean_ns": 179.34326680499035
+        },
+        {
+          "key": "v7/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            395.04145812993727,
+            395.69897460935147,
+            394.08599853524817
+          ],
+          "mean_ns": 394.942143758179
+        },
+        {
+          "key": "v7/candidate.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            388.6561126707419,
+            389.4594573974203,
+            391.0328369141538
+          ],
+          "mean_ns": 389.716135660772
+        },
+        {
+          "key": "v7/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            366.12578582762535,
+            365.5058898925862,
+            365.8850097655597
+          ],
+          "mean_ns": 365.83889516192374
+        },
+        {
+          "key": "v4/stdlib/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2393.9865722655622,
+            2392.0787353510705,
+            2408.1805419916973
+          ],
+          "mean_ns": 2398.081949869443
+        },
+        {
+          "key": "packed/candidate",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            318.85458374027263,
+            320.34066009512753,
+            319.73313903812044
+          ],
+          "mean_ns": 319.6427942911735
+        },
+        {
+          "key": "v7/candidate.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            337.37812042233634,
+            337.4895629883407,
+            337.6468658447367
+          ],
+          "mean_ns": 337.50484975180456
+        },
+        {
+          "key": "v7/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            995.0989685058621,
+            991.0682983397395,
+            995.9953918459337
+          ],
+          "mean_ns": 994.0542195638451
+        },
+        {
+          "key": "packed/candidate-batch",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 8192,
+          "ns_per_uuid": [
+            50.35073471069853,
+            50.380029678327546,
+            50.41908836365006
+          ],
+          "mean_ns": 50.383284250892046
+        },
+        {
+          "key": "v4/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            906.8594665527854,
+            895.3386840819707,
+            898.8590393067473
+          ],
+          "mean_ns": 900.3523966471678
+        },
+        {
+          "key": "parse/fastuuid.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            133.3852386474401,
+            133.0458984375371,
+            132.79668045046952
+          ],
+          "mean_ns": 133.07593917848223
+        },
+        {
+          "key": "format/candidate-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 2048,
+          "ns_per_uuid": [
+            261.90666961676146,
+            261.2090377807812,
+            262.27433776854474
+          ],
+          "mean_ns": 261.7966817220291
+        },
+        {
+          "key": "v7/fastuuidv7.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 16384,
+          "ns_per_uuid": [
+            44.904953956593964,
+            44.88155364990433,
+            45.06607151031369
+          ],
+          "mean_ns": 44.950859705603996
+        },
+        {
+          "key": "v4/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            1420.3363342285038,
+            1430.381286621381,
+            1421.35385131862
+          ],
+          "mean_ns": 1424.0238240561682
+        },
+        {
+          "key": "v7/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            162.05081558226792,
+            161.23703765869413,
+            161.90161132811866
+          ],
+          "mean_ns": 161.7298215230269
+        },
+        {
+          "key": "v4/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            375.90231323242784,
+            374.98813629146656,
+            376.58404541019047
+          ],
+          "mean_ns": 375.82483164469494
+        },
+        {
+          "key": "v4/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            104.55692291258318,
+            104.42384338379529,
+            104.73184585568394
+          ],
+          "mean_ns": 104.57087071735414
+        },
+        {
+          "key": "v4/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            430.0297851563776,
+            430.97329711916376,
+            429.7832031248915
+          ],
+          "mean_ns": 430.2620951334776
+        },
+        {
+          "key": "v4/fastuuid.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            623.3708801269,
+            623.245223999036,
+            622.350753784126
+          ],
+          "mean_ns": 622.9889526366874
+        },
+        {
+          "key": "v7/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            166.19599914547345,
+            166.17654418943536,
+            166.32184982300893
+          ],
+          "mean_ns": 166.23146438597257
+        },
+        {
+          "key": "v7/fastuuidv7.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            76.85014152526921,
+            76.33268547056608,
+            76.23822975157644
+          ],
+          "mean_ns": 76.47368558247058
+        },
+        {
+          "key": "v4/stdlib/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2423.9080200199464,
+            2426.358825683393,
+            2432.2542724608543
+          ],
+          "mean_ns": 2427.5070393880646
+        },
+        {
+          "key": "parse/stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1356.8359375003106,
+            1351.8547058105971,
+            1353.598388671891
+          ],
+          "mean_ns": 1354.0963439942661
+        },
+        {
+          "key": "v7/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            275.8777923584331,
+            274.66963958735613,
+            274.8137969969984
+          ],
+          "mean_ns": 275.12040964759586
+        },
+        {
+          "key": "v4/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            197.77839660646038,
+            197.15444183352002,
+            197.33666229251097
+          ],
+          "mean_ns": 197.42316691083045
+        },
+        {
+          "key": "v4/stdlib/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 128,
+          "ns_per_uuid": [
+            3436.334472655192,
+            3438.9074707024542,
+            3427.6622314453193
+          ],
+          "mean_ns": 3434.3013916009886
+        },
+        {
+          "key": "v4/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            906.688537597334,
+            918.4242858889004,
+            908.9091491699952
+          ],
+          "mean_ns": 911.3406575520766
+        },
+        {
+          "key": "v7/candidate.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            334.0499038696114,
+            334.526336669941,
+            333.9379959105835
+          ],
+          "mean_ns": 334.1714121500453
+        },
+        {
+          "key": "v4/fastuuid.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            736.5796813965133,
+            615.8851470945432,
+            614.6915283201937
+          ],
+          "mean_ns": 655.71878560375
+        },
+        {
+          "key": "parse/candidate",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            165.29706573485421,
+            164.5984001159514,
+            165.061069488492
+          ],
+          "mean_ns": 164.98551177976586
+        },
+        {
+          "key": "v4/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            1902.630371093672,
+            1902.3283081053346,
+            1908.7532348634888
+          ],
+          "mean_ns": 1904.570638020832
+        },
+        {
+          "key": "parse/candidate-batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            145.05631256101154,
+            143.94874954222828,
+            143.93705368039284
+          ],
+          "mean_ns": 144.31403859454423
+        },
+        {
+          "key": "v4/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            358.3586120605104,
+            360.63174438480826,
+            358.61764526360065
+          ],
+          "mean_ns": 359.2026672363064
+        },
+        {
+          "key": "packed/uuid-utils.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            284.70826721183323,
+            291.76916503908905,
+            289.7446594237471
+          ],
+          "mean_ns": 288.7406972248898
+        },
+        {
+          "key": "v4/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            102.29486083988002,
+            102.26393890380714,
+            102.39136123658346
+          ],
+          "mean_ns": 102.31672032675688
+        },
+        {
+          "key": "v4/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            432.0849914551429,
+            432.91143798831337,
+            430.726409912088
+          ],
+          "mean_ns": 431.90761311851475
+        },
+        {
+          "key": "packed/fastuuid.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            219.62262725832346,
+            220.00382232667278,
+            219.7907104492438
+          ],
+          "mean_ns": 219.80572001141334
+        },
+        {
+          "key": "parse/uuid-utils.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1378.1708679198694,
+            1383.1368103024363,
+            1379.835968017603
+          ],
+          "mean_ns": 1380.381215413303
+        },
+        {
+          "key": "format/candidate-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 8192,
+          "ns_per_uuid": [
+            56.200376510618646,
+            55.808773040779464,
+            55.82149887085343
+          ],
+          "mean_ns": 55.943549474083845
+        },
+        {
+          "key": "v7/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            482.16737365725135,
+            479.47009277357967,
+            479.19613647474415
+          ],
+          "mean_ns": 480.27786763519174
+        },
+        {
+          "key": "packed/stdlib",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 256,
+          "ns_per_uuid": [
+            1542.843994140411,
+            1541.0725097654217,
+            1679.9324951176711
+          ],
+          "mean_ns": 1587.949666341168
+        },
+        {
+          "key": "v7/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 256,
+          "ns_per_uuid": [
+            2080.304138183178,
+            2075.480712890321,
+            2080.082214354906
+          ],
+          "mean_ns": 2078.6223551428016
+        },
+        {
+          "key": "v7/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            1529.2016601565692,
+            1515.3293457031632,
+            1516.3465576172562
+          ],
+          "mean_ns": 1520.2925211589961
+        },
+        {
+          "key": "v7/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            457.6746978758421,
+            458.39503478987444,
+            459.76370239252105
+          ],
+          "mean_ns": 458.61114501941256
+        },
+        {
+          "key": "parse/fastuuid.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1244.5458984376364,
+            1252.4399414064192,
+            1267.1936950683396
+          ],
+          "mean_ns": 1254.7265116374651
+        }
+      ],
+      "packages": {
+        "fastuuid7": "0.5.0",
+        "uuid-utils": "0.19.0",
+        "fastuuidv7": "0.1.10",
+        "fastuuid": "0.14.0"
+      },
+      "python": "3.12.16 (main, Oct 26 2026, 02:50:49) [GCC 13.3.0]",
+      "python_executable": "/home/runner/work/_temp/uuid-legacy/bin/python",
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+      "machine": "x86_64",
+      "candidate_path": "/home/runner/work/_temp/uuid-legacy/lib/python3.12/site-packages/fastuuid7/__init__.py",
+      "extension_sha256": "ba5dc56f285ae4bee977cb9f1910279062170896674cbeb6fbcc9626de5ccd90"
+    },
+    {
+      "seed": 9563,
+      "rows": [
+        {
+          "key": "format/candidate-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 2048,
+          "ns_per_uuid": [
+            269.83427429201794,
+            265.6537322997914,
+            266.018486023002
+          ],
+          "mean_ns": 267.1688308716038
+        },
+        {
+          "key": "v4/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            103.15022277827693,
+            102.77006530766973,
+            102.66439437868567
+          ],
+          "mean_ns": 102.8615608215441
+        },
+        {
+          "key": "v4/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            1440.73074340818,
+            1437.2519836422514,
+            1441.0918273929408
+          ],
+          "mean_ns": 1439.6915181477907
+        },
+        {
+          "key": "v4/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            428.3701782225105,
+            429.1509094237703,
+            428.6488800048661
+          ],
+          "mean_ns": 428.7233225503823
+        },
+        {
+          "key": "v7/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            480.54449462882343,
+            479.66378784181086,
+            479.49485778805456
+          ],
+          "mean_ns": 479.90104675289626
+        },
+        {
+          "key": "parse/fastuuid.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1190.4472045896375,
+            1181.4100036619361,
+            1200.6359252927055
+          ],
+          "mean_ns": 1190.8310445147597
+        },
+        {
+          "key": "parse/fastuuid.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            117.57813644404499,
+            116.37185287475572,
+            116.40755081176665
+          ],
+          "mean_ns": 116.78584671018912
+        },
+        {
+          "key": "v7/fastuuidv7/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            69.3587589264044,
+            68.34931945800312,
+            68.82242584228577
+          ],
+          "mean_ns": 68.84350140889777
+        },
+        {
+          "key": "parse/uuid-utils.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1341.0931091308378,
+            1343.2177734377417,
+            1343.622253418067
+          ],
+          "mean_ns": 1342.6443786622156
+        },
+        {
+          "key": "format/stdlib-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 256,
+          "ns_per_uuid": [
+            2153.042236328548,
+            2148.0510864263156,
+            2146.581726075042
+          ],
+          "mean_ns": 2149.225016276635
+        },
+        {
+          "key": "v7/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 256,
+          "ns_per_uuid": [
+            2045.9309082038192,
+            2023.3874511721428,
+            2018.4716186524495
+          ],
+          "mean_ns": 2029.2633260094706
+        },
+        {
+          "key": "v7/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            967.0503845213632,
+            964.1949768068349,
+            964.5199890136527
+          ],
+          "mean_ns": 965.255116780617
+        },
+        {
+          "key": "v7/fastuuidv7.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 16384,
+          "ns_per_uuid": [
+            44.82478332518927,
+            44.819250106815225,
+            44.71581172943136
+          ],
+          "mean_ns": 44.78661505381195
+        },
+        {
+          "key": "v7/candidate.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            334.1066894532252,
+            335.0195083617934,
+            336.05859375005537
+          ],
+          "mean_ns": 335.061597188358
+        },
+        {
+          "key": "parse/uuid-utils.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            166.0452919006669,
+            165.34145736698875,
+            165.04354476929447
+          ],
+          "mean_ns": 165.4767646789834
+        },
+        {
+          "key": "v7/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            271.5080795287917,
+            272.09986114501515,
+            272.1692657470893
+          ],
+          "mean_ns": 271.9257354736321
+        },
+        {
+          "key": "packed/uuid-utils.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            274.36698913578095,
+            274.24278259272677,
+            273.6847152709889
+          ],
+          "mean_ns": 274.09816233316553
+        },
+        {
+          "key": "parse/candidate",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            166.18876647950992,
+            166.16908264161694,
+            165.15869522096835
+          ],
+          "mean_ns": 165.83884811403175
+        },
+        {
+          "key": "v7/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            955.5805053707359,
+            956.7445068358292,
+            953.3158569336418
+          ],
+          "mean_ns": 955.2136230467356
+        },
+        {
+          "key": "v4/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            101.75394439700374,
+            100.8711662292181,
+            102.21940612790276
+          ],
+          "mean_ns": 101.61483891804153
+        },
+        {
+          "key": "v4/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            856.7119750974017,
+            858.7308349609739,
+            858.9145812989973
+          ],
+          "mean_ns": 858.1191304524576
+        },
+        {
+          "key": "parse/stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1304.18829345693,
+            1298.9272460939803,
+            1295.7713012694967
+          ],
+          "mean_ns": 1299.6289469401356
+        },
+        {
+          "key": "v4/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            198.1058349609941,
+            197.4873809814509,
+            197.47384643557103
+          ],
+          "mean_ns": 197.689020792672
+        },
+        {
+          "key": "format/candidate-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 8192,
+          "ns_per_uuid": [
+            56.131231307979995,
+            55.98814201355205,
+            55.87411499021421
+          ],
+          "mean_ns": 55.997829437248754
+        },
+        {
+          "key": "v4/stdlib/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2368.8099365232197,
+            2374.6369018553396,
+            2368.274230957375
+          ],
+          "mean_ns": 2370.5736897786446
+        },
+        {
+          "key": "v4/stdlib/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 128,
+          "ns_per_uuid": [
+            3370.4090576184426,
+            3382.1387939447777,
+            3368.190551758521
+          ],
+          "mean_ns": 3373.5794677739136
+        },
+        {
+          "key": "v4/fastuuid.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            612.7599792480308,
+            613.5336761475471,
+            612.4501037596975
+          ],
+          "mean_ns": 612.9145863850919
+        },
+        {
+          "key": "v4/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            357.752090454134,
+            359.74899292000055,
+            357.6672515868658
+          ],
+          "mean_ns": 358.3894449870001
+        },
+        {
+          "key": "v7/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            164.44772720332824,
+            164.25709152225906,
+            164.35045623779467
+          ],
+          "mean_ns": 164.35175832112733
+        },
+        {
+          "key": "packed/candidate",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            316.11830902098825,
+            316.9673690795773,
+            318.90702056880644
+          ],
+          "mean_ns": 317.3308995564573
+        },
+        {
+          "key": "v7/candidate.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            393.6451873779237,
+            389.20146179207205,
+            389.24671936038135
+          ],
+          "mean_ns": 390.6977895101257
+        },
+        {
+          "key": "v7/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            159.99498367309926,
+            159.98489761350757,
+            160.58962631226467
+          ],
+          "mean_ns": 160.1898358662905
+        },
+        {
+          "key": "v7/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            395.20036315926313,
+            392.87423706044905,
+            393.00387573242523
+          ],
+          "mean_ns": 393.6928253173791
+        },
+        {
+          "key": "v7/fastuuidv7.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            93.36418724058662,
+            93.18007087707396,
+            92.30068778991878
+          ],
+          "mean_ns": 92.94831530252645
+        },
+        {
+          "key": "packed/fastuuid.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            202.25088500974363,
+            202.38862609867763,
+            202.74642181393378
+          ],
+          "mean_ns": 202.46197764078502
+        },
+        {
+          "key": "packed/stdlib",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1485.8562011718818,
+            1483.6215209961672,
+            1487.2681274413594
+          ],
+          "mean_ns": 1485.5819498698029
+        },
+        {
+          "key": "v4/fastuuid.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            620.3797760010159,
+            615.2381896973834,
+            604.9171142579867
+          ],
+          "mean_ns": 613.5116933187953
+        },
+        {
+          "key": "parse/candidate-batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            142.7115287780758,
+            143.22189712526927,
+            142.76343154911086
+          ],
+          "mean_ns": 142.89895248415198
+        },
+        {
+          "key": "v4/stdlib/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2367.4060058596556,
+            2363.8331298828084,
+            2381.415283203743
+          ],
+          "mean_ns": 2370.8848063154023
+        },
+        {
+          "key": "v4/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            430.1494598388678,
+            428.89788818374285,
+            429.4407348632429
+          ],
+          "mean_ns": 429.49602762861787
+        },
+        {
+          "key": "v4/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            380.19708251948657,
+            380.8363189697177,
+            379.92427825929343
+          ],
+          "mean_ns": 380.3192265828326
+        },
+        {
+          "key": "v4/fastuuid.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            735.5151367188437,
+            737.6524505616801,
+            734.1724395752702
+          ],
+          "mean_ns": 735.7800089519313
+        },
+        {
+          "key": "format/stdlib-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 512,
+          "ns_per_uuid": [
+            766.2911071775608,
+            767.9366455077239,
+            767.5388488765852
+          ],
+          "mean_ns": 767.2555338539566
+        },
+        {
+          "key": "v4/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            849.6078796388015,
+            849.691955566445,
+            852.6521911621579
+          ],
+          "mean_ns": 850.6506754558014
+        },
+        {
+          "key": "v7/fastuuidv7.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            78.26760292054414,
+            78.41776466369141,
+            78.01369476318669
+          ],
+          "mean_ns": 78.23302078247409
+        },
+        {
+          "key": "packed/candidate-batch",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 8192,
+          "ns_per_uuid": [
+            50.5135440826397,
+            50.47461700441762,
+            50.486732482932794
+          ],
+          "mean_ns": 50.4916311899967
+        },
+        {
+          "key": "v4/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            1857.025695800596,
+            1847.988281250372,
+            1852.9793701172262
+          ],
+          "mean_ns": 1852.6644490560648
+        },
+        {
+          "key": "v7/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            1522.2504577637983,
+            1522.0010070801648,
+            1520.790527343753
+          ],
+          "mean_ns": 1521.680664062572
+        },
+        {
+          "key": "v7/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            459.14181518564266,
+            459.3087615967651,
+            460.4002990724054
+          ],
+          "mean_ns": 459.61695861827104
+        },
+        {
+          "key": "v7/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            368.2929153442632,
+            363.859451293848,
+            374.87466430662
+          ],
+          "mean_ns": 369.00901031491037
+        },
+        {
+          "key": "v7/candidate.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            336.7216873168726,
+            335.9738998413766,
+            337.0886688232539
+          ],
+          "mean_ns": 336.59475199383434
+        }
+      ],
+      "packages": {
+        "fastuuid7": "0.5.0",
+        "uuid-utils": "0.19.0",
+        "fastuuidv7": "0.1.10",
+        "fastuuid": "0.14.0"
+      },
+      "python": "3.12.16 (main, Oct 26 2026, 02:50:49) [GCC 13.3.0]",
+      "python_executable": "/home/runner/work/_temp/uuid-legacy/bin/python",
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+      "machine": "x86_64",
+      "candidate_path": "/home/runner/work/_temp/uuid-legacy/lib/python3.12/site-packages/fastuuid7/__init__.py",
+      "extension_sha256": "ba5dc56f285ae4bee977cb9f1910279062170896674cbeb6fbcc9626de5ccd90"
+    },
+    {
+      "seed": 9564,
+      "rows": [
+        {
+          "key": "parse/candidate",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            166.13146972655574,
+            165.74160766600656,
+            165.63547515865582
+          ],
+          "mean_ns": 165.83618418373936
+        },
+        {
+          "key": "v4/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            1418.2973937988154,
+            1423.2581481937561,
+            1421.6566467284592
+          ],
+          "mean_ns": 1421.070729573677
+        },
+        {
+          "key": "v4/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            868.50128173813,
+            874.5868530276451,
+            868.7874755862641
+          ],
+          "mean_ns": 870.6252034506798
+        },
+        {
+          "key": "v7/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            274.61654663089257,
+            273.27225494381145,
+            274.6151733397633
+          ],
+          "mean_ns": 274.1679916381558
+        },
+        {
+          "key": "v7/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            395.0393981932976,
+            394.50204467766406,
+            394.30665588376104
+          ],
+          "mean_ns": 394.6160329182409
+        },
+        {
+          "key": "v4/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            357.6747741698997,
+            356.8285446166721,
+            356.2096328735276
+          ],
+          "mean_ns": 356.90431722003314
+        },
+        {
+          "key": "parse/candidate-batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            144.4635887146075,
+            143.6114730834592,
+            143.60982894897788
+          ],
+          "mean_ns": 143.8949635823482
+        },
+        {
+          "key": "v7/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            160.848514556874,
+            160.80662918090127,
+            160.89342117311423
+          ],
+          "mean_ns": 160.84952163696317
+        },
+        {
+          "key": "packed/uuid-utils.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            277.8114471435524,
+            279.3048629760658,
+            277.8060989379501
+          ],
+          "mean_ns": 278.3074696858561
+        },
+        {
+          "key": "v4/fastuuid.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            613.2526245118067,
+            614.6636505127093,
+            613.7847900389467
+          ],
+          "mean_ns": 613.9003550211543
+        },
+        {
+          "key": "format/candidate-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 8192,
+          "ns_per_uuid": [
+            55.33281135559442,
+            56.371547698980294,
+            55.81342506409356
+          ],
+          "mean_ns": 55.839261372889425
+        },
+        {
+          "key": "v4/stdlib/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 128,
+          "ns_per_uuid": [
+            3415.558593749049,
+            3389.0698242187987,
+            3392.411132811454
+          ],
+          "mean_ns": 3399.0131835931006
+        },
+        {
+          "key": "v7/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            954.9153747560879,
+            959.2930603030507,
+            958.9050598145417
+          ],
+          "mean_ns": 957.7044982912267
+        },
+        {
+          "key": "v7/candidate.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            333.0318222045242,
+            332.5364379884541,
+            332.6428375243374
+          ],
+          "mean_ns": 332.7370325724386
+        },
+        {
+          "key": "packed/fastuuid.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            205.75330352771286,
+            204.30077362059566,
+            204.15753173826448
+          ],
+          "mean_ns": 204.737202962191
+        },
+        {
+          "key": "v4/fastuuid.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            743.8350372312996,
+            745.4552001955918,
+            744.2678222652384
+          ],
+          "mean_ns": 744.51935323071
+        },
+        {
+          "key": "packed/candidate",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            322.70500183108516,
+            321.2945861815787,
+            321.2573623657521
+          ],
+          "mean_ns": 321.75231679280535
+        },
+        {
+          "key": "parse/fastuuid.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            115.9195747375049,
+            115.92259216300707,
+            115.89748382572276
+          ],
+          "mean_ns": 115.91321690874491
+        },
+        {
+          "key": "v7/fastuuidv7.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            76.92307472229433,
+            77.4044342040825,
+            76.98007774352119
+          ],
+          "mean_ns": 77.10252888996601
+        },
+        {
+          "key": "v7/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 256,
+          "ns_per_uuid": [
+            1534.0332031234943,
+            1531.645996094219,
+            1532.8206176747767
+          ],
+          "mean_ns": 1532.8332722974967
+        },
+        {
+          "key": "v4/fastuuid.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            620.7642059326973,
+            621.3263397218672,
+            620.3091125487128
+          ],
+          "mean_ns": 620.7998860677591
+        },
+        {
+          "key": "v4/stdlib/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2379.419128418006,
+            2372.6798706047434,
+            2381.5073852545556
+          ],
+          "mean_ns": 2377.8687947591015
+        },
+        {
+          "key": "v4/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            195.49382019039447,
+            195.04833984377265,
+            197.58198547365976
+          ],
+          "mean_ns": 196.0413818359423
+        },
+        {
+          "key": "v7/fastuuidv7.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            94.55812454220447,
+            94.03732109073293,
+            94.30834770204292
+          ],
+          "mean_ns": 94.30126444499344
+        },
+        {
+          "key": "parse/uuid-utils.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            172.81283950804777,
+            172.42381668096644,
+            170.96475601202383
+          ],
+          "mean_ns": 172.067137400346
+        },
+        {
+          "key": "v7/fastuuidv7/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            68.06144523620111,
+            67.99775505069708,
+            68.20369720459806
+          ],
+          "mean_ns": 68.08763249716542
+        },
+        {
+          "key": "v4/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            825.9707031249563,
+            822.9970092773694,
+            821.3031616206151
+          ],
+          "mean_ns": 823.4236246743136
+        },
+        {
+          "key": "v7/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 256,
+          "ns_per_uuid": [
+            2010.6684570312534,
+            2003.10058593757,
+            1994.2938842762437
+          ],
+          "mean_ns": 2002.6876424150223
+        },
+        {
+          "key": "parse/stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1300.5381774905054,
+            1297.0832519530045,
+            1294.767822265612
+          ],
+          "mean_ns": 1297.4630839030406
+        },
+        {
+          "key": "v7/candidate.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            337.20801544188765,
+            336.90723419193756,
+            337.2876586913483
+          ],
+          "mean_ns": 337.13430277505785
+        },
+        {
+          "key": "v4/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            101.06397628788146,
+            101.07922363282624,
+            101.5682296752994
+          ],
+          "mean_ns": 101.23714319866903
+        },
+        {
+          "key": "parse/uuid-utils.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1331.0895996092308,
+            1334.0278015140996,
+            1322.1535339353468
+          ],
+          "mean_ns": 1329.0903116862257
+        },
+        {
+          "key": "format/stdlib-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 1024,
+          "ns_per_uuid": [
+            754.803024291973,
+            753.5451660152341,
+            754.6119384768332
+          ],
+          "mean_ns": 754.3200429280134
+        },
+        {
+          "key": "v7/candidate.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            389.41711425800884,
+            391.31703186015903,
+            391.65670776344916
+          ],
+          "mean_ns": 390.7969512938723
+        },
+        {
+          "key": "v4/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            378.4859924317249,
+            379.26312255868487,
+            378.8192596435123
+          ],
+          "mean_ns": 378.856124877974
+        },
+        {
+          "key": "format/candidate-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 2048,
+          "ns_per_uuid": [
+            276.3240432739934,
+            265.0168533324757,
+            264.2325363159774
+          ],
+          "mean_ns": 268.5244776408155
+        },
+        {
+          "key": "format/stdlib-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 256,
+          "ns_per_uuid": [
+            2147.264953612088,
+            2132.1720581057857,
+            2142.1436767563723
+          ],
+          "mean_ns": 2140.526896158082
+        },
+        {
+          "key": "packed/stdlib",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1502.8695373540263,
+            1497.3605651849575,
+            1503.8873596188648
+          ],
+          "mean_ns": 1501.3724873859496
+        },
+        {
+          "key": "v4/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            103.21841812125851,
+            102.28990173345807,
+            102.10664749149036
+          ],
+          "mean_ns": 102.53832244873564
+        },
+        {
+          "key": "v7/fastuuidv7.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 16384,
+          "ns_per_uuid": [
+            44.695461273193665,
+            44.79559326172342,
+            44.95588111876666
+          ],
+          "mean_ns": 44.815645217894584
+        },
+        {
+          "key": "v4/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            1849.8794555673464,
+            1855.2746582026907,
+            1859.5140991208013
+          ],
+          "mean_ns": 1854.8894042969462
+        },
+        {
+          "key": "v7/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            163.9257431030163,
+            164.3083076477295,
+            164.5933380127083
+          ],
+          "mean_ns": 164.2757962544847
+        },
+        {
+          "key": "v4/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            429.1852416992911,
+            428.8588562012356,
+            428.7630004885454
+          ],
+          "mean_ns": 428.93569946302404
+        },
+        {
+          "key": "v7/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            460.5775909423925,
+            462.36117553707936,
+            461.06619262667806
+          ],
+          "mean_ns": 461.3349863687166
+        },
+        {
+          "key": "v4/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            426.80546569803107,
+            427.92526245118495,
+            426.65518188485936
+          ],
+          "mean_ns": 427.12863667802515
+        },
+        {
+          "key": "v7/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            363.7839431761859,
+            364.4714889525745,
+            363.5268173217236
+          ],
+          "mean_ns": 363.92741648349465
+        },
+        {
+          "key": "v4/stdlib/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2366.6685180657314,
+            2361.0208129878215,
+            2362.690185548147
+          ],
+          "mean_ns": 2363.4598388672334
+        },
+        {
+          "key": "packed/candidate-batch",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 8192,
+          "ns_per_uuid": [
+            50.383489608749144,
+            50.34754753114722,
+            50.30395889280611
+          ],
+          "mean_ns": 50.34499867756749
+        },
+        {
+          "key": "parse/fastuuid.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1185.064514159541,
+            1182.6249694821613,
+            1187.0753784185006
+          ],
+          "mean_ns": 1184.9216206867343
+        },
+        {
+          "key": "v7/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            507.8131256105317,
+            504.94706726068176,
+            503.339294433483
+          ],
+          "mean_ns": 505.36649576823214
+        },
+        {
+          "key": "v7/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            937.0359802243419,
+            936.1844787595178,
+            938.2601928705284
+          ],
+          "mean_ns": 937.160217284796
+        }
+      ],
+      "packages": {
+        "fastuuid7": "0.5.0",
+        "uuid-utils": "0.19.0",
+        "fastuuidv7": "0.1.10",
+        "fastuuid": "0.14.0"
+      },
+      "python": "3.12.16 (main, Oct 26 2026, 02:50:49) [GCC 13.3.0]",
+      "python_executable": "/home/runner/work/_temp/uuid-legacy/bin/python",
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+      "machine": "x86_64",
+      "candidate_path": "/home/runner/work/_temp/uuid-legacy/lib/python3.12/site-packages/fastuuid7/__init__.py",
+      "extension_sha256": "ba5dc56f285ae4bee977cb9f1910279062170896674cbeb6fbcc9626de5ccd90"
+    },
+    {
+      "seed": 9565,
+      "rows": [
+        {
+          "key": "v7/fastuuidv7/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            69.15515327456188,
+            69.2429618835244,
+            69.76477432254005
+          ],
+          "mean_ns": 69.38762982687544
+        },
+        {
+          "key": "packed/candidate-batch",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 8192,
+          "ns_per_uuid": [
+            50.42203330996595,
+            50.55784416195097,
+            50.43453216554061
+          ],
+          "mean_ns": 50.47146987915251
+        },
+        {
+          "key": "v7/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            936.7926940917829,
+            927.0423583984319,
+            925.4524536133484
+          ],
+          "mean_ns": 929.762502034521
+        },
+        {
+          "key": "packed/candidate",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            316.74471282958604,
+            316.592758178684,
+            317.67953491217656
+          ],
+          "mean_ns": 317.0056686401489
+        },
+        {
+          "key": "parse/candidate-batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            142.68221282958976,
+            142.70418930058,
+            143.04566955567702
+          ],
+          "mean_ns": 142.81069056194892
+        },
+        {
+          "key": "format/stdlib-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 512,
+          "ns_per_uuid": [
+            773.8444213869003,
+            769.208435058566,
+            769.7419433586039
+          ],
+          "mean_ns": 770.9315999346901
+        },
+        {
+          "key": "v7/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 256,
+          "ns_per_uuid": [
+            1997.5751953116294,
+            1990.0416259772958,
+            1997.84661865203
+          ],
+          "mean_ns": 1995.1544799803185
+        },
+        {
+          "key": "v7/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            393.7545928951215,
+            394.2576904296738,
+            393.6379394534409
+          ],
+          "mean_ns": 393.8834075927454
+        },
+        {
+          "key": "v4/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            854.341674804554,
+            859.9004211427841,
+            852.7988891596575
+          ],
+          "mean_ns": 855.6803283689985
+        },
+        {
+          "key": "v4/fastuuid.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            617.3912658691619,
+            618.0687866209032,
+            616.3518676757795
+          ],
+          "mean_ns": 617.2706400552815
+        },
+        {
+          "key": "v4/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            1417.6160888675072,
+            1415.088165283504,
+            1420.1516113287669
+          ],
+          "mean_ns": 1417.6186218265927
+        },
+        {
+          "key": "parse/uuid-utils.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1321.7412719729316,
+            1323.4962463384154,
+            1321.6957397465048
+          ],
+          "mean_ns": 1322.311086019284
+        },
+        {
+          "key": "parse/fastuuid.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1175.7325439447352,
+            1177.2961425781173,
+            1179.1385803221547
+          ],
+          "mean_ns": 1177.3890889483357
+        },
+        {
+          "key": "v4/fastuuid.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            622.2821960447794,
+            622.6923675535165,
+            621.7845001221107
+          ],
+          "mean_ns": 622.2530212401356
+        },
+        {
+          "key": "v7/candidate.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            390.24746704106883,
+            390.9947052000047,
+            391.4498138426169
+          ],
+          "mean_ns": 390.8973286945635
+        },
+        {
+          "key": "v7/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            1511.7695922849116,
+            1506.7266235357229,
+            1513.1121520991012
+          ],
+          "mean_ns": 1510.5361226399118
+        },
+        {
+          "key": "v7/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            161.77400207514728,
+            162.80582046509974,
+            161.9152603149531
+          ],
+          "mean_ns": 162.16502761840005
+        },
+        {
+          "key": "parse/fastuuid.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            118.29341125483423,
+            117.26361846917544,
+            117.2153472900209
+          ],
+          "mean_ns": 117.59079233801019
+        },
+        {
+          "key": "parse/uuid-utils.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            167.106182098406,
+            166.86200332636895,
+            167.24613571166608
+          ],
+          "mean_ns": 167.0714403788137
+        },
+        {
+          "key": "v7/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            367.07519531246555,
+            367.1221923829803,
+            367.4713592528769
+          ],
+          "mean_ns": 367.2229156494409
+        },
+        {
+          "key": "v7/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            930.8624572754165,
+            931.0927124028811,
+            931.5803527832137
+          ],
+          "mean_ns": 931.1785074871705
+        },
+        {
+          "key": "v4/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            361.25538635262825,
+            360.91914367678174,
+            359.37191009507467
+          ],
+          "mean_ns": 360.51548004149487
+        },
+        {
+          "key": "packed/fastuuid.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            202.75087738038343,
+            202.8294525146298,
+            202.47624206545973
+          ],
+          "mean_ns": 202.6855239868243
+        },
+        {
+          "key": "packed/uuid-utils.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            275.8059616089683,
+            277.20826721176934,
+            275.2667007444899
+          ],
+          "mean_ns": 276.0936431884092
+        },
+        {
+          "key": "v4/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            103.0740127563141,
+            103.32728576662592,
+            103.45355987552516
+          ],
+          "mean_ns": 103.2849527994884
+        },
+        {
+          "key": "v7/fastuuidv7.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            94.78056907651381,
+            94.80388259885042,
+            94.54596519467388
+          ],
+          "mean_ns": 94.71013895667937
+        },
+        {
+          "key": "parse/candidate",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            165.94850921636956,
+            165.8749389649161,
+            165.6110038757456
+          ],
+          "mean_ns": 165.81148401901044
+        },
+        {
+          "key": "v7/candidate.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            334.4428939819604,
+            335.27658844004736,
+            336.5351181031269
+          ],
+          "mean_ns": 335.4182001750449
+        },
+        {
+          "key": "v4/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            827.5896301269611,
+            828.6502685547412,
+            830.4566040040137
+          ],
+          "mean_ns": 828.898834228572
+        },
+        {
+          "key": "v7/candidate.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            340.97684478750017,
+            340.6204223633733,
+            342.0207366944435
+          ],
+          "mean_ns": 341.20600128177233
+        },
+        {
+          "key": "format/stdlib-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 256,
+          "ns_per_uuid": [
+            2161.0113525392244,
+            2140.0303955067257,
+            2149.703674316633
+          ],
+          "mean_ns": 2150.248474120861
+        },
+        {
+          "key": "v4/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            380.46083068840784,
+            379.9565734862245,
+            379.8825149536975
+          ],
+          "mean_ns": 380.09997304277664
+        },
+        {
+          "key": "v4/stdlib/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 128,
+          "ns_per_uuid": [
+            3410.3522949212315,
+            3391.940185549364,
+            3377.8953857400984
+          ],
+          "mean_ns": 3393.3959554035646
+        },
+        {
+          "key": "v4/stdlib/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2388.5850219725753,
+            2361.138183594111,
+            2360.336486815703
+          ],
+          "mean_ns": 2370.0198974607965
+        },
+        {
+          "key": "v7/fastuuidv7.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            77.33461380006685,
+            77.51842308041743,
+            77.596521377561
+          ],
+          "mean_ns": 77.4831860860151
+        },
+        {
+          "key": "v4/stdlib/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2397.2779541019117,
+            2387.950256348831,
+            2393.756408692466
+          ],
+          "mean_ns": 2392.9948730477363
+        },
+        {
+          "key": "packed/stdlib",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1503.3961486814878,
+            1504.9288635254204,
+            1497.678985595656
+          ],
+          "mean_ns": 1502.0013326008548
+        },
+        {
+          "key": "v4/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            202.24433135997666,
+            202.64287567124498,
+            202.19434356677502
+          ],
+          "mean_ns": 202.36051686599887
+        },
+        {
+          "key": "v4/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            434.5094299315101,
+            433.76480102566563,
+            432.76745605473275
+          ],
+          "mean_ns": 433.68056233730283
+        },
+        {
+          "key": "format/candidate-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 2048,
+          "ns_per_uuid": [
+            268.55014038083306,
+            267.56556701658906,
+            268.20243835459087
+          ],
+          "mean_ns": 268.1060485840043
+        },
+        {
+          "key": "parse/stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1298.8283691409142,
+            1309.31851196215,
+            1312.4765625002408
+          ],
+          "mean_ns": 1306.8744812011016
+        },
+        {
+          "key": "v4/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            430.48045349127625,
+            432.1954040526106,
+            430.29379272457174
+          ],
+          "mean_ns": 430.98988342281956
+        },
+        {
+          "key": "v7/fastuuidv7.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 16384,
+          "ns_per_uuid": [
+            44.99033355714606,
+            44.89309597015875,
+            44.87902259826923
+          ],
+          "mean_ns": 44.92081737519135
+        },
+        {
+          "key": "v7/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            479.9862060545987,
+            480.7860565182384,
+            483.73207092288624
+          ],
+          "mean_ns": 481.5014444985745
+        },
+        {
+          "key": "v4/fastuuid.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            736.5248718264362,
+            736.4417114259953,
+            737.867568969576
+          ],
+          "mean_ns": 736.9447174073358
+        },
+        {
+          "key": "v4/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            1864.609619140617,
+            1850.9133911139008,
+            1846.226928711725
+          ],
+          "mean_ns": 1853.9166463220809
+        },
+        {
+          "key": "v7/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            461.95603942839057,
+            461.2433471677148,
+            460.9187927244983
+          ],
+          "mean_ns": 461.37272644020123
+        },
+        {
+          "key": "v4/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            100.81959533685907,
+            101.10267639165845,
+            100.74950027472596
+          ],
+          "mean_ns": 100.89059066774783
+        },
+        {
+          "key": "v7/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            165.45106124878603,
+            165.84941101070814,
+            164.24955368032641
+          ],
+          "mean_ns": 165.1833419799402
+        },
+        {
+          "key": "v7/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            276.087394714521,
+            276.01753234862866,
+            276.3877792358142
+          ],
+          "mean_ns": 276.16423543298794
+        },
+        {
+          "key": "format/candidate-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 8192,
+          "ns_per_uuid": [
+            54.64718437199435,
+            54.581716537498764,
+            54.588920593264326
+          ],
+          "mean_ns": 54.60594050091915
+        }
+      ],
+      "packages": {
+        "fastuuid7": "0.5.0",
+        "uuid-utils": "0.19.0",
+        "fastuuidv7": "0.1.10",
+        "fastuuid": "0.14.0"
+      },
+      "python": "3.12.16 (main, Oct 26 2026, 02:50:49) [GCC 13.3.0]",
+      "python_executable": "/home/runner/work/_temp/uuid-legacy/bin/python",
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+      "machine": "x86_64",
+      "candidate_path": "/home/runner/work/_temp/uuid-legacy/lib/python3.12/site-packages/fastuuid7/__init__.py",
+      "extension_sha256": "ba5dc56f285ae4bee977cb9f1910279062170896674cbeb6fbcc9626de5ccd90"
+    },
+    {
+      "seed": 9566,
+      "rows": [
+        {
+          "key": "v4/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            1888.8981323239573,
+            1875.5205688485848,
+            1874.715209959632
+          ],
+          "mean_ns": 1879.7113037107247
+        },
+        {
+          "key": "v7/fastuuidv7/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            69.10130310056745,
+            69.27798652648677,
+            69.31681442257174
+          ],
+          "mean_ns": 69.23203468320865
+        },
+        {
+          "key": "parse/fastuuid.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            117.90582275393504,
+            117.5482139587113,
+            117.81008529669363
+          ],
+          "mean_ns": 117.75470733644666
+        },
+        {
+          "key": "v4/fastuuid.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            615.2126312253779,
+            614.5231628415169,
+            613.936294555778
+          ],
+          "mean_ns": 614.5573628742243
+        },
+        {
+          "key": "parse/candidate-batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            144.3408927917413,
+            144.7679023741655,
+            144.30687713621464
+          ],
+          "mean_ns": 144.47189076737382
+        },
+        {
+          "key": "v7/fastuuidv7.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            76.94359970092943,
+            77.19721412655957,
+            77.07822036743173
+          ],
+          "mean_ns": 77.0730113983069
+        },
+        {
+          "key": "v4/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            837.4870300300804,
+            836.4208984373497,
+            836.8734130863656
+          ],
+          "mean_ns": 836.9271138512653
+        },
+        {
+          "key": "v4/fastuuid.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            619.2836151121782,
+            619.5673370361712,
+            619.4160003664128
+          ],
+          "mean_ns": 619.4223175049208
+        },
+        {
+          "key": "parse/candidate",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            165.62194442748708,
+            167.0327644348558,
+            165.7609825134361
+          ],
+          "mean_ns": 166.13856379192632
+        },
+        {
+          "key": "v4/fastuuid.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            733.1493530274985,
+            731.2401275635754,
+            733.471603393647
+          ],
+          "mean_ns": 732.6203613282403
+        },
+        {
+          "key": "v4/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            378.80577087394914,
+            377.78022003178387,
+            378.6739120484415
+          ],
+          "mean_ns": 378.4199676513915
+        },
+        {
+          "key": "format/candidate-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 8192,
+          "ns_per_uuid": [
+            54.66275787357556,
+            54.76246833801581,
+            54.86407089234794
+          ],
+          "mean_ns": 54.76309903464644
+        },
+        {
+          "key": "v4/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            430.3090667722234,
+            429.18728637708625,
+            428.44847106954245
+          ],
+          "mean_ns": 429.31494140628405
+        },
+        {
+          "key": "v7/candidate/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            462.4929809569564,
+            461.4034576412053,
+            463.11685180690233
+          ],
+          "mean_ns": 462.3377634683547
+        },
+        {
+          "key": "v7/uuid-utils.compat/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            935.90789794918,
+            934.3920288080316,
+            939.4056396478875
+          ],
+          "mean_ns": 936.568522135033
+        },
+        {
+          "key": "v7/uuid-utils.compat/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 256,
+          "ns_per_uuid": [
+            2004.2456054681495,
+            2018.3601074207775,
+            2018.2175903306343
+          ],
+          "mean_ns": 2013.6077677398537
+        },
+        {
+          "key": "v7/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 512,
+          "ns_per_uuid": [
+            956.8313293455144,
+            950.3636169434087,
+            960.6302490234795
+          ],
+          "mean_ns": 955.9417317708009
+        },
+        {
+          "key": "packed/candidate-batch",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 8192,
+          "ns_per_uuid": [
+            50.6423873901634,
+            50.50042724611108,
+            50.44225883483414
+          ],
+          "mean_ns": 50.528357823702876
+        },
+        {
+          "key": "format/stdlib-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 512,
+          "ns_per_uuid": [
+            776.6736450191825,
+            777.2738037110233,
+            774.0322875982031
+          ],
+          "mean_ns": 775.993245442803
+        },
+        {
+          "key": "v7/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            274.20977020270465,
+            276.0642013549617,
+            273.4913406373003
+          ],
+          "mean_ns": 274.58843739832224
+        },
+        {
+          "key": "v4/uuid-utils.native/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            197.85241699220128,
+            198.4246292114321,
+            197.95767211908122
+          ],
+          "mean_ns": 198.07823944090487
+        },
+        {
+          "key": "v7/fastuuidv7.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 16384,
+          "ns_per_uuid": [
+            45.03168392182028,
+            45.12436294553681,
+            45.050610542290805
+          ],
+          "mean_ns": 45.06888580321596
+        },
+        {
+          "key": "v7/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            163.266613006593,
+            163.67405700689827,
+            163.15096664431488
+          ],
+          "mean_ns": 163.36387888593538
+        },
+        {
+          "key": "v7/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            468.8724212650007,
+            470.7266082763957,
+            469.56553649904475
+          ],
+          "mean_ns": 469.7215220134804
+        },
+        {
+          "key": "v4/uuid-utils.compat/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            881.4908447262945,
+            857.3084411623091,
+            854.9801940923446
+          ],
+          "mean_ns": 864.5931599936495
+        },
+        {
+          "key": "v4/stdlib/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2388.829345702226,
+            2419.2028198234684,
+            2398.4866333003065
+          ],
+          "mean_ns": 2402.1729329420004
+        },
+        {
+          "key": "v4/stdlib/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 128,
+          "ns_per_uuid": [
+            3376.8081054708077,
+            3371.912475586686,
+            3372.1754150381475
+          ],
+          "mean_ns": 3373.6319986985472
+        },
+        {
+          "key": "v7/candidate.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            342.20043945319344,
+            341.07307434090575,
+            340.05432891846647
+          ],
+          "mean_ns": 341.10928090418855
+        },
+        {
+          "key": "v7/candidate.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            389.698150634471,
+            391.48509216324624,
+            391.6472778317873
+          ],
+          "mean_ns": 390.9435068765015
+        },
+        {
+          "key": "parse/uuid-utils.native",
+          "shape": "list[native]",
+          "operation": "parse",
+          "loops": 4096,
+          "ns_per_uuid": [
+            166.13627243041753,
+            166.14907836912715,
+            165.91120910653714
+          ],
+          "mean_ns": 166.06551996869393
+        },
+        {
+          "key": "v7/fastuuidv7.native/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 8192,
+          "ns_per_uuid": [
+            92.14983749390552,
+            92.50213432314717,
+            92.33038139345182
+          ],
+          "mean_ns": 92.32745107016817
+        },
+        {
+          "key": "v4/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 2048,
+          "ns_per_uuid": [
+            359.39982604977877,
+            358.5266189574249,
+            358.92010498048654
+          ],
+          "mean_ns": 358.94884999589675
+        },
+        {
+          "key": "format/stdlib-bytes",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 256,
+          "ns_per_uuid": [
+            2126.058593751243,
+            2123.5161132820285,
+            2122.6716308588025
+          ],
+          "mean_ns": 2124.0821126306914
+        },
+        {
+          "key": "v4/candidate/discard",
+          "shape": "uuid.UUID (discarded)",
+          "operation": "v4",
+          "loops": 1024,
+          "ns_per_uuid": [
+            429.24339294439505,
+            429.8486175535396,
+            432.7211151123646
+          ],
+          "mean_ns": 430.6043752034331
+        },
+        {
+          "key": "format/candidate-UUID",
+          "shape": "list[str]",
+          "operation": "format",
+          "loops": 2048,
+          "ns_per_uuid": [
+            261.91616058347626,
+            263.6113739012871,
+            262.9383544922037
+          ],
+          "mean_ns": 262.82196299232237
+        },
+        {
+          "key": "packed/uuid-utils.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            275.1811904906643,
+            275.5555801390707,
+            275.6155776978582
+          ],
+          "mean_ns": 275.4507827758644
+        },
+        {
+          "key": "v4/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v4",
+          "loops": 512,
+          "ns_per_uuid": [
+            1443.5834960937339,
+            1434.5676879875743,
+            1409.7986145026123
+          ],
+          "mean_ns": 1429.3165995279735
+        },
+        {
+          "key": "packed/fastuuid.native",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            203.84152221676263,
+            203.92369079577816,
+            206.02569580072984
+          ],
+          "mean_ns": 204.59696960442355
+        },
+        {
+          "key": "v7/candidate/serialize",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 256,
+          "ns_per_uuid": [
+            1527.0073852532985,
+            1529.6087036136691,
+            1526.1121826173203
+          ],
+          "mean_ns": 1527.5760904947626
+        },
+        {
+          "key": "v7/candidate.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            335.48620605476293,
+            334.90697479241635,
+            336.38662719714074
+          ],
+          "mean_ns": 335.5932693481067
+        },
+        {
+          "key": "v4/stdlib/retain",
+          "shape": "list[uuid.UUID]",
+          "operation": "v4",
+          "loops": 256,
+          "ns_per_uuid": [
+            2360.2476196277894,
+            2359.253417967555,
+            2353.7970581053587
+          ],
+          "mean_ns": 2357.7660319002343
+        },
+        {
+          "key": "v7/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v7",
+          "loops": 4096,
+          "ns_per_uuid": [
+            161.28874206534655,
+            160.69459915165913,
+            160.96938705437765
+          ],
+          "mean_ns": 160.9842427571278
+        },
+        {
+          "key": "packed/stdlib",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 256,
+          "ns_per_uuid": [
+            1507.7099609385468,
+            1510.0855712876087,
+            1503.0583496097872
+          ],
+          "mean_ns": 1506.9512939453143
+        },
+        {
+          "key": "parse/uuid-utils.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1327.3164367671661,
+            1326.8572082525757,
+            1336.19989013678
+          ],
+          "mean_ns": 1330.1245117188405
+        },
+        {
+          "key": "v7/candidate/direct-string",
+          "shape": "list[str]",
+          "operation": "v7",
+          "loops": 2048,
+          "ns_per_uuid": [
+            366.40334320076073,
+            367.0403671265573,
+            367.31759643572786
+          ],
+          "mean_ns": 366.920435587682
+        },
+        {
+          "key": "v4/uuid-utils.native/retain",
+          "shape": "list[native]",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            102.06744384768686,
+            102.3727645874063,
+            102.0008659363171
+          ],
+          "mean_ns": 102.14702479047008
+        },
+        {
+          "key": "parse/fastuuid.native-to-stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1185.8268737794178,
+            1181.7989807125923,
+            1182.1402282714484
+          ],
+          "mean_ns": 1183.255360921153
+        },
+        {
+          "key": "v4/uuid-utils.native/discard",
+          "shape": "native (discarded)",
+          "operation": "v4",
+          "loops": 4096,
+          "ns_per_uuid": [
+            102.76790618902847,
+            103.51961898802386,
+            103.00695800773315
+          ],
+          "mean_ns": 103.09816106159516
+        },
+        {
+          "key": "v7/candidate/batch",
+          "shape": "list[uuid.UUID]",
+          "operation": "v7",
+          "loops": 1024,
+          "ns_per_uuid": [
+            393.6340179440563,
+            395.9402770994935,
+            394.6266479495919
+          ],
+          "mean_ns": 394.7336476643806
+        },
+        {
+          "key": "packed/candidate",
+          "shape": "packed bytes",
+          "operation": "parse",
+          "loops": 2048,
+          "ns_per_uuid": [
+            318.19423675538866,
+            318.0820312500849,
+            318.21327209488254
+          ],
+          "mean_ns": 318.163180033452
+        },
+        {
+          "key": "parse/stdlib",
+          "shape": "list[uuid.UUID]",
+          "operation": "parse",
+          "loops": 512,
+          "ns_per_uuid": [
+            1314.6332092277626,
+            1317.5090332025532,
+            1314.8499755860978
+          ],
+          "mean_ns": 1315.6640726721378
+        }
+      ],
+      "packages": {
+        "fastuuid7": "0.5.0",
+        "uuid-utils": "0.19.0",
+        "fastuuidv7": "0.1.10",
+        "fastuuid": "0.14.0"
+      },
+      "python": "3.12.16 (main, Oct 26 2026, 02:50:49) [GCC 13.3.0]",
+      "python_executable": "/home/runner/work/_temp/uuid-legacy/bin/python",
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+      "machine": "x86_64",
+      "candidate_path": "/home/runner/work/_temp/uuid-legacy/lib/python3.12/site-packages/fastuuid7/__init__.py",
+      "extension_sha256": "ba5dc56f285ae4bee977cb9f1910279062170896674cbeb6fbcc9626de5ccd90"
+    }
+  ],
+  "summary": {
+    "format/stdlib-UUID": {
+      "shape": "list[str]",
+      "median_ns": 767.2555338539566,
+      "process_means_ns": [
+        763.581400553548,
+        767.2555338539566,
+        754.3200429280134,
+        770.9315999346901,
+        775.993245442803
+      ],
+      "min_ns": 754.3200429280134,
+      "max_ns": 775.993245442803
+    },
+    "v7/fastuuidv7.native/serialize": {
+      "shape": "list[str]",
+      "median_ns": 93.38816388448102,
+      "process_means_ns": [
+        93.38816388448102,
+        92.94831530252645,
+        94.30126444499344,
+        94.71013895667937,
+        92.32745107016817
+      ],
+      "min_ns": 92.32745107016817,
+      "max_ns": 94.71013895667937
+    },
+    "v7/fastuuidv7/direct-string": {
+      "shape": "list[str]",
+      "median_ns": 68.84350140889777,
+      "process_means_ns": [
+        68.64707374573646,
+        68.84350140889777,
+        68.08763249716542,
+        69.38762982687544,
+        69.23203468320865
+      ],
+      "min_ns": 68.08763249716542,
+      "max_ns": 69.38762982687544
+    },
+    "v7/uuid-utils.compat/retain": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 937.160217284796,
+      "process_means_ns": [
+        984.9209899903157,
+        955.2136230467356,
+        937.160217284796,
+        931.1785074871705,
+        936.568522135033
+      ],
+      "min_ns": 931.1785074871705,
+      "max_ns": 984.9209899903157
+    },
+    "v4/fastuuid.native/serialize": {
+      "shape": "list[str]",
+      "median_ns": 736.9447174073358,
+      "process_means_ns": [
+        757.7395528157177,
+        735.7800089519313,
+        744.51935323071,
+        736.9447174073358,
+        732.6203613282403
+      ],
+      "min_ns": 732.6203613282403,
+      "max_ns": 757.7395528157177
+    },
+    "format/stdlib-bytes": {
+      "shape": "list[str]",
+      "median_ns": 2149.225016276635,
+      "process_means_ns": [
+        2173.3547363282646,
+        2149.225016276635,
+        2140.526896158082,
+        2150.248474120861,
+        2124.0821126306914
+      ],
+      "min_ns": 2124.0821126306914,
+      "max_ns": 2173.3547363282646
+    },
+    "parse/uuid-utils.native": {
+      "shape": "list[native]",
+      "median_ns": 167.0714403788137,
+      "process_means_ns": [
+        179.34326680499035,
+        165.4767646789834,
+        172.067137400346,
+        167.0714403788137,
+        166.06551996869393
+      ],
+      "min_ns": 165.4767646789834,
+      "max_ns": 179.34326680499035
+    },
+    "v7/candidate/batch": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 394.6160329182409,
+      "process_means_ns": [
+        394.942143758179,
+        393.6928253173791,
+        394.6160329182409,
+        393.8834075927454,
+        394.7336476643806
+      ],
+      "min_ns": 393.6928253173791,
+      "max_ns": 394.942143758179
+    },
+    "v7/candidate.native/serialize": {
+      "shape": "list[str]",
+      "median_ns": 390.7969512938723,
+      "process_means_ns": [
+        389.716135660772,
+        390.6977895101257,
+        390.7969512938723,
+        390.8973286945635,
+        390.9435068765015
+      ],
+      "min_ns": 389.716135660772,
+      "max_ns": 390.9435068765015
+    },
+    "v7/candidate/direct-string": {
+      "shape": "list[str]",
+      "median_ns": 366.920435587682,
+      "process_means_ns": [
+        365.83889516192374,
+        369.00901031491037,
+        363.92741648349465,
+        367.2229156494409,
+        366.920435587682
+      ],
+      "min_ns": 363.92741648349465,
+      "max_ns": 369.00901031491037
+    },
+    "v4/stdlib/retain": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 2370.0198974607965,
+      "process_means_ns": [
+        2398.081949869443,
+        2370.5736897786446,
+        2363.4598388672334,
+        2370.0198974607965,
+        2357.7660319002343
+      ],
+      "min_ns": 2357.7660319002343,
+      "max_ns": 2398.081949869443
+    },
+    "packed/candidate": {
+      "shape": "packed bytes",
+      "median_ns": 318.163180033452,
+      "process_means_ns": [
+        319.6427942911735,
+        317.3308995564573,
+        321.75231679280535,
+        317.0056686401489,
+        318.163180033452
+      ],
+      "min_ns": 317.0056686401489,
+      "max_ns": 321.75231679280535
+    },
+    "v7/candidate.native/retain": {
+      "shape": "list[native]",
+      "median_ns": 337.50484975180456,
+      "process_means_ns": [
+        337.50484975180456,
+        336.59475199383434,
+        337.13430277505785,
+        341.20600128177233,
+        341.10928090418855
+      ],
+      "min_ns": 336.59475199383434,
+      "max_ns": 341.20600128177233
+    },
+    "v7/uuid-utils.compat/discard": {
+      "shape": "uuid.UUID (discarded)",
+      "median_ns": 957.7044982912267,
+      "process_means_ns": [
+        994.0542195638451,
+        965.255116780617,
+        957.7044982912267,
+        929.762502034521,
+        955.9417317708009
+      ],
+      "min_ns": 929.762502034521,
+      "max_ns": 994.0542195638451
+    },
+    "packed/candidate-batch": {
+      "shape": "packed bytes",
+      "median_ns": 50.47146987915251,
+      "process_means_ns": [
+        50.383284250892046,
+        50.4916311899967,
+        50.34499867756749,
+        50.47146987915251,
+        50.528357823702876
+      ],
+      "min_ns": 50.34499867756749,
+      "max_ns": 50.528357823702876
+    },
+    "v4/uuid-utils.compat/discard": {
+      "shape": "uuid.UUID (discarded)",
+      "median_ns": 864.5931599936495,
+      "process_means_ns": [
+        900.3523966471678,
+        858.1191304524576,
+        870.6252034506798,
+        855.6803283689985,
+        864.5931599936495
+      ],
+      "min_ns": 855.6803283689985,
+      "max_ns": 900.3523966471678
+    },
+    "parse/fastuuid.native": {
+      "shape": "list[native]",
+      "median_ns": 117.59079233801019,
+      "process_means_ns": [
+        133.07593917848223,
+        116.78584671018912,
+        115.91321690874491,
+        117.59079233801019,
+        117.75470733644666
+      ],
+      "min_ns": 115.91321690874491,
+      "max_ns": 133.07593917848223
+    },
+    "format/candidate-UUID": {
+      "shape": "list[str]",
+      "median_ns": 267.1688308716038,
+      "process_means_ns": [
+        261.7966817220291,
+        267.1688308716038,
+        268.5244776408155,
+        268.1060485840043,
+        262.82196299232237
+      ],
+      "min_ns": 261.7966817220291,
+      "max_ns": 268.5244776408155
+    },
+    "v7/fastuuidv7.native/discard": {
+      "shape": "native (discarded)",
+      "median_ns": 44.92081737519135,
+      "process_means_ns": [
+        44.950859705603996,
+        44.78661505381195,
+        44.815645217894584,
+        44.92081737519135,
+        45.06888580321596
+      ],
+      "min_ns": 44.78661505381195,
+      "max_ns": 45.06888580321596
+    },
+    "v4/candidate/serialize": {
+      "shape": "list[str]",
+      "median_ns": 1424.0238240561682,
+      "process_means_ns": [
+        1424.0238240561682,
+        1439.6915181477907,
+        1421.070729573677,
+        1417.6186218265927,
+        1429.3165995279735
+      ],
+      "min_ns": 1417.6186218265927,
+      "max_ns": 1439.6915181477907
+    },
+    "v7/uuid-utils.native/retain": {
+      "shape": "list[native]",
+      "median_ns": 160.9842427571278,
+      "process_means_ns": [
+        161.7298215230269,
+        160.1898358662905,
+        160.84952163696317,
+        162.16502761840005,
+        160.9842427571278
+      ],
+      "min_ns": 160.1898358662905,
+      "max_ns": 162.16502761840005
+    },
+    "v4/candidate/batch": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 378.856124877974,
+      "process_means_ns": [
+        375.82483164469494,
+        380.3192265828326,
+        378.856124877974,
+        380.09997304277664,
+        378.4199676513915
+      ],
+      "min_ns": 375.82483164469494,
+      "max_ns": 380.3192265828326
+    },
+    "v4/uuid-utils.native/discard": {
+      "shape": "native (discarded)",
+      "median_ns": 103.09816106159516,
+      "process_means_ns": [
+        104.57087071735414,
+        102.8615608215441,
+        102.53832244873564,
+        103.2849527994884,
+        103.09816106159516
+      ],
+      "min_ns": 102.53832244873564,
+      "max_ns": 104.57087071735414
+    },
+    "v4/candidate/retain": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 429.31494140628405,
+      "process_means_ns": [
+        430.2620951334776,
+        428.7233225503823,
+        427.12863667802515,
+        430.98988342281956,
+        429.31494140628405
+      ],
+      "min_ns": 427.12863667802515,
+      "max_ns": 430.98988342281956
+    },
+    "v4/fastuuid.native/retain": {
+      "shape": "list[native]",
+      "median_ns": 620.7998860677591,
+      "process_means_ns": [
+        622.9889526366874,
+        613.5116933187953,
+        620.7998860677591,
+        622.2530212401356,
+        619.4223175049208
+      ],
+      "min_ns": 613.5116933187953,
+      "max_ns": 622.9889526366874
+    },
+    "v7/uuid-utils.native/discard": {
+      "shape": "native (discarded)",
+      "median_ns": 164.35175832112733,
+      "process_means_ns": [
+        166.23146438597257,
+        164.35175832112733,
+        164.2757962544847,
+        165.1833419799402,
+        163.36387888593538
+      ],
+      "min_ns": 163.36387888593538,
+      "max_ns": 166.23146438597257
+    },
+    "v7/fastuuidv7.native/retain": {
+      "shape": "list[native]",
+      "median_ns": 77.10252888996601,
+      "process_means_ns": [
+        76.47368558247058,
+        78.23302078247409,
+        77.10252888996601,
+        77.4831860860151,
+        77.0730113983069
+      ],
+      "min_ns": 76.47368558247058,
+      "max_ns": 78.23302078247409
+    },
+    "v4/stdlib/discard": {
+      "shape": "uuid.UUID (discarded)",
+      "median_ns": 2392.9948730477363,
+      "process_means_ns": [
+        2427.5070393880646,
+        2370.8848063154023,
+        2377.8687947591015,
+        2392.9948730477363,
+        2402.1729329420004
+      ],
+      "min_ns": 2370.8848063154023,
+      "max_ns": 2427.5070393880646
+    },
+    "parse/stdlib": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 1306.8744812011016,
+      "process_means_ns": [
+        1354.0963439942661,
+        1299.6289469401356,
+        1297.4630839030406,
+        1306.8744812011016,
+        1315.6640726721378
+      ],
+      "min_ns": 1297.4630839030406,
+      "max_ns": 1354.0963439942661
+    },
+    "v7/uuid-utils.native/serialize": {
+      "shape": "list[str]",
+      "median_ns": 274.58843739832224,
+      "process_means_ns": [
+        275.12040964759586,
+        271.9257354736321,
+        274.1679916381558,
+        276.16423543298794,
+        274.58843739832224
+      ],
+      "min_ns": 271.9257354736321,
+      "max_ns": 276.16423543298794
+    },
+    "v4/uuid-utils.native/serialize": {
+      "shape": "list[str]",
+      "median_ns": 197.689020792672,
+      "process_means_ns": [
+        197.42316691083045,
+        197.689020792672,
+        196.0413818359423,
+        202.36051686599887,
+        198.07823944090487
+      ],
+      "min_ns": 196.0413818359423,
+      "max_ns": 202.36051686599887
+    },
+    "v4/stdlib/serialize": {
+      "shape": "list[str]",
+      "median_ns": 3393.3959554035646,
+      "process_means_ns": [
+        3434.3013916009886,
+        3373.5794677739136,
+        3399.0131835931006,
+        3393.3959554035646,
+        3373.6319986985472
+      ],
+      "min_ns": 3373.5794677739136,
+      "max_ns": 3434.3013916009886
+    },
+    "v4/uuid-utils.compat/retain": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 836.9271138512653,
+      "process_means_ns": [
+        911.3406575520766,
+        850.6506754558014,
+        823.4236246743136,
+        828.898834228572,
+        836.9271138512653
+      ],
+      "min_ns": 823.4236246743136,
+      "max_ns": 911.3406575520766
+    },
+    "v7/candidate.native/discard": {
+      "shape": "native (discarded)",
+      "median_ns": 335.061597188358,
+      "process_means_ns": [
+        334.1714121500453,
+        335.061597188358,
+        332.7370325724386,
+        335.4182001750449,
+        335.5932693481067
+      ],
+      "min_ns": 332.7370325724386,
+      "max_ns": 335.5932693481067
+    },
+    "v4/fastuuid.native/discard": {
+      "shape": "native (discarded)",
+      "median_ns": 614.5573628742243,
+      "process_means_ns": [
+        655.71878560375,
+        612.9145863850919,
+        613.9003550211543,
+        617.2706400552815,
+        614.5573628742243
+      ],
+      "min_ns": 612.9145863850919,
+      "max_ns": 655.71878560375
+    },
+    "parse/candidate": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 165.83618418373936,
+      "process_means_ns": [
+        164.98551177976586,
+        165.83884811403175,
+        165.83618418373936,
+        165.81148401901044,
+        166.13856379192632
+      ],
+      "min_ns": 164.98551177976586,
+      "max_ns": 166.13856379192632
+    },
+    "v4/uuid-utils.compat/serialize": {
+      "shape": "list[str]",
+      "median_ns": 1854.8894042969462,
+      "process_means_ns": [
+        1904.570638020832,
+        1852.6644490560648,
+        1854.8894042969462,
+        1853.9166463220809,
+        1879.7113037107247
+      ],
+      "min_ns": 1852.6644490560648,
+      "max_ns": 1904.570638020832
+    },
+    "parse/candidate-batch": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 143.8949635823482,
+      "process_means_ns": [
+        144.31403859454423,
+        142.89895248415198,
+        143.8949635823482,
+        142.81069056194892,
+        144.47189076737382
+      ],
+      "min_ns": 142.81069056194892,
+      "max_ns": 144.47189076737382
+    },
+    "v4/candidate/direct-string": {
+      "shape": "list[str]",
+      "median_ns": 358.94884999589675,
+      "process_means_ns": [
+        359.2026672363064,
+        358.3894449870001,
+        356.90431722003314,
+        360.51548004149487,
+        358.94884999589675
+      ],
+      "min_ns": 356.90431722003314,
+      "max_ns": 360.51548004149487
+    },
+    "packed/uuid-utils.native": {
+      "shape": "packed bytes",
+      "median_ns": 276.0936431884092,
+      "process_means_ns": [
+        288.7406972248898,
+        274.09816233316553,
+        278.3074696858561,
+        276.0936431884092,
+        275.4507827758644
+      ],
+      "min_ns": 274.09816233316553,
+      "max_ns": 288.7406972248898
+    },
+    "v4/uuid-utils.native/retain": {
+      "shape": "list[native]",
+      "median_ns": 101.61483891804153,
+      "process_means_ns": [
+        102.31672032675688,
+        101.61483891804153,
+        101.23714319866903,
+        100.89059066774783,
+        102.14702479047008
+      ],
+      "min_ns": 100.89059066774783,
+      "max_ns": 102.31672032675688
+    },
+    "v4/candidate/discard": {
+      "shape": "uuid.UUID (discarded)",
+      "median_ns": 430.6043752034331,
+      "process_means_ns": [
+        431.90761311851475,
+        429.49602762861787,
+        428.93569946302404,
+        433.68056233730283,
+        430.6043752034331
+      ],
+      "min_ns": 428.93569946302404,
+      "max_ns": 433.68056233730283
+    },
+    "packed/fastuuid.native": {
+      "shape": "packed bytes",
+      "median_ns": 204.59696960442355,
+      "process_means_ns": [
+        219.80572001141334,
+        202.46197764078502,
+        204.737202962191,
+        202.6855239868243,
+        204.59696960442355
+      ],
+      "min_ns": 202.46197764078502,
+      "max_ns": 219.80572001141334
+    },
+    "parse/uuid-utils.native-to-stdlib": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 1330.1245117188405,
+      "process_means_ns": [
+        1380.381215413303,
+        1342.6443786622156,
+        1329.0903116862257,
+        1322.311086019284,
+        1330.1245117188405
+      ],
+      "min_ns": 1322.311086019284,
+      "max_ns": 1380.381215413303
+    },
+    "format/candidate-bytes": {
+      "shape": "list[str]",
+      "median_ns": 55.839261372889425,
+      "process_means_ns": [
+        55.943549474083845,
+        55.997829437248754,
+        55.839261372889425,
+        54.60594050091915,
+        54.76309903464644
+      ],
+      "min_ns": 54.60594050091915,
+      "max_ns": 55.997829437248754
+    },
+    "v7/candidate/discard": {
+      "shape": "uuid.UUID (discarded)",
+      "median_ns": 480.27786763519174,
+      "process_means_ns": [
+        480.27786763519174,
+        479.90104675289626,
+        505.36649576823214,
+        481.5014444985745,
+        469.7215220134804
+      ],
+      "min_ns": 469.7215220134804,
+      "max_ns": 505.36649576823214
+    },
+    "packed/stdlib": {
+      "shape": "packed bytes",
+      "median_ns": 1502.0013326008548,
+      "process_means_ns": [
+        1587.949666341168,
+        1485.5819498698029,
+        1501.3724873859496,
+        1502.0013326008548,
+        1506.9512939453143
+      ],
+      "min_ns": 1485.5819498698029,
+      "max_ns": 1587.949666341168
+    },
+    "v7/uuid-utils.compat/serialize": {
+      "shape": "list[str]",
+      "median_ns": 2013.6077677398537,
+      "process_means_ns": [
+        2078.6223551428016,
+        2029.2633260094706,
+        2002.6876424150223,
+        1995.1544799803185,
+        2013.6077677398537
+      ],
+      "min_ns": 1995.1544799803185,
+      "max_ns": 2078.6223551428016
+    },
+    "v7/candidate/serialize": {
+      "shape": "list[str]",
+      "median_ns": 1521.680664062572,
+      "process_means_ns": [
+        1520.2925211589961,
+        1521.680664062572,
+        1532.8332722974967,
+        1510.5361226399118,
+        1527.5760904947626
+      ],
+      "min_ns": 1510.5361226399118,
+      "max_ns": 1532.8332722974967
+    },
+    "v7/candidate/retain": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 461.3349863687166,
+      "process_means_ns": [
+        458.61114501941256,
+        459.61695861827104,
+        461.3349863687166,
+        461.37272644020123,
+        462.3377634683547
+      ],
+      "min_ns": 458.61114501941256,
+      "max_ns": 462.3377634683547
+    },
+    "parse/fastuuid.native-to-stdlib": {
+      "shape": "list[uuid.UUID]",
+      "median_ns": 1184.9216206867343,
+      "process_means_ns": [
+        1254.7265116374651,
+        1190.8310445147597,
+        1184.9216206867343,
+        1177.3890889483357,
+        1183.255360921153
+      ],
+      "min_ns": 1177.3890889483357,
+      "max_ns": 1254.7265116374651
+    }
+  },
+  "limits": [
+    "same-host microbenchmarks; no application throughput claim",
+    "compare equal output contracts; native objects are not stdlib UUIDs",
+    "fastuuidv7 uses a non-cryptographic RNG; guarantees differ",
+    "GC disabled by timeit; list allocation/deallocation included",
+    "parse inputs are prepared outside timing; canonical varied UUIDs"
+  ]
+}

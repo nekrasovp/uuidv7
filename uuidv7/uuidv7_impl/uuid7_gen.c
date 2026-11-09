@@ -3,8 +3,10 @@
 #include <string.h>
 #include "uuid7_gen.h"
 #include "uuid7_int.h"
+#include "uuid_parse.h"
 
 static PyObject *uuid7_type = NULL;
+static PyObject *uuid_type = NULL;
 static PyObject *uuid7_safe_uuid = NULL;
 static PyObject *uuid_int_attr = NULL;
 static PyObject *uuid_is_safe_attr = NULL;
@@ -430,15 +432,15 @@ static PyObject *py_configure_uuid7(PyObject *self, PyObject *const *args, Py_ss
 
     (void)self;
 
-    if (nargs != 2) {
-        PyErr_SetString(PyExc_TypeError, "_configure_uuid7() expects uuid type and safe value");
+    if (nargs != 2 && nargs != 3) {
+        PyErr_SetString(PyExc_TypeError, "_configure_uuid7() expects uuid type, safe value, and optional standard type");
         return NULL;
     }
 
     new_type = args[0];
     new_safe_uuid = args[1];
 
-    if (!PyType_Check(new_type)) {
+    if (!PyType_Check(new_type) || (nargs == 3 && !PyType_Check(args[2]))) {
         PyErr_SetString(PyExc_TypeError, "uuid type must be a type");
         return NULL;
     }
@@ -447,19 +449,28 @@ static PyObject *py_configure_uuid7(PyObject *self, PyObject *const *args, Py_ss
     Py_INCREF(new_safe_uuid);
     Py_XSETREF(uuid7_type, new_type);
     Py_XSETREF(uuid7_safe_uuid, new_safe_uuid);
+    if (nargs == 3) {
+        Py_INCREF(args[2]);
+        Py_XSETREF(uuid_type, args[2]);
+    }
 
     Py_RETURN_NONE;
 }
 
 /* Takes ownership of value, including on allocation/attribute errors. */
-static PyObject *uuid7_from_owned_int(PyObject *value) {
+static PyObject *uuid_from_owned_int(PyObject *value, PyObject *type) {
     if (value == NULL) {
+        return NULL;
+    }
+    if (type == NULL || uuid7_safe_uuid == NULL) {
+        Py_DECREF(value);
+        PyErr_SetString(PyExc_RuntimeError, "UUID object fast path is not configured");
         return NULL;
     }
 
 #if !defined(Py_LIMITED_API)
     {
-        PyObject *uuid_obj = PyType_GenericAlloc((PyTypeObject *)uuid7_type, 0);
+        PyObject *uuid_obj = PyType_GenericAlloc((PyTypeObject *)type, 0);
         if (uuid_obj == NULL) {
             Py_DECREF(value);
             return NULL;
@@ -500,7 +511,7 @@ static PyObject *uuid7_from_owned_int(PyObject *value) {
             goto done;
         }
 
-        result = PyObject_Call(uuid7_type, empty_args, kwargs);
+        result = PyObject_Call(type, empty_args, kwargs);
 
 done:
         Py_XDECREF(empty_args);
@@ -509,6 +520,10 @@ done:
         return result;
     }
 #endif
+}
+
+static PyObject *uuid7_from_owned_int(PyObject *value) {
+    return uuid_from_owned_int(value, uuid7_type);
 }
 
 static PyObject *py_uuid7(PyObject *self, PyObject *args) {
@@ -869,7 +884,188 @@ static PyObject *py_uuid7_bytes_many(PyObject *self, PyObject *args) {
     return result;
 }
 
+
+/* General UUID operations share allocation, entropy and formatting with v7. */
+static PyObject *raise_uuid4_error(void) {
+    PyErr_SetString(PyExc_RuntimeError, "system CSPRNG failed while generating UUID v4");
+    return NULL;
+}
+
+static PyObject *py_uuid4(PyObject *self, PyObject *args) {
+    unsigned char raw[16];
+    (void)self;
+    (void)args;
+    if (generate_uuid4_bytes(raw) < 0) return raise_uuid4_error();
+    return uuid_from_owned_int(uuid_bytes_to_int(raw), uuid_type);
+}
+
+static PyObject *py_uuid4_str(PyObject *self, PyObject *args) {
+    unsigned char raw[16];
+    (void)self;
+    (void)args;
+    if (generate_uuid4_bytes(raw) < 0) return raise_uuid4_error();
+    return uuid_bytes_to_string(raw);
+}
+
+static PyObject *py_uuid4_bytes(PyObject *self, PyObject *args) {
+    unsigned char raw[16];
+    (void)self;
+    (void)args;
+    if (generate_uuid4_bytes(raw) < 0) return raise_uuid4_error();
+    return PyBytes_FromStringAndSize((const char *)raw, 16);
+}
+
+static PyObject *uuid4_list(PyObject *args, int strings) {
+    Py_ssize_t count;
+    if (parse_batch_count(args, &count) < 0) return NULL;
+    PyObject *result = PyList_New(count);
+    if (result == NULL) return NULL;
+    for (Py_ssize_t i = 0; i < count; i++) {
+        PyObject *item = strings ? py_uuid4_str(NULL, NULL) : py_uuid4(NULL, NULL);
+        if (item == NULL) {
+            Py_DECREF(result);
+            return NULL;
+        }
+        PyList_SET_ITEM(result, i, item);
+    }
+    return result;
+}
+
+static PyObject *py_uuid4_many(PyObject *self, PyObject *args) {
+    (void)self;
+    return uuid4_list(args, 0);
+}
+
+static PyObject *py_uuid4_str_many(PyObject *self, PyObject *args) {
+    (void)self;
+    return uuid4_list(args, 1);
+}
+
+static PyObject *py_uuid4_bytes_many(PyObject *self, PyObject *args) {
+    Py_ssize_t count;
+    (void)self;
+    if (parse_batch_count(args, &count) < 0) return NULL;
+    if (count > PY_SSIZE_T_MAX / 16) return PyErr_NoMemory();
+    PyObject *result = PyBytes_FromStringAndSize(NULL, count * 16);
+    if (result == NULL) return NULL;
+    unsigned char *raw = (unsigned char *)PyBytes_AS_STRING(result);
+    for (Py_ssize_t i = 0; i < count; i++) {
+        if (generate_uuid4_bytes(raw + i * 16) < 0) {
+            Py_DECREF(result);
+            return raise_uuid4_error();
+        }
+    }
+    return result;
+}
+
+static int parse_uuid_text(PyObject *arg, unsigned char raw[16], Py_ssize_t index) {
+    if (!PyUnicode_Check(arg)) {
+        if (index < 0) PyErr_SetString(PyExc_TypeError, "UUID text must be str");
+        else PyErr_Format(PyExc_TypeError, "UUID text at index %zd must be str", index);
+        return -1;
+    }
+    /* Reject non-ASCII (including lone surrogates) without allocating UTF-8. */
+    if (PyUnicode_IS_ASCII(arg) && uuid_parse_core(
+            (const char *)PyUnicode_1BYTE_DATA(arg),
+            (size_t)PyUnicode_GET_LENGTH(arg), raw) == 0) return 0;
+    if (index < 0) PyErr_SetString(PyExc_ValueError, "invalid UUID text");
+    else PyErr_Format(PyExc_ValueError, "invalid UUID text at index %zd", index);
+    return -1;
+}
+
+static PyObject *py_parse(PyObject *self, PyObject *arg) {
+    unsigned char raw[16];
+    (void)self;
+    if (parse_uuid_text(arg, raw, -1) < 0) return NULL;
+    return uuid_from_owned_int(uuid_bytes_to_int(raw), uuid_type);
+}
+
+static PyObject *parse_uuid_batch(PyObject *arg, int packed) {
+    /* Snapshot iterables before allocation; user iteration may mutate a list. */
+    PyObject *snapshot = PySequence_Tuple(arg);
+    if (snapshot == NULL) return NULL;
+    Py_ssize_t count = PyTuple_GET_SIZE(snapshot);
+    if (packed && count > PY_SSIZE_T_MAX / 16) {
+        Py_DECREF(snapshot);
+        return PyErr_NoMemory();
+    }
+    PyObject *result = packed ? PyBytes_FromStringAndSize(NULL, count * 16) : PyList_New(count);
+    if (result == NULL) {
+        Py_DECREF(snapshot);
+        return NULL;
+    }
+    for (Py_ssize_t i = 0; i < count; i++) {
+        unsigned char raw[16];
+        if (parse_uuid_text(PyTuple_GET_ITEM(snapshot, i), raw, i) < 0) goto error;
+        if (packed) memcpy(PyBytes_AS_STRING(result) + i * 16, raw, 16);
+        else {
+            PyObject *item = uuid_from_owned_int(uuid_bytes_to_int(raw), uuid_type);
+            if (item == NULL) goto error;
+            PyList_SET_ITEM(result, i, item);
+        }
+    }
+    Py_DECREF(snapshot);
+    return result;
+error:
+    Py_DECREF(result);
+    Py_DECREF(snapshot);
+    return NULL;
+}
+
+static PyObject *py_parse_many(PyObject *self, PyObject *arg) {
+    (void)self;
+    return parse_uuid_batch(arg, 0);
+}
+
+static PyObject *py_parse_bytes_many(PyObject *self, PyObject *arg) {
+    (void)self;
+    return parse_uuid_batch(arg, 1);
+}
+
+static PyObject *py_format_uuid(PyObject *self, PyObject *arg) {
+    (void)self;
+    if (PyObject_TypeCheck(arg, &NativeUUID7Type)) {
+        NativeUUID7Object *value = (NativeUUID7Object *)arg;
+        return uuid_words_to_string(value->high, value->low);
+    }
+    PyObject *bytes;
+    if (PyBytes_Check(arg)) {
+        Py_INCREF(arg);
+        bytes = arg;
+    } else if (uuid_type != NULL && PyObject_TypeCheck(arg, (PyTypeObject *)uuid_type)) {
+        bytes = PyObject_GetAttrString(arg, "bytes");
+        if (bytes == NULL) return NULL;
+    } else {
+        PyErr_SetString(PyExc_TypeError, "expected uuid.UUID, UUID7Obj, or 16 bytes");
+        return NULL;
+    }
+    if (!PyBytes_Check(bytes)) {
+        Py_DECREF(bytes);
+        PyErr_SetString(PyExc_TypeError, "UUID bytes must be bytes");
+        return NULL;
+    }
+    if (PyBytes_GET_SIZE(bytes) != 16) {
+        Py_DECREF(bytes);
+        PyErr_SetString(PyExc_ValueError, "UUID bytes must have length 16");
+        return NULL;
+    }
+    PyObject *result = uuid_bytes_to_string((const unsigned char *)PyBytes_AS_STRING(bytes));
+    Py_DECREF(bytes);
+    return result;
+}
+
 static PyMethodDef uuid7_gen_methods[] = {
+    {"uuid4", py_uuid4, METH_NOARGS, "Generate a standard UUIDv4 from the system CSPRNG"},
+    {"uuid4_str", py_uuid4_str, METH_NOARGS, "Generate a canonical UUIDv4 string"},
+    {"uuid4_bytes", py_uuid4_bytes, METH_NOARGS, "Generate 16 network-order UUIDv4 bytes"},
+    {"uuid4_many", py_uuid4_many, METH_VARARGS, "Generate a list of standard UUIDv4 objects"},
+    {"uuid4_str_many", py_uuid4_str_many, METH_VARARGS, "Generate a list of canonical UUIDv4 strings"},
+    {"uuid4_bytes_many", py_uuid4_bytes_many, METH_VARARGS, "Generate contiguous network-order UUIDv4 bytes"},
+    {"parse", py_parse, METH_O, "Parse strict UUID text into a standard uuid.UUID"},
+    {"parse_many", py_parse_many, METH_O, "Parse a finite iterable of UUID strings into a list"},
+    {"parse_bytes_many", py_parse_bytes_many, METH_O, "Parse UUID strings into contiguous network-order bytes"},
+    {"format_uuid", py_format_uuid, METH_O, "Format a UUID object or 16 bytes as canonical lowercase text"},
+
     {"_uuid7_at_many", py_uuid7_at_many, METH_O,
      "Generate independent UUID v7 objects after validating all timestamps"},
     {"_generate_uuid7_at_bytes", py_generate_uuid7_at_bytes, METH_O,

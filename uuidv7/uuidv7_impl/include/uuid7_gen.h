@@ -9,6 +9,7 @@ int generate_uuid7_bytes_for_timestamp(unsigned char uuid[16], uint64_t unix_ts_
 int generate_uuid7_at_bytes(unsigned char uuid[16], uint64_t unix_ts_ms);
 int generate_uuid7_at_words(uint64_t *high, uint64_t *low, uint64_t unix_ts_ms);
 int generate_uuid7_words(uint64_t *high, uint64_t *low);
+int generate_uuid4_bytes(unsigned char uuid[16]);
 void reset_uuid7_state(void);
 int set_uuid7_state_for_tests(uint64_t timestamp_ms, uint64_t counter_value);
 

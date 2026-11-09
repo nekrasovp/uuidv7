@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import uuid
 
+import fastuuid7
 from fastuuid7 import (
     UUID7Obj,
     uuid7,
@@ -33,3 +34,13 @@ native_int: int = native_value.int
 native_time: int = native_value.time
 native_text: str = str(native_value)
 native_raw: bytes = bytes(native_value)
+
+
+v4: uuid.UUID = fastuuid7.uuid4()
+parsed: uuid.UUID = fastuuid7.parse(str(v4))
+parsed_list: list[uuid.UUID] = fastuuid7.parse_many([str(v4)])
+packed_values: bytes = fastuuid7.parse_bytes_many([str(v4)])
+formatted: str = fastuuid7.format_uuid(v4)
+v4_list: list[uuid.UUID] = fastuuid7.uuid4_many(2)
+v4_strings: list[str] = fastuuid7.uuid4_str_many(2)
+v4_packed: bytes = fastuuid7.uuid4_bytes_many(2)

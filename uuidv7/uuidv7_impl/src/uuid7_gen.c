@@ -9,6 +9,7 @@
 #include <bcrypt.h>
 #else
 #include <fcntl.h>
+#include <pthread.h>
 #include <time.h>
 #include <unistd.h>
 #if !defined(CLOCK_REALTIME)
@@ -28,6 +29,13 @@ static unsigned char entropy_pool[UUID7_ENTROPY_POOL_SIZE];
 static size_t entropy_offset = UUID7_ENTROPY_POOL_SIZE;
 #ifndef _WIN32
 static int urandom_fd = -1;
+/* 0: unattempted, 1: installed, -1: use the PID-check fallback. GIL protected. */
+static int fork_hook_status = 0;
+
+static void after_fork_child(void) {
+    /* No Python API, locks, allocation or RNG calls in the child handler. */
+    process_id = 0;
+}
 #endif
 
 static uint64_t current_time_ms(void) {
@@ -89,6 +97,14 @@ static void reset_process_state(uint64_t new_process_id) {
 }
 
 static void ensure_current_process(void) {
+#ifndef _WIN32
+    if (fork_hook_status == 0) {
+        fork_hook_status = pthread_atfork(NULL, NULL, after_fork_child) == 0 ? 1 : -1;
+    }
+    if (fork_hook_status == 1 && process_id != 0) {
+        return;
+    }
+#endif
     uint64_t current_id = current_process_id();
 
     if (process_id != current_id) {
@@ -166,6 +182,21 @@ static int next_counter_start(uint64_t *counter_start) {
         return -1;
     }
     *counter_start = random_value & UUID7_COUNTER_MASK;
+    return 0;
+}
+
+int generate_uuid4_bytes(unsigned char uuid[16]) {
+    ensure_current_process();
+    /* Take a complete UUID from the shared pool; never expose a partial read. */
+    if (entropy_offset + 16 > sizeof(entropy_pool)) {
+        if (refill_entropy_pool() < 0) {
+            return -1;
+        }
+    }
+    memcpy(uuid, entropy_pool + entropy_offset, 16);
+    entropy_offset += 16;
+    uuid[6] = (unsigned char)((uuid[6] & 0x0f) | 0x40);
+    uuid[8] = (unsigned char)((uuid[8] & 0x3f) | 0x80);
     return 0;
 }
 
