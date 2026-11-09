@@ -16,6 +16,7 @@ uuidv7_extension = Extension(
     depends=[
         os.path.join("uuidv7", "uuidv7_impl", "include", "uuid7_gen.h"),
         os.path.join("uuidv7", "uuidv7_impl", "include", "uuid7_int.h"),
+        os.path.join("uuidv7", "uuidv7_impl", "include", "uuid_parse.h"),
     ],
     extra_compile_args=extra_compile_args,
     libraries=["bcrypt"] if os.name == "nt" else [],

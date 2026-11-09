@@ -12,6 +12,9 @@ recursive-include benchmarks/workloads *.toml *.lock *.md *.sql
 prune benchmarks/workloads/.venv
 include uv.lock
 recursive-include tools *.py
+include tools/fuzz_uuid_parse.c
+recursive-include tools/consumers *.toml *.lock *.md
+prune tools/consumers/.venv
 recursive-include tools/experiments/free_threading *.c *.md *.json
 prune tools/experiments/free_threading/.venv
 recursive-include tests *.py

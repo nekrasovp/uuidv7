@@ -7,12 +7,24 @@ on:
     branches: [main, master, develop]
 
 jobs:
+  parser-sanitizers:
+    name: UUID parser sanitizers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fuzz production parser with ASan and UBSan
+        run: |
+          mkdir -p /tmp/uuid-corpus
+          python -c 'from pathlib import Path; Path("/tmp/uuid-corpus/urn").write_text("URN:UUID:00112233-4455-6677-8899-aabbccddeeff")'
+          clang -O1 -g -fsanitize=fuzzer,address,undefined -fno-sanitize-recover=all -Iuuidv7/uuidv7_impl/include tools/fuzz_uuid_parse.c -o /tmp/uuid-fuzz
+          /tmp/uuid-fuzz -runs=200000 -seed=9562 /tmp/uuid-corpus
+
   test:
     name: Test on Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
 
     steps:
       - uses: actions/checkout@v4

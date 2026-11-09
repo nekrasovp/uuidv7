@@ -24,6 +24,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS",
@@ -53,7 +54,7 @@ integrations = [
 ]
 release = [
     "build>=1.2.0",
-    "cibuildwheel>=3.4.1; python_version >= '3.11'",
+    "cibuildwheel==4.3.5; python_version >= '3.11'",
     "twine>=6.0.0",
 ]
 

@@ -5,7 +5,7 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/fastuuid7.svg)](https://pypi.org/project/fastuuid7/)
 [![License](https://img.shields.io/pypi/l/fastuuid7.svg)](LICENSE)
 
-High-performance, fork-safe UUIDv7 generation for Python 3.9-3.14, implemented
+High-performance, fork-safe UUIDv7 and UUIDv4 generation for Python 3.9-3.15, implemented
 in C and compatible with Python's `uuid.UUID` API.
 
 ## Features
@@ -14,9 +14,10 @@ in C and compatible with Python's `uuid.UUID` API.
 - Random fields sourced from the operating-system CSPRNG
 - Automatic entropy and counter reset after a process fork
 - `uuid.uuid7()`-compatible API returning `uuid.UUID`
-- Native object, canonical string, and raw bytes fast paths
+- Native v7 object, canonical string, and raw bytes fast paths
+- UUIDv4 generation and strict UUID parsing/formatting, including batches
 - Exact historical timestamps with `uuid7_at()` and `uuid7_at_many()`
-- Python 3.9-3.14 on Linux, macOS, and Windows
+- Python 3.9-3.15 on Linux, macOS, and Windows
 - Typed `fastuuid7` and backward-compatible `uuidv7` imports
 
 Python 3.14 includes `uuid.uuid7()` in the standard library. Use the standard
@@ -244,8 +245,8 @@ row verification. It separates client libraries from PostgreSQL 18 server-side
 generation and records time, client CPU and memory. Use end-to-end measurements
 to decide whether generator changes matter for your workload.
 
-Python 3.15.0rc2 is checked in a separate [prerelease matrix](docs/python-compatibility.md);
-the stable support range remains 3.9–3.14. The [free-threading research](docs/design/free-threading.md)
+Python 3.15 is included in the stable test and wheel matrices; see
+[Python compatibility](docs/python-compatibility.md). The [free-threading research](docs/design/free-threading.md)
 is an isolated prototype and does not enable production generation without the GIL.
 
 ## CI/CD
@@ -253,7 +254,7 @@ is an isolated prototype and does not enable production generation without the G
 This project uses GitHub Actions for continuous integration and deployment:
 
 - **CI Pipeline** (`.github/workflows/ci.yml`):
-  - Runs tests on Python 3.9 through 3.14
+  - Runs tests on Python 3.9 through 3.15
   - Runs linting with ruff
   - Builds the package to verify it compiles correctly
   - Triggers on push and pull requests

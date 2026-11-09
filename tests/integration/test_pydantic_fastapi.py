@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pydantic import BaseModel, Field, TypeAdapter, ValidationError
 
-from fastuuid7 import uuid7, uuid7_at
+from fastuuid7 import format_uuid, parse, uuid4, uuid7, uuid7_at
 
 
 class Event(BaseModel):
@@ -68,3 +68,20 @@ def test_fastapi_request_response_and_path_uuid_round_trip():
             ).status_code
             == 422
         )
+
+
+@pytest.mark.parametrize("factory", [uuid4, lambda: parse(str(uuid4()))])
+def test_new_operations_standard_uuid_in_frameworks(factory):
+    value = factory()
+    event = Event(id=value, payload={})
+    assert TypeAdapter(uuid.UUID).validate_python(value, strict=True) is value
+    assert Event.model_validate_json(event.model_dump_json()).id == value
+    assert event.model_dump(mode="json")["id"] == format_uuid(value)
+    app = FastAPI()
+
+    @app.get("/uuid", response_model=Event)
+    def get_uuid():
+        return event
+
+    with TestClient(app) as client:
+        assert client.get("/uuid").json()["id"] == str(value)

@@ -36,4 +36,12 @@ for package in (fastuuid7, uuidv7):
     raw = package.uuid7_bytes_many(100)
     values = [uuid.UUID(bytes=raw[i : i + 16]) for i in range(0, len(raw), 16)]
     assert len(values) == 100 and all(a < b for a, b in zip(values, values[1:]))
+for package in (fastuuid7, uuidv7):
+    value = package.uuid4()
+    assert type(value) is uuid.UUID and value.version == 4
+    assert package.parse(str(value)) == value
+    assert package.format_uuid(value.bytes) == str(value)
+    assert package.parse_many([str(value)]) == [value]
+    assert package.parse_bytes_many([str(value)]) == value.bytes
+    assert len(package.uuid4_bytes_many(257)) == 257 * 16
 print(f"Installed fastuuid7 {fastuuid7.__version__}: both imports, history and batches OK")

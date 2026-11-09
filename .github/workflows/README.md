@@ -9,7 +9,7 @@ This directory contains GitHub Actions workflows for CI/CD automation.
 Runs on every push and pull request to main/master/develop branches.
 
 **What it does:**
-- Tests the package on Python 3.9 through 3.14
+- Tests the package on Python 3.9 through 3.15
 - Runs linting with ruff
 - Builds the package to ensure it compiles correctly
 - Uploads build artifacts

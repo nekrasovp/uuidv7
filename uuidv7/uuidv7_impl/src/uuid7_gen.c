@@ -169,6 +169,21 @@ static int next_counter_start(uint64_t *counter_start) {
     return 0;
 }
 
+int generate_uuid4_bytes(unsigned char uuid[16]) {
+    ensure_current_process();
+    /* Take a complete UUID from the shared pool; never expose a partial read. */
+    if (entropy_offset + 16 > sizeof(entropy_pool)) {
+        if (refill_entropy_pool() < 0) {
+            return -1;
+        }
+    }
+    memcpy(uuid, entropy_pool + entropy_offset, 16);
+    entropy_offset += 16;
+    uuid[6] = (unsigned char)((uuid[6] & 0x0f) | 0x40);
+    uuid[8] = (unsigned char)((uuid[8] & 0x3f) | 0x80);
+    return 0;
+}
+
 void reset_uuid7_state(void) {
     reset_process_state(current_process_id());
 }
