@@ -15,7 +15,7 @@
    uv run --extra dev --extra release --locked mypy
    uv build
    uv run --extra dev --extra release --locked twine check dist/*
-   python tools/check_release_version.py v0.5.0
+   python tools/check_release_version.py v0.6.0
    ```
 
 4. Run the scalar, competitor, batch, clock-source, and batch-clock experiment benchmarks from the
@@ -24,11 +24,11 @@
    Run the PostgreSQL 18 workload matrix with `--include-historical-batch` and
    retain its JSON/Markdown reports. Keep the isolated workload lock's published
    fastuuid7 0.4.0 baseline; it must not resolve to the candidate checkout.
-   Require the integration/property and Python prerelease workflows as well.
+   Require the integration/property and Python 3.15 workflows as well.
 5. Verify the exact commit in a clean `git clone --no-local`, with locked dependencies,
    tests, lint, typing, source/wheel builds and installed-wheel smoke tests.
    Check that the sdist includes workload locks, historical examples, integer
-   conversion headers and free-threading experiment sources, with no nested
+   conversion and UUID parsing headers and free-threading experiment sources, with no nested
    virtual environments. Installed wheels must remain limited to runtime packages.
 6. Push the release commit and wait for CI, benchmarks, and every wheel job to pass.
    Review both timing results and skipped/rejected cases. Attach CI benchmark

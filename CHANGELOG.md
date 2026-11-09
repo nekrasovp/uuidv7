@@ -3,7 +3,7 @@
 All notable changes to this project are documented here. The project follows
 [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 0.6.0 - 2026-11-09
 
 - Add OS-CSPRNG UUIDv4 generation as standard objects, strings, bytes, and batches,
   sharing the fork-aware entropy pool without advancing the live UUIDv7 state.
