@@ -2,7 +2,8 @@
 
 The stable test and wheel matrices now cover CPython **3.9–3.15**, with a
 separate `python315.yml` matrix pinned to **3.15.2** on Linux, macOS and Windows.
-The wheel and publish workflows use cibuildwheel 4.3.5 and explicitly exclude
+The test matrix installs interpreters with uv. The wheel and publish workflows
+use cibuildwheel 4.3.5 with its documented `build[uv]` frontend and explicitly exclude
 free-threaded builds. Their installed-wheel checks include UUIDv4 and parsing.
 The root lock updates psycopg to 3.3.8 and Pydantic to 2.14.3 for 3.15 wheels;
 these are optional test dependencies, not runtime requirements.

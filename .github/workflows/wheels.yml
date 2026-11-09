@@ -45,7 +45,10 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v4.3.5
+        with:
+          extras: "uv"
         env:
+          CIBW_BUILD_FRONTEND: "build[uv]"
           CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-* cp313-* cp314-* cp315-*"
           CIBW_SKIP: "cp314t-* cp315t-*"
           CIBW_ARCHS_LINUX: ${{ matrix.cibw-archs-linux }}

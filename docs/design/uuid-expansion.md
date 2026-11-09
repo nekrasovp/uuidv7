@@ -76,3 +76,11 @@ on both GIL and free-threaded 3.14. This does not enable no-GIL production suppo
 Final hosted check state and exact review head are linked from
 [PR #16](https://github.com/nekrasovp/uuidv7/pull/16). The source version remains
 unreleased; no PyPI publishing or upstream outreach occurred in this work.
+
+
+Final CI encountered upstream HTTP 504 responses for setup-python's 3.10
+release asset and cibuildwheel's get-virtualenv bootstrap archive. CI now uses
+uv-managed interpreters for the main test matrix and cibuildwheel's documented
+`build[uv]` frontend (with its uv extra) for wheel environments. This changes the
+bootstrap path, retains normal verified downloads, and preserves all supported
+Python versions and installed-wheel tests.
