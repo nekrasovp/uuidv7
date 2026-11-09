@@ -1,0 +1,16 @@
+{
+  "README.md": "cd0726b57565a21db768e0806cc18b5f5da9e7110b062631585279b964689a7c",
+  "before-hook-linux-py312-current.json": "4a8177019ac00a04d8e5c5e6f3926e7ee411c3a6abda848116d911714ff3d1a4",
+  "before-hook-linux-py312-legacy.json": "7574d9f4d61ece59cc408c553d10a477aede60979b8ea29938983948ac653a21",
+  "before-hook-linux-py314-current.json": "55b642eac0d7ba7c0dc9120ebce9eda625802dca3c6f7f59ff53028c24876bb9",
+  "before-hook-linux-py314-legacy.json": "5999133f48816e0946a1ac5d7302a81723cbcb8f6985b168691cb89ec3fddcfd",
+  "before-hook-macos-py314-current.json": "c5eddadab2b64add9f4b8bf29033fdf8bc4b461b2d549919b031a0a08263b103",
+  "before-hook-macos-py314-legacy.json": "6f03f4d44e9b3c243a37dc81657259a7e5b3b743719a2a560e3c01f77ea270ff",
+  "linux-py312-current.json": "a9199ca71c149de35ad24a746d714f2fb11cddd3b0502b14ff9bc30450b061ac",
+  "linux-py312-legacy.json": "cd82fe219e0130deb31abf5f87a61b1f8b3f28cf56cf74f80aa58e2b0f67bb02",
+  "linux-py314-current.json": "f94058caa47cc20282ef09abf19db8ade47ddfc4740bc7118585d8e398bc5ead",
+  "linux-py314-legacy.json": "27f1915be89896bf17f5b3d51c8e3823568d62e58dfd1182a4e67e37f142f5a7",
+  "macos-py314-current.json": "51df1632953f7a534034f8bb2f934e6aece7df1ed3621d37fbaefe1ac513d41f",
+  "macos-py314-legacy.json": "728505037e35f5e2fc60821b207fee729abb0bce4fdd6b325e6a7743a515ffc8",
+  "macos-py314-release-050.json": "0e959d8655c59d1616924a12c80a0db36ae052877639bd5ea555c693f531e409"
+}

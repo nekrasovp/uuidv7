@@ -64,6 +64,10 @@ static void register_fork_handlers(void) {
     fork_registration_error = pthread_atfork(
         lock_generator, unlock_generator, child_after_fork
     );
+    /* This prototype owns the locked, eager child reset. Tell the included
+     * production core that a hook is installed; a second lazy invalidation
+     * callback would overwrite the PID after our complete child reset. */
+    if (fork_registration_error == 0) fork_hook_status = 1;
 }
 
 static uint64_t monotonic_ns(void) {

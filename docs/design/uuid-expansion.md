@@ -50,3 +50,29 @@ cases, batch cleanup, CSPRNG failure without partial results, fork isolation,
 and no v7 ordering regression. Run lint, typing, unit/property/integration tests,
 parser sanitizers and installed-wheel checks. CI must cover Linux/macOS/Windows.
 Keep old benchmark files and the research PR unchanged.
+
+
+## Implemented and checked
+
+All five stages are implemented in PR #16. Source `4e47ca2` passed a fresh
+`git clone --no-local` run on CPython 3.9–3.15: 709 tests on 3.9–3.13 and
+714 on 3.14–3.15, including properties and entropy/fork failure injection.
+The original first implementation passed 705/710 before additional fork tests.
+Pydantic/FastAPI's four cases and the locked SDK consumer check also passed.
+Local ASan/UBSan exercised 200,000 parser inputs; hosted libFuzzer repeats this.
+Ruff, mypy, actionlint and diff checks passed.
+
+[New benchmark evidence](../../benchmarks/results/uuid-operations-2026-11-09/README.md)
+retains current, legacy, published-baseline and pre-optimization results.
+It supports standard-object v4 and parser utility without claiming FastAPI gains.
+
+CI required two portability fixes: pin Ubuntu 24.04 for setup-python's 3.9
+availability, and give the oversized parser input a short pytest ID so Windows
+can set PYTEST_CURRENT_TEST. The research-only free-threading wrapper includes
+the production core and already owns eager fork reset; it now marks that hook
+as installed to avoid a second lazy reset callback. Its 18 local contracts pass
+on both GIL and free-threaded 3.14. This does not enable no-GIL production support.
+
+Final hosted check state and exact review head are linked from
+[PR #16](https://github.com/nekrasovp/uuidv7/pull/16). The source version remains
+unreleased; no PyPI publishing or upstream outreach occurred in this work.
