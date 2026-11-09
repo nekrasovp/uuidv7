@@ -7,6 +7,8 @@ All notable changes to this project are documented here. The project follows
 
 - Add OS-CSPRNG UUIDv4 generation as standard objects, strings, bytes, and batches,
   sharing the fork-aware entropy pool without advancing the live UUIDv7 state.
+- Remove the per-UUID POSIX PID syscall using a native fork child hook, with
+  per-call PID checking if registration fails.
 - Add strict `parse`, `parse_many`, `parse_bytes_many`, and `format_uuid` APIs.
   Parse all UUID versions/variants, including case-insensitive URNs, using the
   production integer conversion helper and standard UUID return objects.

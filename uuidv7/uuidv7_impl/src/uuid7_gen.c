@@ -9,6 +9,7 @@
 #include <bcrypt.h>
 #else
 #include <fcntl.h>
+#include <pthread.h>
 #include <time.h>
 #include <unistd.h>
 #if !defined(CLOCK_REALTIME)
@@ -28,6 +29,13 @@ static unsigned char entropy_pool[UUID7_ENTROPY_POOL_SIZE];
 static size_t entropy_offset = UUID7_ENTROPY_POOL_SIZE;
 #ifndef _WIN32
 static int urandom_fd = -1;
+/* 0: unattempted, 1: installed, -1: use the PID-check fallback. GIL protected. */
+static int fork_hook_status = 0;
+
+static void after_fork_child(void) {
+    /* No Python API, locks, allocation or RNG calls in the child handler. */
+    process_id = 0;
+}
 #endif
 
 static uint64_t current_time_ms(void) {
@@ -89,6 +97,14 @@ static void reset_process_state(uint64_t new_process_id) {
 }
 
 static void ensure_current_process(void) {
+#ifndef _WIN32
+    if (fork_hook_status == 0) {
+        fork_hook_status = pthread_atfork(NULL, NULL, after_fork_child) == 0 ? 1 : -1;
+    }
+    if (fork_hook_status == 1 && process_id != 0) {
+        return;
+    }
+#endif
     uint64_t current_id = current_process_id();
 
     if (process_id != current_id) {

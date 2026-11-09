@@ -114,10 +114,21 @@ def test_threads_retain_independent_v4_results():
 
 
 @pytest.mark.skipif(not hasattr(os, "fork"), reason="requires POSIX fork")
-def test_v4_fork_discards_parent_pool():
+@pytest.mark.parametrize("native_fork", [False, True])
+def test_v4_fork_discards_parent_pool(native_fork):
     f.uuid4()
     read_fd, write_fd = os.pipe()
-    pid = os.fork()
+    if native_fork:
+        # Exercise libc fork without CPython's Python-level at-fork callbacks.
+        import ctypes
+
+        libc = ctypes.PyDLL(None)
+        libc.fork.restype = ctypes.c_int
+        pid = libc.fork()
+        if pid < 0:
+            pytest.fail("native fork failed")
+    else:
+        pid = os.fork()
     if pid == 0:
         try:
             os.close(read_fd)
@@ -188,7 +199,7 @@ def test_parse_all_bits_and_variants(value):
         "\x00" + TEXT[1:],
         "+" + TEXT.replace("-", "")[1:],
         "-" + TEXT.replace("-", "")[1:],
-        " " * 100_000,
+        pytest.param(" " * 100_000, id="oversized-whitespace"),
     ],
 )
 def test_parse_rejects_malformed_text(text):

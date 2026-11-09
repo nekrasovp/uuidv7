@@ -120,7 +120,9 @@ See the [API reference](docs/api.md) for complete scalar and batch contracts.
 ### Security properties
 
 Random fields are read from a buffered operating-system CSPRNG. The generator
-detects PID changes and discards inherited entropy and counters after `fork()`.
+discards inherited entropy and counters after libc `fork()` (including `os.fork()`)
+using a native child hook, with PID checking if hook registration fails. Raw
+kernel clone/fork syscalls that bypass libc hooks are outside this contract.
 UUIDv7 embeds its creation timestamp and is therefore an identifier, not a
 secret or authentication token. See the [security policy](SECURITY.md).
 

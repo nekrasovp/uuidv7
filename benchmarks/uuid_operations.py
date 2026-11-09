@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import importlib.metadata as metadata
 import json
+import os
 import platform
 import random
 import statistics
@@ -235,7 +236,23 @@ def worker(seed):
     import uuidv7.uuidv7_impl.uuid7_gen as extension
 
     packages = {name: metadata.version(name) for name in ["fastuuid7", *REFERENCE_PINS]}
+    cpu = platform.processor()
+    if sys.platform == "darwin":
+        cpu = subprocess.check_output(
+            ["sysctl", "-n", "machdep.cpu.brand_string"], text=True
+        ).strip()
+    elif sys.platform.startswith("linux"):
+        cpu = next(
+            (
+                line.split(":", 1)[1].strip()
+                for line in Path("/proc/cpuinfo").read_text().splitlines()
+                if line.startswith("model name")
+            ),
+            cpu,
+        )
     return {
+        "cpu": cpu,
+        "cpu_count": os.cpu_count(),
         "seed": seed,
         "rows": rows,
         "packages": packages,

@@ -30,6 +30,13 @@ static NTSTATUS fake_rng(BCRYPT_ALG_HANDLE algorithm, PUCHAR bytes, ULONG size, 
 #define BCryptGenRandom fake_rng
 #else
 #include <unistd.h>
+#include <pthread.h>
+static int fail_fork_registration = 0;
+static int test_atfork(void (*prepare)(void), void (*parent)(void), void (*child)(void)) {
+    if (fail_fork_registration) return ENOMEM;
+    return pthread_atfork(prepare, parent, child);
+}
+#define pthread_atfork test_atfork
 static ssize_t fake_read(int fd, void *bytes, size_t size) {
     if (reads_left == 0) {
         errno = EIO;
@@ -52,7 +59,28 @@ static PyObject *fault(PyObject *self, PyObject *args) {
     reset_uuid7_state();
     Py_RETURN_NONE;
 }
+#ifndef _WIN32
+static PyObject *fork_case(PyObject *self, PyObject *arg) {
+    long which = PyLong_AsLong(arg);
+    if (which == -1 && PyErr_Occurred()) return NULL;
+    memset(entropy_pool, 0xab, sizeof(entropy_pool));
+    entropy_offset = 0;
+    reads_left = 0;
+    mode = 0;
+    if (which == 0) {
+        after_fork_child();
+    } else {
+        fork_hook_status = which == 1 ? -1 : 0;
+        fail_fork_registration = 1;
+        process_id = current_process_id() + 1;
+    }
+    Py_RETURN_NONE;
+}
+#endif
 static PyMethodDef fault_methods[] = {
+#ifndef _WIN32
+    {"fork_case", fork_case, METH_O, NULL},
+#endif
     {"fault", fault, METH_VARARGS, NULL}, {NULL, NULL, 0, NULL}
 };
 PyMODINIT_FUNC PyInit__uuid_faults(void) {
@@ -84,7 +112,7 @@ def entropy_module(tmp_path_factory):
         "import os\nfrom setuptools import Extension, setup\n"
         "setup(name='uuid-entropy-test', version='0', packages=[], ext_modules=[Extension("
         "'_uuid_faults', ['faults.c'], include_dirs=['native', 'native/include'], "
-        "libraries=['bcrypt'] if os.name == 'nt' else [])])\n"
+        "libraries=['bcrypt'] if os.name == 'nt' else ['pthread'])])\n"
     )
     env = os.environ.copy()
     env.pop("UV_PROJECT_ENVIRONMENT", None)
@@ -142,3 +170,12 @@ def test_posix_short_reads_eintr_eof_and_error(entropy_module, mode):
 def test_entropy_sets_only_version_and_variant_bits(entropy_module):
     entropy_module.fault(-1, 0)
     assert entropy_module.uuid4().bytes == bytes.fromhex("abababababab4bababababababababab")
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX fork hooks")
+@pytest.mark.parametrize("case", [0, 1, 2])
+def test_child_hook_pid_fallback_and_registration_failure(entropy_module, case):
+    entropy_module.fork_case(case)
+    with pytest.raises(RuntimeError, match="CSPRNG"):
+        entropy_module.uuid4()
+    entropy_module.fault(-1, 0)

@@ -19,7 +19,7 @@ uuidv7_extension = Extension(
         os.path.join("uuidv7", "uuidv7_impl", "include", "uuid_parse.h"),
     ],
     extra_compile_args=extra_compile_args,
-    libraries=["bcrypt"] if os.name == "nt" else [],
+    libraries=["bcrypt"] if os.name == "nt" else ["pthread"],
 )
 
 setup(

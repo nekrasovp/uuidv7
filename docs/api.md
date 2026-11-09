@@ -73,7 +73,7 @@ Calls at the same timestamp are unique with probabilistic UUID guarantees,
 not deterministic or monotonically ordered. Different timestamps sort by their
 embedded millisecond value. Historical calls do not read or advance the live
 generator's timestamp/counter, even if the supplied timestamp is in the future.
-They share the fork-aware entropy buffer and retain the same PID reset behavior.
+They share the fork-aware entropy buffer and retain the same child reset behavior.
 Mixing historical and live results does not preserve call-order monotonicity.
 
 ### Historical batches
@@ -129,8 +129,12 @@ contiguous `count * 16` byte buffer. Counts use the same integer/index rules as
 v7 batches; the argument is positional. Empty batches return empty containers.
 
 Each UUID has 122 random bits from the existing operating-system CSPRNG pool
-(`/dev/urandom` on POSIX; BCryptGenRandom on Windows). The PID is checked before
-consuming bytes, discarding inherited entropy after fork. v4 does not advance
+(`/dev/urandom` on POSIX; BCryptGenRandom on Windows). On POSIX a native
+`pthread_atfork` child handler invalidates process state; the next generation
+resets the pool and v7 counter before consuming entropy. This covers Python's
+`os.fork()` and libc `fork()`, not raw kernel clone/fork syscalls bypassing libc.
+If hook registration fails, every call checks the PID instead. Windows retains
+its process-ID check. v4 does not advance
 the v7 timestamp or counter and provides no ordering guarantee. A source failure
 raises `RuntimeError`; no partial batch escapes, though bytes may have been
 consumed. Returned objects are independent and never reused or mutated.

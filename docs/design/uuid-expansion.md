@@ -10,7 +10,7 @@ at `225aec2fb436f15b4e83ae84b0b11828ea6b5ffa`; its measurements are historical.
 1. Promote CPython 3.15 to the stable test and wheel matrix. Keep the existing GIL
    requirement and Python 3.9 floor; check the actual built artifacts.
 2. Add `uuid4`, `uuid4_str`, `uuid4_bytes`, and corresponding `_many` operations.
-   Reuse the OS entropy pool and PID reset. Return standard UUIDs for `uuid4`.
+   Reuse the OS entropy pool and fork reset (native POSIX hook, PID fallback). Return standard UUIDs for `uuid4`.
    UUIDv4 consumes 122 random bits and has no ordering promise. It must not
    advance the UUIDv7 clock/counter. Never reuse returned objects.
 3. Add `parse`, `parse_many`, `parse_bytes_many`, and `format_uuid`.
