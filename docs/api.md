@@ -173,6 +173,10 @@ iterator side effects cannot be undone. Empty inputs return `[]` or `b""`.
 Mutable buffers and memoryviews need an explicit `bytes(...)` conversion.
 UUID subclass property errors propagate. No version/variant bits are changed.
 
+Generated v7 objects use an optimized `str()` implementation; custom subclasses
+retain the installed stdlib's formatting behavior. For an existing standard
+UUIDv4 or parsed UUID, use `format_uuid(value)` to select the library's formatter.
+
 The new standard-object APIs return the exact `uuid.UUID` class. Consequently,
 parsed v7 `.time` follows the installed stdlib's behavior (v7 milliseconds on
 Python 3.14+); on older Python use `value.int >> 80` for a parsed v7 timestamp.

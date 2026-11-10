@@ -1022,11 +1022,31 @@ static PyObject *py_parse_bytes_many(PyObject *self, PyObject *arg) {
     return parse_uuid_batch(arg, 1);
 }
 
+static PyObject *py_format_uuid_int(PyObject *self, PyObject *arg) {
+    unsigned char raw[16];
+    (void)self;
+    int status = uuid_int_to_bytes(arg, raw);
+    if (status < 0) return NULL;
+    if (status == 0) Py_RETURN_NONE;
+    return uuid_bytes_to_string(raw);
+}
+
 static PyObject *py_format_uuid(PyObject *self, PyObject *arg) {
     (void)self;
     if (PyObject_TypeCheck(arg, &NativeUUID7Type)) {
         NativeUUID7Object *value = (NativeUUID7Object *)arg;
         return uuid_words_to_string(value->high, value->low);
+    }
+    /* Exact configured types have the standard bytes property. Keep the
+     * property path for user subclasses, including overrides and failures. */
+    if ((PyObject *)Py_TYPE(arg) == uuid_type || (PyObject *)Py_TYPE(arg) == uuid7_type) {
+        PyObject *value = PyObject_GetAttr(arg, uuid_int_attr);
+        if (value == NULL) return NULL;
+        unsigned char raw[16];
+        int status = uuid_int_to_bytes(value, raw);
+        Py_DECREF(value);
+        if (status < 0) return NULL;
+        if (status > 0) return uuid_bytes_to_string(raw);
     }
     PyObject *bytes;
     if (PyBytes_Check(arg)) {
@@ -1065,6 +1085,7 @@ static PyMethodDef uuid7_gen_methods[] = {
     {"parse_many", py_parse_many, METH_O, "Parse a finite iterable of UUID strings into a list"},
     {"parse_bytes_many", py_parse_bytes_many, METH_O, "Parse UUID strings into contiguous network-order bytes"},
     {"format_uuid", py_format_uuid, METH_O, "Format a UUID object or 16 bytes as canonical lowercase text"},
+    {"_format_uuid_int", py_format_uuid_int, METH_O, "Format an exact UUID integer, or return None for Python fallback"},
 
     {"_uuid7_at_many", py_uuid7_at_many, METH_O,
      "Generate independent UUID v7 objects after validating all timestamps"},

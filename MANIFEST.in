@@ -12,6 +12,8 @@ include benchmarks/uuid-operations.md
 recursive-include benchmarks/results *.md
 recursive-include benchmarks/workloads *.toml *.lock *.md *.sql
 prune benchmarks/workloads/.venv
+recursive-include benchmarks/api *.toml *.lock *.md
+prune benchmarks/api/.venv
 include uv.lock
 recursive-include tools *.py
 include tools/fuzz_uuid_parse.c

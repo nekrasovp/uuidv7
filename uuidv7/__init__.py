@@ -8,6 +8,7 @@ from collections.abc import Iterable
 from uuidv7.uuidv7_impl.uuid7_gen import (
     UUID7Obj,
     _configure_uuid7,
+    _format_uuid_int,
     _generate_uuid7_at_bytes,
     _uuid7_at_many,
     format_uuid,
@@ -61,6 +62,18 @@ class _UUID7(_uuid.UUID):
 
     def __repr__(self) -> str:
         return f"UUID('{self}')"
+
+    def __str__(self) -> str:
+        if type(self) is not _UUID7:
+            # UUID.__str__ can consult overridden hex/bytes properties; its
+            # implementation differs between supported Python versions.
+            return _uuid.UUID.__str__(self)
+        text = _format_uuid_int(self.int)
+        if text is None:
+            # Preserve stdlib formatting for unusual int subclasses or objects
+            # deliberately modified with object.__setattr__.
+            return _uuid.UUID.__str__(self)
+        return text
 
 
 _UUID_NEW = _uuid.UUID.__new__

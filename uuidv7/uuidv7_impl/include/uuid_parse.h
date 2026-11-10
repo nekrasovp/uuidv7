@@ -3,12 +3,26 @@
 #include <stddef.h>
 #include <string.h>
 
-static int uuid_nibble(unsigned char c) {
-    if (c >= '0' && c <= '9') return c - '0';
-    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
-    if (c >= 'A' && c <= 'F') return c - 'A' + 10;
-    return -1;
-}
+/* 255 marks every non-hex byte, including NUL and non-ASCII. Index only
+ * through unsigned char: the standalone fuzzer also supplies arbitrary bytes. */
+static const unsigned char uuid_hex_value[256] = {
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 255, 255, 255, 255, 255, 255,
+    255, 10, 11, 12, 13, 14, 15, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 10, 11, 12, 13, 14, 15, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+};
 
 /* Strict, length-bounded ASCII grammar. No NUL termination is required. */
 static int uuid_parse_core(const char *s, size_t n, unsigned char out[16]) {
@@ -26,16 +40,36 @@ static int uuid_parse_core(const char *s, size_t n, unsigned char out[16]) {
         n -= 2;
     }
     if (n != 32 && n != 36) return -1;
-    size_t j = 0;
-    for (size_t i = 0; i < 16; i++) {
-        if (n == 36 && (i == 4 || i == 6 || i == 8 || i == 10)) {
-            if (s[j++] != '-') return -1;
-        }
-        int a = uuid_nibble((unsigned char)s[j++]);
-        int b = uuid_nibble((unsigned char)s[j++]);
-        if (a < 0 || b < 0) return -1;
-        out[i] = (unsigned char)((a << 4) | b);
+    unsigned int invalid = 0;
+#define UUID_DECODE_PAIR(target, source) do { \
+        unsigned int a = uuid_hex_value[(unsigned char)s[(source)]]; \
+        unsigned int b = uuid_hex_value[(unsigned char)s[(source) + 1]]; \
+        invalid |= a | b; \
+        out[(target)] = (unsigned char)((a << 4) | b); \
+    } while (0)
+    if (n == 36) {
+        if (s[8] != '-' || s[13] != '-' || s[18] != '-' || s[23] != '-') return -1;
+        UUID_DECODE_PAIR(0, 0);
+        UUID_DECODE_PAIR(1, 2);
+        UUID_DECODE_PAIR(2, 4);
+        UUID_DECODE_PAIR(3, 6);
+        UUID_DECODE_PAIR(4, 9);
+        UUID_DECODE_PAIR(5, 11);
+        UUID_DECODE_PAIR(6, 14);
+        UUID_DECODE_PAIR(7, 16);
+        UUID_DECODE_PAIR(8, 19);
+        UUID_DECODE_PAIR(9, 21);
+        UUID_DECODE_PAIR(10, 24);
+        UUID_DECODE_PAIR(11, 26);
+        UUID_DECODE_PAIR(12, 28);
+        UUID_DECODE_PAIR(13, 30);
+        UUID_DECODE_PAIR(14, 32);
+        UUID_DECODE_PAIR(15, 34);
+    } else {
+        for (size_t i = 0; i < 16; i++) UUID_DECODE_PAIR(i, 2 * i);
     }
-    return 0;
+#undef UUID_DECODE_PAIR
+    /* The caller must discard out on error, just as for an early rejection. */
+    return (invalid & 0xf0) ? -1 : 0;
 }
 #endif

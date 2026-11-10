@@ -39,9 +39,17 @@ def build_cases():
     objects = [uuid.UUID(int=rng.getrandbits(128)) for _ in range(SIZE)]
     texts = [str(value) for value in objects]
     raw = [value.bytes for value in objects]
+    native_objects = [uuid_utils.UUID(text) for text in texts]
 
     def add(key, statement, scope, shape, operation, units=SIZE):
-        scope = {**scope, "size": SIZE, "texts": texts, "raw": raw, "objects": objects}
+        scope = {
+            **scope,
+            "size": SIZE,
+            "texts": texts,
+            "raw": raw,
+            "objects": objects,
+            "native_objects": native_objects,
+        }
         # Evaluate outside timing, retaining the output for contract checks.
         before_ms = time.time_ns() // 1_000_000
         result = eval(statement, scope)
@@ -115,6 +123,14 @@ def build_cases():
                         )
                     )
         direct = getattr(candidate, f"uuid{version}_str", None)
+        if hasattr(candidate, "format_uuid"):
+            add(
+                f"v{version}/candidate/format-generated",
+                "[fmt(gen()) for _ in range(size)]",
+                {"fmt": candidate.format_uuid, "gen": getattr(candidate, f"uuid{version}")},
+                "list[str]",
+                f"v{version}",
+            )
         if direct is not None:
             add(
                 f"v{version}/candidate/direct-string",
@@ -201,6 +217,13 @@ def build_cases():
             "format",
         )
     add("format/stdlib-UUID", "[str(value) for value in objects]", {}, "list[str]", "format")
+    add(
+        "format/uuid-utils.native",
+        "[str(value) for value in native_objects]",
+        {},
+        "list[str]",
+        "format",
+    )
     add(
         "format/stdlib-bytes",
         "[str(UUID(bytes=value)) for value in raw]",
