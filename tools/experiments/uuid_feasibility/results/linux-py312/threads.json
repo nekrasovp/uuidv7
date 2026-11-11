@@ -1,0 +1,384 @@
+{
+  "identity": {
+    "commit": "7bdf7040c1d4d194a5f5c67383627bbbd1c12c84",
+    "dirty": "",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "python": "3.12.14",
+    "compiler": "GCC 13.3.0",
+    "lock_sha256": "1650fcd95456ee57b91c194c37897cfe91f7b531ef12ae8b8edf1f85cf99c8e7",
+    "sources": {
+      "app.py": "f224a888d5c6e7f9397902877e085313aebb9c7db0abb794c31ff4015a36ab6f",
+      "common.py": "f76c8e21ad1a2ea1be745aea9a01d034b7364c0af81a4ffe5322ab3ff0c7ef56",
+      "consumers.py": "b785f8d63fede05abb9672b63ffa07007047034a636aa63c304b73411ee0c697",
+      "build.py": "64696fc51378988a2339f05722651b864d1a9e594aceffc2fb27ef6c83322b51",
+      "parse_core.h": "9e835bc60f33de3974fd7949c0264e8555f21ed6c40403467bd468956e55f827",
+      "test_contract.py": "d99cad03f9c241e22660586c223cea843ea78a9d1e50feabd6d15d3f921788d5",
+      "prototype.c": "8738a644916ca5c8bc949909820408d40b286a1ebf1b5c23b1ed3b215da67ccb",
+      "http_bench.py": "8870fd1e288e88bbe5c0933f0658caf96ea704c830c190c483fcd8c5a81f90f7",
+      "micro.py": "adc9969e9e890e9c57f15fc40593a2a876d37eb44853098327c341c2177e6e19",
+      "integration.py": "f61fcc617edbd9b571ff688693e17222190b99d20fb1335480e07cb38392953b",
+      "fuzz.c": "5302c0e4c54868e9b2aac88192cacdb400bf6f90e9e9e79b7d27f701aa9dd302",
+      "extras.py": "e1358b5b2168faabb3ac172c22186bf87f9e3b895ec84f843da59686569fbfde"
+    },
+    "packages": {
+      "fastuuid7": "0.5.0",
+      "fastuuid": "0.14.0",
+      "uuid-utils": "1.0.0",
+      "pydantic": "2.13.5",
+      "pydantic-core": "2.46.5",
+      "fastapi": "0.141.1",
+      "starlette": "1.6.0",
+      "uvicorn": "0.53.0",
+      "pyperf": "2.10.0",
+      "psycopg": "3.3.6"
+    },
+    "corpus_sha256": "0ca2a1101d08a03631c1d3f27459820fcac311649ff078561990f1fa6ebc6ddf",
+    "native_extensions": {
+      "_uuid_lab": {
+        "file": "_uuid_lab.cpython-312-x86_64-linux-gnu.so",
+        "sha256": "1437ea1dfb07a32a50570833cad7eb1109f4e0556b384d8c19f76a67e66ddc2f"
+      },
+      "fastuuid.fastuuid": {
+        "file": "fastuuid.cpython-312-x86_64-linux-gnu.so",
+        "sha256": "8bd74ab8ad9b220e6f6efa5900ffadbb345be15a058a27520cc2dbeeb1b2abbd"
+      },
+      "uuid_utils._uuid_utils": {
+        "file": "_uuid_utils.cpython-312-x86_64-linux-gnu.so",
+        "sha256": "ed229dddb69c796486f6729561eb8017533f5cca95650b05edb34cd4998fcf05"
+      },
+      "pydantic_core._pydantic_core": {
+        "file": "_pydantic_core.cpython-312-x86_64-linux-gnu.so",
+        "sha256": "95f68ef2535a5102a03442e073d4906c01211b208902f56e24ec23cea402b5a0"
+      }
+    }
+  },
+  "extension_sha256": "1437ea1dfb07a32a50570833cad7eb1109f4e0556b384d8c19f76a67e66ddc2f",
+  "kind": "threads",
+  "samples": [
+    {
+      "fn": "parse_many_bytes",
+      "workers": 1,
+      "repeat": -1,
+      "warmup": true,
+      "elapsed": 0.2770953980000286,
+      "cpu": 0.277115259,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 1,
+      "repeat": -1,
+      "warmup": true,
+      "elapsed": 0.2811206289998154,
+      "cpu": 0.281417234,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 2,
+      "repeat": -1,
+      "warmup": true,
+      "elapsed": 0.27347325899995667,
+      "cpu": 0.27405956600000003,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 2,
+      "repeat": -1,
+      "warmup": true,
+      "elapsed": 0.1465810419999798,
+      "cpu": 0.28412942399999985,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 4,
+      "repeat": -1,
+      "warmup": true,
+      "elapsed": 0.27539675000002717,
+      "cpu": 0.27639389000000003,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 4,
+      "repeat": -1,
+      "warmup": true,
+      "elapsed": 0.10089068100000986,
+      "cpu": 0.3640408210000001,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 1,
+      "repeat": 0,
+      "warmup": false,
+      "elapsed": 0.2775641279999945,
+      "cpu": 0.27792518600000005,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 4,
+      "repeat": 0,
+      "warmup": false,
+      "elapsed": 0.0978000059999431,
+      "cpu": 0.3616931179999998,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 2,
+      "repeat": 0,
+      "warmup": false,
+      "elapsed": 0.13914994600008868,
+      "cpu": 0.2733005350000002,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 1,
+      "repeat": 0,
+      "warmup": false,
+      "elapsed": 0.27103310400002556,
+      "cpu": 0.271123164,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 4,
+      "repeat": 0,
+      "warmup": false,
+      "elapsed": 0.2745896010001161,
+      "cpu": 0.27557094299999996,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 2,
+      "repeat": 0,
+      "warmup": false,
+      "elapsed": 0.26625252899998486,
+      "cpu": 0.26674437500000003,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 1,
+      "repeat": 1,
+      "warmup": false,
+      "elapsed": 0.2765278730000773,
+      "cpu": 0.2766548649999998,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 4,
+      "repeat": 1,
+      "warmup": false,
+      "elapsed": 0.2687959370000499,
+      "cpu": 0.2697874739999997,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 1,
+      "repeat": 1,
+      "warmup": false,
+      "elapsed": 0.2718882599999688,
+      "cpu": 0.272152105,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 4,
+      "repeat": 1,
+      "warmup": false,
+      "elapsed": 0.09262724700010949,
+      "cpu": 0.3538719189999995,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 2,
+      "repeat": 1,
+      "warmup": false,
+      "elapsed": 0.13889989900008004,
+      "cpu": 0.2748898000000004,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 2,
+      "repeat": 1,
+      "warmup": false,
+      "elapsed": 0.26518276500019056,
+      "cpu": 0.26570572800000036,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 2,
+      "repeat": 2,
+      "warmup": false,
+      "elapsed": 0.26222295399998075,
+      "cpu": 0.2627538999999999,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 1,
+      "repeat": 2,
+      "warmup": false,
+      "elapsed": 0.26748653300001024,
+      "cpu": 0.2677467980000001,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 4,
+      "repeat": 2,
+      "warmup": false,
+      "elapsed": 0.2701502059999257,
+      "cpu": 0.27110141,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 2,
+      "repeat": 2,
+      "warmup": false,
+      "elapsed": 0.1377467259999321,
+      "cpu": 0.2719597329999992,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 1,
+      "repeat": 2,
+      "warmup": false,
+      "elapsed": 0.2657675240000117,
+      "cpu": 0.26585825799999974,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 4,
+      "repeat": 2,
+      "warmup": false,
+      "elapsed": 0.09469539800011262,
+      "cpu": 0.3555003570000004,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 4,
+      "repeat": 3,
+      "warmup": false,
+      "elapsed": 0.2668371119998483,
+      "cpu": 0.26773472300000023,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 1,
+      "repeat": 3,
+      "warmup": false,
+      "elapsed": 0.26714979200005473,
+      "cpu": 0.2673300559999996,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 1,
+      "repeat": 3,
+      "warmup": false,
+      "elapsed": 0.2684865029998491,
+      "cpu": 0.2684711800000006,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 2,
+      "repeat": 3,
+      "warmup": false,
+      "elapsed": 0.13746778499989887,
+      "cpu": 0.2700002750000001,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 4,
+      "repeat": 3,
+      "warmup": false,
+      "elapsed": 0.09265235599991684,
+      "cpu": 0.3546627210000004,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 2,
+      "repeat": 3,
+      "warmup": false,
+      "elapsed": 0.2641289630000756,
+      "cpu": 0.2645148430000006,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 1,
+      "repeat": 4,
+      "warmup": false,
+      "elapsed": 0.2636758210001062,
+      "cpu": 0.26375455599999853,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 1,
+      "repeat": 4,
+      "warmup": false,
+      "elapsed": 0.27122431299994787,
+      "cpu": 0.2716223959999997,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 2,
+      "repeat": 4,
+      "warmup": false,
+      "elapsed": 0.2635908580000432,
+      "cpu": 0.264172812,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes",
+      "workers": 4,
+      "repeat": 4,
+      "warmup": false,
+      "elapsed": 0.2681066190000365,
+      "cpu": 0.26866384500000073,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 2,
+      "repeat": 4,
+      "warmup": false,
+      "elapsed": 0.1431182210001225,
+      "cpu": 0.2791228090000004,
+      "uuids": 2097152
+    },
+    {
+      "fn": "parse_many_bytes_detach",
+      "workers": 4,
+      "repeat": 4,
+      "warmup": false,
+      "elapsed": 0.10815007999985937,
+      "cpu": 0.3434723910000006,
+      "uuids": 2097152
+    }
+  ]
+}
