@@ -1,0 +1,77 @@
+name: API and UUID comparison
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "uuidv7/**"
+      - "fastuuid7/**"
+      - "benchmarks/api/**"
+      - "benchmarks/uuid_operations.py"
+      - ".github/workflows/api-benchmarks.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    name: API/UUID comparison / Python ${{ matrix.python }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.11.28"
+      - name: Build candidate and identical locked environments
+        run: |
+          uv build --python "${{ matrix.python }}" --wheel
+          uv sync --project benchmarks/api --python "${{ matrix.python }}" --locked
+          uv export --project benchmarks/api --locked --no-dev --format requirements-txt --output-file "$RUNNER_TEMP/api-requirements.txt" > /dev/null
+          uv venv --python "${{ matrix.python }}" "$RUNNER_TEMP/api-candidate"
+          uv pip sync --python "$RUNNER_TEMP/api-candidate/bin/python" --require-hashes "$RUNNER_TEMP/api-requirements.txt"
+          uv pip install --python "$RUNNER_TEMP/api-candidate/bin/python" --reinstall-package fastuuid7 --no-deps dist/*.whl
+      - name: Verify application contracts in both installed environments
+        working-directory: ${{ runner.temp }}
+        run: |
+          "$GITHUB_WORKSPACE/benchmarks/api/.venv/bin/python" -m pytest --import-mode=importlib "$GITHUB_WORKSPACE/benchmarks/api/test_contracts.py"
+          "$RUNNER_TEMP/api-candidate/bin/python" -m pytest --import-mode=importlib "$GITHUB_WORKSPACE/benchmarks/api/test_contracts.py"
+      - name: Interleaved UUID microbenchmarks
+        working-directory: ${{ runner.temp }}
+        run: |
+          "$GITHUB_WORKSPACE/benchmarks/api/.venv/bin/python" "$GITHUB_WORKSPACE/benchmarks/api/micro_compare.py" \
+            --candidate-python "$RUNNER_TEMP/api-candidate/bin/python" \
+            --baseline-python "$GITHUB_WORKSPACE/benchmarks/api/.venv/bin/python" \
+            --candidate-wheel "$GITHUB_WORKSPACE"/dist/*.whl \
+            --work-dir "$RUNNER_TEMP" --output "$RUNNER_TEMP/micro.json"
+      - name: Pydantic and real loopback HTTP matrix
+        working-directory: ${{ runner.temp }}
+        run: |
+          "$GITHUB_WORKSPACE/benchmarks/api/.venv/bin/python" "$GITHUB_WORKSPACE/benchmarks/api/run.py" \
+            --candidate-python "$RUNNER_TEMP/api-candidate/bin/python" \
+            --baseline-python "$GITHUB_WORKSPACE/benchmarks/api/.venv/bin/python" \
+            --candidate-wheel "$GITHUB_WORKSPACE"/dist/*.whl \
+            --work-dir "$RUNNER_TEMP" --output "$RUNNER_TEMP/api.json"
+          "$GITHUB_WORKSPACE/benchmarks/api/.venv/bin/python" "$GITHUB_WORKSPACE/benchmarks/api/analyze.py" \
+            --api "$RUNNER_TEMP/api.json" --micro "$RUNNER_TEMP/micro.json" --output "$RUNNER_TEMP/summary.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-uuid-comparison-py${{ matrix.python }}
+          path: |
+            ${{ runner.temp }}/micro.json
+            ${{ runner.temp }}/api.json
+            ${{ runner.temp }}/summary.json
+            ${{ runner.temp }}/summary.md
+            ${{ runner.temp }}/api-logs
+          retention-days: 90

@@ -154,4 +154,27 @@ static PyObject *uuid_bytes_to_int(const unsigned char uuid[16]) {
     return uuid_words_to_int(read_u64_be(uuid), read_u64_be(uuid + 8));
 }
 
+/* Return 1 for an exact, unsigned 128-bit int, 0 to use Python's original
+ * behavior, or -1 for an unexpected error. Never truncate a large integer.
+ * The older full-API path matches the existing pre-3.14 integer fast path. */
+static int uuid_int_to_bytes(PyObject *value, unsigned char raw[16]) {
+    if (!PyLong_CheckExact(value)) return 0;
+#if PY_VERSION_HEX >= 0x030D0000 && (!defined(Py_LIMITED_API) || Py_LIMITED_API >= 0x030E0000)
+    Py_ssize_t size = PyLong_AsNativeBytes(
+        value, raw, 16, Py_ASNATIVEBYTES_BIG_ENDIAN |
+        Py_ASNATIVEBYTES_UNSIGNED_BUFFER | Py_ASNATIVEBYTES_REJECT_NEGATIVE);
+    if (size >= 0) return size <= 16;
+#elif !defined(Py_LIMITED_API)
+    if (_PyLong_AsByteArray((PyLongObject *)value, raw, 16, 0, 0) == 0) return 1;
+#else
+    return 0;
+#endif
+    if (PyErr_ExceptionMatches(PyExc_OverflowError) ||
+        PyErr_ExceptionMatches(PyExc_ValueError)) {
+        PyErr_Clear();
+        return 0;
+    }
+    return -1;
+}
+
 #endif /* UUID7_INT_H */

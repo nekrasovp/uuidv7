@@ -5,6 +5,9 @@ retention in a 64-element list, and conversion to canonical strings. These
 lifetimes distinguish native sole-owner object reuse from real retained values.
 Parsing covers standard and native objects, conversion back to stdlib objects,
 packed output and batch APIs. Format cases distinguish object and byte inputs.
+Pure formatting also includes pre-created uuid-utils native objects. The
+`format-generated` rows measure `format_uuid(uuid4/7())` separately from `str()`
+and direct string generation.
 
 Every case checks output type, version/variant or parsed value outside timing.
 The harness runs five independent processes in deterministic randomized case
@@ -38,3 +41,6 @@ workflow repeats current/legacy comparisons on Linux Python 3.12 and 3.14 using
 the PR head, independently from functional CI. Published reports must identify
 the CPU and cannot attribute cross-runner differences solely to Python versions.
 September research and prior report files remain unchanged.
+
+For interleaved candidate-versus-0.6.0 workers with the same pinned references,
+and the complete Pydantic/loopback HTTP matrix, see [the API protocol](api/README.md).

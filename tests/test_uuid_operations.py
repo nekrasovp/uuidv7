@@ -2,6 +2,7 @@
 
 import os
 import pickle
+import re
 import sys
 import uuid
 from concurrent.futures import ThreadPoolExecutor
@@ -258,3 +259,94 @@ def test_format_types_lengths_and_subclass_failure():
 
     with pytest.raises(TypeError):
         f.format_uuid(BrokenUUID(TEXT))
+
+
+@pytest.mark.parametrize("number", [0, (1 << 128) - 1, *[1 << bit for bit in range(128)]])
+def test_format_and_uuid7_str_preserve_all_128_bits(number):
+    reference = uuid.UUID(int=number)
+    value = uuidv7._UUID7(int=number)
+    assert str(value) == str(reference)
+    assert repr(value) == repr(reference)
+    assert format(value) == format(reference)
+    with pytest.raises(TypeError):
+        format(value, ">40")
+    assert value.urn == reference.urn
+    assert f.format_uuid(reference) == f.format_uuid(value) == str(reference)
+
+
+def test_format_custom_uuid_subclasses_keep_bytes_contract():
+    class Custom(uuid.UUID):
+        @property
+        def bytes(self):
+            return b"\xff" * 16
+
+    class CustomV7(uuidv7._UUID7):
+        @property
+        def bytes(self):
+            return b"\xff" * 16
+
+    for cls in (Custom, CustomV7):
+        value = cls(TEXT)
+        assert f.format_uuid(value) == str(uuid.UUID(int=(1 << 128) - 1))
+        assert str(value) == uuid.UUID.__str__(value)
+
+    class Failing(uuid.UUID):
+        @property
+        def bytes(self):
+            raise RuntimeError("custom bytes")
+
+    with pytest.raises(RuntimeError, match="custom bytes"):
+        f.format_uuid(Failing(TEXT))
+
+
+@pytest.mark.parametrize("number", [-1, 1 << 128, 1 << 256, True])
+def test_unusual_uuid_state_preserves_stdlib_fallback(number):
+    reference = uuid.UUID(TEXT)
+    value = uuidv7._UUID7(TEXT)
+    object.__setattr__(reference, "int", number)
+    object.__setattr__(value, "int", number)
+    try:
+        expected_text = str(reference)
+    except (OverflowError, ValueError) as error:
+        with pytest.raises(type(error)):
+            str(value)
+    else:
+        assert str(value) == expected_text
+    try:
+        expected = str(uuid.UUID(bytes=reference.bytes))
+    except (OverflowError, ValueError) as error:
+        for obj in (reference, value):
+            with pytest.raises(type(error)):
+                f.format_uuid(obj)
+    else:
+        assert f.format_uuid(reference) == f.format_uuid(value) == expected
+
+
+def test_format_int_subclass_preserves_python_methods():
+    class Number(int):
+        def to_bytes(self, *_args, **_kwargs):
+            return b"\xff" * 16
+
+    value = uuidv7._UUID7(TEXT)
+    reference = uuid.UUID(TEXT)
+    for obj in (value, reference):
+        object.__setattr__(obj, "int", Number(obj.int))
+        assert f.format_uuid(obj) == str(uuid.UUID(int=(1 << 128) - 1))
+    assert str(value) == str(reference)
+
+
+def test_parser_every_single_byte_substitution_against_strict_grammar():
+    canonical = r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}"
+    grammar = re.compile(
+        rf"(?:[0-9a-fA-F]{{32}}|{canonical}|\{{{canonical}\}}|(?i:urn:uuid:){canonical})"
+    )
+    for original in (TEXT, TEXT.replace("-", ""), "{" + TEXT + "}", "urn:uuid:" + TEXT):
+        for position in range(len(original)):
+            for byte in range(256):
+                text = original[:position] + chr(byte) + original[position + 1 :]
+                if grammar.fullmatch(text):
+                    normalized = text.lower().removeprefix("urn:uuid:").strip("{}")
+                    assert f.parse(text) == uuid.UUID(normalized)
+                else:
+                    with pytest.raises(ValueError):
+                        f.parse(text)

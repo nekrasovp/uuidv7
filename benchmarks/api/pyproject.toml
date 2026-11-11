@@ -1,0 +1,20 @@
+[project]
+name = "fastuuid7-api-benchmarks"
+version = "0.0.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastuuid7==0.6.0",
+    "uuid-utils==1.2.0",
+    "fastuuid==0.14.0",
+    "fastuuidv7==0.1.10",
+    "fastapi==0.141.1",
+    "pydantic==2.14.3",
+    "pydantic-core==2.50.4",
+    "starlette==1.6.0",
+    "httpx==0.28.1",
+    "uvicorn==0.53.0",
+    "pytest==9.1.1",
+]
+
+[tool.uv]
+package = false

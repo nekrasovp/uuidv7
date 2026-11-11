@@ -1,4 +1,11 @@
-# Reproducing the 0.4.0 comparison
+# Benchmark comparisons
+
+The [formatting, parsing and FastAPI/Pydantic sprint results](results/api-uuid-2026-11-11/README.md)
+compare the candidate with published 0.6.0 and uuid-utils 1.2.0 on three
+host/interpreter configurations. See the [installed-wheel protocol](api/README.md)
+for reproduction and the limits of the HTTP measurements.
+
+## Reproducing the 0.4.0 comparison
 
 Run from a clean release checkout after `uv sync --extra dev --locked`:
 

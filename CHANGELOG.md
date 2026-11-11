@@ -3,6 +3,15 @@
 All notable changes to this project are documented here. The project follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+- Format exact stdlib UUID objects directly from their integer value and accelerate
+  `str(uuid7())`, preserving custom subclass and unusual-value fallbacks.
+- Decode strict UUID text with a bounded hexadecimal lookup and fixed canonical
+  offsets; keep the existing accepted grammar, UUID types and error behavior.
+- Add paired installed-wheel comparisons against 0.6.0 and uuid-utils 1.2.0,
+  including separate Pydantic stages and a real loopback FastAPI HTTP matrix.
+
 ## 0.6.0 - 2026-11-09
 
 - Add OS-CSPRNG UUIDv4 generation as standard objects, strings, bytes, and batches,
