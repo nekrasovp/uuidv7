@@ -175,7 +175,7 @@ wheels = [
 
 [[package]]
 name = "fastuuid7"
-version = "0.6.0"
+version = "0.6.1"
 source = { directory = "../../" }
 
 [package.metadata]

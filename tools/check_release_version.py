@@ -32,6 +32,10 @@ def main() -> None:
             r'^__version__\s*=\s*"([^"]+)"\s*$',
         ),
     }
+    for name in ("uv.lock", "tools/consumers/uv.lock"):
+        versions[name] = _read_version(
+            ROOT / name, r'^name\s*=\s*"fastuuid7"\s*\nversion\s*=\s*"([^"]+)"\s*$'
+        )
     mismatches = {path: value for path, value in versions.items() if value != expected}
     if mismatches:
         details = ", ".join(f"{path}={value}" for path, value in mismatches.items())

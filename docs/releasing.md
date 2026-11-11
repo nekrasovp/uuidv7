@@ -3,7 +3,9 @@
 ## Prepare
 
 1. Update `pyproject.toml`, `uuidv7/__init__.py`, and
-   `uuidv7/uuidv7/__init__.py` to the same version.
+   `uuidv7/uuidv7/__init__.py` to the same version. Update the local fastuuid7
+   entries in `uv.lock` and `tools/consumers/uv.lock` as well; keep the published
+   baselines in `benchmarks/api/uv.lock` and `benchmarks/workloads/uv.lock` unchanged.
 2. Replace `Unreleased` in `CHANGELOG.md` with the release date.
 3. Run:
 
