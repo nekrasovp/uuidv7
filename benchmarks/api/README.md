@@ -9,6 +9,8 @@ It does not install a framework adapter into either production library.
 - Use the same interpreter, CPU and `uv.lock` dependencies for every variant.
   The baseline environment resolves PyPI 0.6.0; the candidate environment starts
   from the identical lock, then replaces only fastuuid7 with the built wheel.
+  The candidate version is read from that installed wheel; only fastuuid7's
+  version may differ from the baseline, while all other packages remain identical.
   Check every installed candidate runtime file against that wheel. Record wheel,
   native-extension, Python wrapper, harness, corpus and lock hashes.
 - Run five independent processes/repeats, sequentially, with deterministic
@@ -83,7 +85,7 @@ Then run `micro_compare.py` and `run.py` **sequentially**, using the same argume
 ```text
 --candidate-python /tmp/uuid-api-candidate/bin/python
 --baseline-python /checkout/benchmarks/api/.venv/bin/python
---candidate-wheel /checkout/dist/fastuuid7-0.6.0-<wheel-tags>.whl
+--candidate-wheel /checkout/dist/fastuuid7-<candidate-version>-<wheel-tags>.whl
 --work-dir /tmp
 --output /tmp/<micro-or-api>.json
 ```

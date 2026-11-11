@@ -278,7 +278,7 @@ Follow the complete [release checklist](docs/releasing.md), before publishing.
 
 1. Run tests, builds, and benchmarks.
 2. Review benchmark results and decide whether optimization is needed.
-3. Verify all source versions with `python tools/check_release_version.py v0.6.0`.
+3. Verify all source versions with `python tools/check_release_version.py v0.6.1`.
 4. Create a new [GitHub Release](https://github.com/nekrasovp/uuidv7/releases/new).
 5. The workflow will validate, build, inspect, and publish the distributions.
 

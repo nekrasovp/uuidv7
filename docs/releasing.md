@@ -15,7 +15,7 @@
    uv run --extra dev --extra release --locked mypy
    uv build
    uv run --extra dev --extra release --locked twine check dist/*
-   python tools/check_release_version.py v0.6.0
+   python tools/check_release_version.py v0.6.1
    ```
 
 4. Run the scalar, competitor, batch, clock-source, and batch-clock experiment benchmarks from the

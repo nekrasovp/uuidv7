@@ -32,6 +32,15 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def check_packages(packages, baseline, expected_version):
+    """Only the candidate library version may differ from the locked baseline."""
+    assert baseline["fastuuid7"] == "0.6.0"
+    assert packages["fastuuid7"] == expected_version
+    assert {k: v for k, v in packages.items() if k != "fastuuid7"} == {
+        k: v for k, v in baseline.items() if k != "fastuuid7"
+    }
+
+
 def identity():
     import uuid_utils
 

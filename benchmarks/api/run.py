@@ -19,7 +19,7 @@ import zipfile
 from pathlib import Path
 
 import httpx
-from common import BASE_SHA, HERE, ROOT, TEXTS, VARIANTS, digest, save
+from common import BASE_SHA, HERE, ROOT, TEXTS, VARIANTS, check_packages, digest, save
 
 RATES = {
     "path": [100, 300],
@@ -286,14 +286,21 @@ async def run(args):
                 save(args.output, output)
             if not args.pydantic_only:
                 await http_round(python, variant, repeat, args, rng, output)
-    # Pins and interpreter must be identical for every variant; extension/wrapper
-    # hashes intentionally distinguish the baseline and candidate builds.
-    identities = list(output["identities"].values()) or [v["identity"] for v in output["pydantic"]]
-    for value in identities:
-        assert value["packages"]["fastuuid7"] == "0.6.0"
-        assert value["packages"] == identities[0]["packages"]
-        assert value["python"] == identities[0]["python"]
-        assert value["lock_sha256"] == identities[0]["lock_sha256"]
+    # Only the candidate library version may differ; every other dependency
+    # stays locked. Check both HTTP identities and every Pydantic worker.
+    identities = list(output["identities"].items()) + [
+        (v["variant"], v["identity"]) for v in output["pydantic"]
+    ]
+    baseline = next(value for variant, value in identities if variant == "baseline-default")
+    for variant, value in identities:
+        expected_version = (
+            output["installed_candidate"]["version"]
+            if variant.startswith("candidate-")
+            else "0.6.0"
+        )
+        check_packages(value["packages"], baseline["packages"], expected_version)
+        assert value["python"] == baseline["python"]
+        assert value["lock_sha256"] == baseline["lock_sha256"]
     output["complete"] = True
     save(args.output, output)
 

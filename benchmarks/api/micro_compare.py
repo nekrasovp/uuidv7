@@ -7,7 +7,7 @@ import statistics
 import subprocess
 from pathlib import Path
 
-from common import BASE_SHA, HERE, ROOT, digest, save
+from common import BASE_SHA, HERE, ROOT, check_packages, digest, save
 from run import check_wheel, clean_env
 
 
@@ -47,7 +47,10 @@ def run(args):
                 check=True,
             )
             data = json.loads(result.stdout)
-            assert data["packages"]["fastuuid7"] == "0.6.0"
+            expected_version = (
+                output["installed_candidate"]["version"] if provider == "candidate" else "0.6.0"
+            )
+            assert data["packages"]["fastuuid7"] == expected_version
             assert data["packages"]["uuid-utils"] == "1.2.0"
             data["repeat"] = repeat
             output["samples"][provider].append(data)
@@ -55,12 +58,13 @@ def run(args):
             print(f"Micro {provider} repeat {repeat + 1} complete", flush=True)
     first = output["samples"]["baseline"][0]
     for provider, samples in output["samples"].items():
-        assert all(
-            s["python"] == first["python"]
-            and s["cpu"] == first["cpu"]
-            and s["packages"] == first["packages"]
-            for s in samples
-        )
+        assert all(s["python"] == first["python"] and s["cpu"] == first["cpu"] for s in samples)
+        for sample in samples:
+            check_packages(
+                sample["packages"],
+                first["packages"],
+                output["installed_candidate"]["version"] if provider == "candidate" else "0.6.0",
+            )
         summary = {}
         for row in first["rows"]:
             key = row["key"]

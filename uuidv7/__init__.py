@@ -125,7 +125,7 @@ uuid7_str_many = _generate_uuid7_str_many
 uuid7_bytes_many = _generate_uuid7_bytes_many
 
 
-__version__ = "0.6.0"
+__version__ = "0.6.1"
 __all__ = [
     "format_uuid",
     "parse",

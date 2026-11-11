@@ -3,7 +3,7 @@
 All notable changes to this project are documented here. The project follows
 [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 0.6.1 - 2026-11-11
 
 - Format exact stdlib UUID objects directly from their integer value and accelerate
   `str(uuid7())`, preserving custom subclass and unusual-value fallbacks.
